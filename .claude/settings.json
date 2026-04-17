@@ -1,15 +1,56 @@
 {
-    "hooks": {
-      "PostToolUse": [
-        {
-          "matcher": "Edit|Write|MultiEdit",
-          "hooks": [
-            {
-              "type": "command",
-              "command": "bash .claude/hooks/post-edit.sh"
-            }
-          ]
-        }
-      ]
-    }
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '[PreToolUse] Bash 실행 전 확인'"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post-edit.sh"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '[SessionStart] Claude Code 세션 시작'"
+          }
+        ]
+      }
+    ],
+    "PreCommit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '[PreCommit] 커밋 전 검사'"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '[Notification] 알림 발생'"
+          }
+        ]
+      }
+    ]
   }
+}

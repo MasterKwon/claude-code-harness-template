@@ -89,6 +89,21 @@
 - image: rabbitmq               → RabbitMQ
 ```
 
+**[UI 컴포넌트 라이브러리]**
+```
+읽을 파일: package.json
+- "shadcn" 또는 components.json 존재  → shadcn/ui
+- "@mui/material"                     → Material UI
+- "antd"                              → Ant Design
+- 없음 (tailwind만 존재)              → Tailwind only
+```
+
+**[입력값 검증]**
+```
+읽을 파일: package.json
+- "zod" in dependencies               → Zod 사용
+```
+
 **[파일 업로드]**
 ```
 읽을 파일: package.json

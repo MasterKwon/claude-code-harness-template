@@ -61,6 +61,12 @@ npm -v
     A. Docker + docker-compose ★
     B. Vercel (프론트) + 별도 서버
     C. PM2 (프로세스 매니저)
+
+[10] UI 컴포넌트 라이브러리
+    A. shadcn/ui + Tailwind CSS — 코드 직접 소유, AI 친화적 ★
+    B. Material UI (MUI) — Google Material Design
+    C. Ant Design — 엔터프라이즈 테이블/폼 특화
+    D. Tailwind CSS only — 라이브러리 없이 직접 작성
 ```
 
 사용자 응답을 받은 후 Step 2부터 실행합니다.
@@ -129,6 +135,19 @@ TypeORM 선택 시 `tsconfig.json`에 추가:
 | JWT [4-A] | `npm install jsonwebtoken bcryptjs` + `npm install -D @types/jsonwebtoken @types/bcryptjs` |
 | NextAuth [4-B] | `npm install next-auth` (gateway에서만) |
 
+### 공통 패키지 (항상 설치)
+
+```bash
+# gateway에서 실행
+
+# Swagger — API 문서 자동 생성
+npm install next-swagger-doc swagger-ui-react
+npm install -D @types/swagger-ui-react
+
+# Zod — 입력값 유효성 검증 (TypeScript 스키마 기반)
+npm install zod
+```
+
 ### API 스타일
 
 | 선택 | 명령 (gateway에서) |
@@ -157,6 +176,20 @@ TypeORM 선택 시 `tsconfig.json`에 추가:
 |------|------|
 | AWS S3 [8-A] | `npm install @aws-sdk/client-s3 multer` + `npm install -D @types/multer` |
 | 로컬 [8-B] | `npm install multer` + `npm install -D @types/multer` |
+
+### UI 컴포넌트 라이브러리 (gateway에서 설치)
+
+| 선택 | 명령 |
+|------|------|
+| shadcn/ui [10-A] | `npx shadcn@latest init` (대화형 설정) → `npx shadcn@latest add button input label card` |
+| MUI [10-B] | `npm install @mui/material @emotion/react @emotion/styled @mui/icons-material` |
+| Ant Design [10-C] | `npm install antd @ant-design/icons` |
+| Tailwind only [10-D] | 추가 설치 없음 (Next.js 초기화 시 이미 포함) |
+
+> shadcn/ui 선택 시 `npx shadcn@latest init` 실행 중 아래 옵션 선택:
+> - Style: Default
+> - Base color: Slate
+> - CSS variables: Yes
 
 ### 배포
 
@@ -297,11 +330,35 @@ module.exports = {
 
 ## Step 5 — CLAUDE.md 업데이트
 
-프로젝트의 `CLAUDE.md` Tech Stack 섹션을 실제 선택 기준으로 업데이트합니다.
+프로젝트의 `CLAUDE.md`에 아래 내용을 순서대로 업데이트합니다.
 
+### Environment 플레이스홀더 채우기
+
+아래 명령으로 현재 환경 정보를 확인한 후 `CLAUDE.md`의 플레이스홀더를 실제 값으로 교체합니다:
+
+```bash
+pwd          # 현재 작업 디렉터리 확인
+uname -s     # OS 확인 (Linux/Darwin/Windows_NT)
+```
+
+| 플레이스홀더 | 교체 값 |
+|-------------|---------|
+| `{{PLATFORM}}` | Windows 11 / macOS / Ubuntu 등 실제 OS |
+| `{{WORKING_DIRECTORY}}` | `pwd` 결과값 (프로젝트 루트 절대경로) |
+
+예시:
+```markdown
+## Environment
+- Platform: Windows 11
+- Shell: bash (Unix syntax)
+- Working directory: C:\WorkSpace\MyProject
+```
+
+### Tech Stack 섹션
 ```markdown
 ## Tech Stack
 - Frontend: Next.js (App Router), TypeScript, Tailwind CSS
+- UI Library: [shadcn/ui / MUI / Ant Design / Tailwind only]
 - Architecture: [MSA / 모노리스]
 - Database: [PostgreSQL / MySQL / MongoDB / SQLite]
 - ORM: [Prisma / TypeORM / Mongoose / Raw SQL]
@@ -317,6 +374,31 @@ module.exports = {
 - gateway: port 3000
 - {서비스명}: port 3001
 - (추가 서비스)
+```
+
+### Active Skills 섹션 — 선택한 스택에 해당하는 파일 경로로 업데이트
+
+선택 조합에 따라 아래 매핑을 참조하여 실제 파일 경로로 채웁니다:
+
+```markdown
+## Active Skills
+- framework: .claude/skills/stacks/framework/nextjs.md              ← 고정 (단일 프레임워크)
+- arch:      .claude/skills/stacks/arch/[msa | monolith].md
+- orm:       .claude/skills/stacks/orm/[prisma | typeorm | mongoose | raw-sql].md
+- api-style: .claude/skills/stacks/api-style/[rest | trpc | graphql].md
+- state:     .claude/skills/stacks/state/[tanstack-query | zustand | redux].md
+- ui:        .claude/skills/stacks/ui/[shadcn | mui | antd | tailwind-only].md
+```
+
+예시 (MSA + Prisma + REST + TanStack Query + shadcn/ui 선택 시):
+```markdown
+## Active Skills
+- framework: .claude/skills/stacks/framework/nextjs.md
+- arch:      .claude/skills/stacks/arch/msa.md
+- orm:       .claude/skills/stacks/orm/prisma.md
+- api-style: .claude/skills/stacks/api-style/rest.md
+- state:     .claude/skills/stacks/state/tanstack-query.md
+- ui:        .claude/skills/stacks/ui/shadcn.md
 ```
 
 ---

@@ -6,7 +6,16 @@
 - MSA 환경에서는 서비스 간 계약(contract)이므로 하위 호환성 고려
 
 ## 참조 스킬
-- Read `.claude/msa-skill.md` — 서비스 포트 구성, 서비스 간 통신 패턴 확인
+`CLAUDE.md`의 `## Active Skills` 섹션을 읽고 해당 파일들을 순서대로 참조합니다.
+
+```
+arch:      CLAUDE.md에 명시된 경로 읽기  (레이어 구조, 서비스 역할 분리 기준)
+api-style: CLAUDE.md에 명시된 경로 읽기  (API 패턴, 응답 형식, URL 규칙)
+```
+
+Active Skills가 없거나 비어 있으면 기본값 사용:
+- arch: `.claude/skills/stacks/arch/msa.md`
+- api-style: `.claude/skills/stacks/api-style/rest.md`
 
 ## 프로세스
 1. `docs/02.design/reviewed/screen.md`에서 화면이 호출하는 API 목록 추출
