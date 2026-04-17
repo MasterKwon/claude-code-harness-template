@@ -17,6 +17,9 @@ docs/*/reviewed/*.md
 __pycache__/
 *.pyc
 
+# MCP 설정 (토큰 포함 가능 — 로컬에만 보관)
+.mcp.json
+
 # Node (실제 프로젝트 생성 후 생기는 것들)
 node_modules/
 .env
