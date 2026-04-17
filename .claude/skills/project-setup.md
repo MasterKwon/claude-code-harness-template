@@ -129,6 +129,14 @@ TypeORM 선택 시 `tsconfig.json`에 추가:
 | JWT [4-A] | `npm install jsonwebtoken bcryptjs` + `npm install -D @types/jsonwebtoken @types/bcryptjs` |
 | NextAuth [4-B] | `npm install next-auth` (gateway에서만) |
 
+### Swagger (공통 — 항상 설치)
+
+```bash
+# gateway에서 실행
+npm install next-swagger-doc swagger-ui-react
+npm install -D @types/swagger-ui-react
+```
+
 ### API 스타일
 
 | 선택 | 명령 (gateway에서) |
@@ -326,6 +334,7 @@ module.exports = {
 
 ```markdown
 ## Active Skills
+- framework: .claude/skills/stacks/framework/nextjs.md              ← 고정 (단일 프레임워크)
 - arch:      .claude/skills/stacks/arch/[msa | monolith].md
 - orm:       .claude/skills/stacks/orm/[prisma | typeorm | mongoose | raw-sql].md
 - api-style: .claude/skills/stacks/api-style/[rest | trpc | graphql].md
@@ -335,6 +344,7 @@ module.exports = {
 예시 (MSA + Prisma + REST + TanStack Query 선택 시):
 ```markdown
 ## Active Skills
+- framework: .claude/skills/stacks/framework/nextjs.md
 - arch:      .claude/skills/stacks/arch/msa.md
 - orm:       .claude/skills/stacks/orm/prisma.md
 - api-style: .claude/skills/stacks/api-style/rest.md

@@ -14,6 +14,7 @@ Next.js + MSA 구조 학습 프로젝트. 바이브코딩으로 React/Next.js를
 - Package Manager: npm
 
 ## Active Skills
+- framework: .claude/skills/stacks/framework/nextjs.md
 - arch:      .claude/skills/stacks/arch/msa.md
 - orm:       .claude/skills/stacks/orm/prisma.md
 - api-style: .claude/skills/stacks/api-style/rest.md

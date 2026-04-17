@@ -9,10 +9,12 @@
 `CLAUDE.md`의 `## Active Skills` 섹션을 읽고 해당 파일들을 순서대로 참조합니다.
 
 ```
-arch:  CLAUDE.md에 명시된 경로 읽기  (페이지 vs 컴포넌트 분리 기준, 공통 컴포넌트 기준)
+framework: CLAUDE.md에 명시된 경로 읽기  (페이지/레이아웃/컴포넌트 구조, 서버/클라이언트 컴포넌트 분리 기준)
+arch:       CLAUDE.md에 명시된 경로 읽기  (공통 컴포넌트 위치 기준)
 ```
 
 Active Skills가 없거나 비어 있으면 기본값 사용:
+- framework: `.claude/skills/stacks/framework/nextjs.md`
 - arch: `.claude/skills/stacks/arch/msa.md`
 
 ## 프로세스

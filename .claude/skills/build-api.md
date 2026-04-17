@@ -9,12 +9,17 @@
 `CLAUDE.md`의 `## Active Skills` 섹션을 읽고 해당 파일들을 순서대로 참조합니다.
 
 ```
+framework: CLAUDE.md에 명시된 경로 읽기  (API Route 구조, Swagger JSDoc 작성 방법)
 arch:      CLAUDE.md에 명시된 경로 읽기  (레이어 구조, Controller/Service/Repository 분리 기준)
 orm:       CLAUDE.md에 명시된 경로 읽기  (DB 클라이언트, Repository 패턴, 트랜잭션)
 api-style: CLAUDE.md에 명시된 경로 읽기  (Route Handler 패턴, 응답 형식)
 ```
 
+> API Route 구현 시 반드시 Swagger JSDoc 주석을 함께 작성합니다.
+> 주석 형식은 framework 스킬 파일의 예시를 따릅니다.
+
 Active Skills가 없거나 비어 있으면 기본값 사용:
+- framework: `.claude/skills/stacks/framework/nextjs.md`
 - arch: `.claude/skills/stacks/arch/msa.md`
 - orm: `.claude/skills/stacks/orm/prisma.md`
 - api-style: `.claude/skills/stacks/api-style/rest.md`

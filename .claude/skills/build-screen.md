@@ -9,11 +9,13 @@
 `CLAUDE.md`의 `## Active Skills` 섹션을 읽고 해당 파일들을 순서대로 참조합니다.
 
 ```
-arch:  CLAUDE.md에 명시된 경로 읽기  (컴포넌트 레이어 규칙, 비즈니스 로직 금지 영역)
-state: CLAUDE.md에 명시된 경로 읽기  (서버/클라이언트 상태 관리 패턴)
+framework: CLAUDE.md에 명시된 경로 읽기  (서버/클라이언트 컴포넌트 패턴, middleware, layout, Swagger UI 페이지)
+arch:       CLAUDE.md에 명시된 경로 읽기  (컴포넌트 레이어 규칙, 비즈니스 로직 금지 영역)
+state:      CLAUDE.md에 명시된 경로 읽기  (서버/클라이언트 상태 관리 패턴)
 ```
 
 Active Skills가 없거나 비어 있으면 기본값 사용:
+- framework: `.claude/skills/stacks/framework/nextjs.md`
 - arch: `.claude/skills/stacks/arch/msa.md`
 - state: `.claude/skills/stacks/state/tanstack-query.md`
 
