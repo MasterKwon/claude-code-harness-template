@@ -1,17 +1,9 @@
 # Claude Code 로컬 설정 (개인 환경마다 다름)
 .claude/settings.local.json
 
-# 산출물 — 템플릿에 포함하지 않음
+# 실제 프로젝트 산출물 — 사용자 작업물은 git에 포함 (샘플은 포함)
+# 추출 캐시만 제외
 docs/00.input/extracted/
-docs/01.analyze/*.md
-docs/02.design/*.md
-docs/03.build/*.md
-docs/04.review/*.md
-docs/05.test/*.md
-docs/06.ship/*.md
-
-# reviewed/ 안의 산출물도 제외 (빈 폴더 구조만 유지)
-docs/*/reviewed/*.md
 
 # Python
 __pycache__/
