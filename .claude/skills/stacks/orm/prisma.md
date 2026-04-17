@@ -6,17 +6,24 @@ npx prisma --version
 ```
 
 ## Schema 패턴
+
+### 네이밍: snake_case (@@map으로 DB 컬럼명 매핑)
 ```prisma
 // prisma/schema.prisma
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        String    @id @default(uuid())
+  email     String    @unique
+  firstName String?   @map("first_name")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")   // soft delete
   posts     Post[]
+
+  @@map("users")  // 테이블명 snake_case
 }
 ```
+
+> TypeScript 필드명은 camelCase, DB 컬럼명은 snake_case (`@map`)
 
 ## DB 클라이언트 싱글톤 (lib/db.ts)
 ```typescript
@@ -36,24 +43,60 @@ if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 import { prisma } from '@/lib/db'
 
 export const userRepository = {
-  findById: (id: number) =>
-    prisma.user.findUnique({ where: { id } }),
+  findById: (id: string) =>
+    prisma.user.findUnique({ where: { id, deletedAt: null } }),
 
   findByEmail: (email: string) =>
-    prisma.user.findUnique({ where: { email } }),
+    prisma.user.findUnique({ where: { email, deletedAt: null } }),
 
   findAll: () =>
-    prisma.user.findMany({ orderBy: { createdAt: 'desc' } }),
+    prisma.user.findMany({
+      where: { deletedAt: null },
+      orderBy: { createdAt: 'desc' },
+    }),
 
-  create: (data: { email: string; name?: string }) =>
+  create: (data: { email: string; firstName?: string }) =>
     prisma.user.create({ data }),
 
-  update: (id: number, data: Partial<{ name: string }>) =>
+  update: (id: string, data: Partial<{ firstName: string }>) =>
     prisma.user.update({ where: { id }, data }),
 
-  delete: (id: number) =>
-    prisma.user.delete({ where: { id } }),
+  // soft delete — 실제 삭제 금지
+  delete: (id: string) =>
+    prisma.user.update({ where: { id }, data: { deletedAt: new Date() } }),
+
+  // 복원
+  restore: (id: string) =>
+    prisma.user.update({ where: { id }, data: { deletedAt: null } }),
 }
+```
+
+## 페이지네이션
+
+### Offset 방식 (일반 목록)
+```typescript
+findPage: (page: number, size: number) =>
+  prisma.user.findMany({
+    where: { deletedAt: null },
+    skip: (page - 1) * size,
+    take: size,
+    orderBy: { createdAt: 'desc' },
+  }),
+
+countAll: () =>
+  prisma.user.count({ where: { deletedAt: null } }),
+```
+
+### Cursor 방식 (무한스크롤 / 대용량)
+```typescript
+findAfter: (cursor: string | undefined, size: number) =>
+  prisma.user.findMany({
+    where: { deletedAt: null },
+    take: size,
+    skip: cursor ? 1 : 0,
+    cursor: cursor ? { id: cursor } : undefined,
+    orderBy: { createdAt: 'desc' },
+  }),
 ```
 
 ## 주요 커맨드
