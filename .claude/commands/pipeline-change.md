@@ -36,7 +36,12 @@ Read `.claude/skills/analyze-asis.md` and follow all instructions.
 - [ ] 기존 데이터 흐름 파악 완료
 - [ ] 현재 이슈 또는 제약사항 파악 완료
 
-**모두 통과하면**: `docs/01.analyze/asis.md`를 `docs/01.analyze/reviewed/asis.md`로 복사 후 Phase 2 진행.
+**모두 통과하면**: `docs/01.analyze/asis.md`를 `docs/01.analyze/reviewed/asis.md`로 복사 후 커밋:
+```bash
+git add docs/01.analyze/asis.md docs/01.analyze/reviewed/asis.md
+git commit -m "change-phase1: analyze-asis 완료"
+git push
+```
 
 ---
 
@@ -53,7 +58,12 @@ Read `.claude/skills/analyze-requirements.md` and follow all instructions.
 - [ ] Must/Should/Could 우선순위 부여
 - [ ] [질문 필요] 항목 없거나 명시적 보류 처리
 
-**모두 통과하면**: `docs/01.analyze/requirements.md`를 `docs/01.analyze/reviewed/requirements.md`로 복사 후 Phase 3 진행.
+**모두 통과하면**: `docs/01.analyze/requirements.md`를 `docs/01.analyze/reviewed/requirements.md`로 복사 후 커밋:
+```bash
+git add docs/01.analyze/requirements.md docs/01.analyze/reviewed/requirements.md
+git commit -m "change-phase2: analyze-requirements 완료"
+git push
+```
 
 ---
 
@@ -77,6 +87,13 @@ Read `.claude/skills/analyze-gap.md` and follow all instructions.
 **→ GAP 분석 완료 후 반드시 사용자 확인을 받고 다음 Phase로 진행하세요.**
 사용자가 범위를 조정할 수 있는 마지막 지점입니다.
 
+사용자 확인 후 커밋:
+```bash
+git add docs/01.analyze/gap.md docs/01.analyze/reviewed/gap.md
+git commit -m "change-phase3: analyze-gap 완료 — 작업 범위 확정"
+git push
+```
+
 ---
 
 ### Phase 4 — 영향 범위 설계
@@ -97,6 +114,13 @@ GAP에 API 신규/변경 항목 있음     → Read `.claude/skills/design-api.m
 
 **→ 설계 완료 후 사용자 확인을 받고 다음 Phase로 진행하세요.**
 
+사용자 확인 후 커밋:
+```bash
+git add docs/02.design/
+git commit -m "change-phase4: design 완료 (영향 범위만)"
+git push
+```
+
 ---
 
 ### Phase 5 — 영향 범위 구현
@@ -114,6 +138,13 @@ GAP에 Screen 신규/변경 항목 있음  → Read `.claude/skills/build-screen
 
 **→ 구현 완료 후 사용자 확인을 받고 다음 Phase로 진행하세요.**
 
+사용자 확인 후 커밋:
+```bash
+git add .
+git commit -m "change-phase5: build 완료 (영향 범위만)"
+git push
+```
+
 ---
 
 ### Phase 6 — 리뷰
@@ -124,7 +155,12 @@ Read `.claude/skills/review-all.md` and follow all instructions.
 > 변경된 코드와 **기존 코드와의 연결 지점**을 중점 검토합니다.
 > (수정된 API를 호출하는 기존 화면, 변경된 DB 컬럼을 쓰는 기존 로직 등)
 
-**→ High 심각도 없으면** `docs/04.review/reviewed/report.md`로 복사 후 Phase 7 진행.
+**→ High 심각도 없으면** `docs/04.review/reviewed/report.md`로 복사 후 커밋:
+```bash
+git add docs/04.review/
+git commit -m "change-phase6: review-all 통과"
+git push
+```
 
 ---
 
@@ -160,12 +196,27 @@ Read `.claude/skills/test-e2e.md` and follow all instructions.
 
 **→ 테스트 완료 후 사용자 확인을 받고 다음 Phase로 진행하세요.**
 
+사용자 확인 후 커밋:
+```bash
+git add docs/05.test/
+git commit -m "change-phase7: test-all 통과 (변경 기능 + 회귀)"
+git push
+```
+
 ---
 
 ### Phase 8 — 배포
 
 Read `.claude/skills/ship.md` and follow all instructions.
 산출물: `docs/06.ship/checklist.md`
+
+배포 체크리스트 완료 후 커밋 및 main 머지:
+```bash
+git add docs/06.ship/
+git commit -m "change-phase8: ship 완료"
+git push
+# GitHub에서 PR → main 머지
+```
 
 **→ 변경 파이프라인 완료.**
 

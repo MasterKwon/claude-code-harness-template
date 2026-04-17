@@ -223,6 +223,44 @@ pip install openpyxl python-pptx chardet
 
 ---
 
+## Git 커밋 규칙
+
+각 Phase 완료 시 품질 게이트 통과 → 사용자 확인 → 커밋/푸시 순서로 진행합니다.
+
+### pipeline-full 커밋 메시지
+
+| Phase | 커밋 메시지 |
+|-------|-------------|
+| Phase 1 | `phase1: analyze-all 완료` |
+| Phase 2 | `phase2: design-all 완료` |
+| Phase 3 | `phase3: build-all 완료` |
+| Phase 4 | `phase4: review-all 통과` |
+| Phase 5 | `phase5: test-all 통과` |
+| Phase 6 | `phase6: ship 완료` → PR → main 머지 |
+
+### pipeline-change 커밋 메시지
+
+| Phase | 커밋 메시지 |
+|-------|-------------|
+| Phase 1 | `change-phase1: analyze-asis 완료` |
+| Phase 2 | `change-phase2: analyze-requirements 완료` |
+| Phase 3 | `change-phase3: analyze-gap 완료 — 작업 범위 확정` |
+| Phase 4 | `change-phase4: design 완료 (영향 범위만)` |
+| Phase 5 | `change-phase5: build 완료 (영향 범위만)` |
+| Phase 6 | `change-phase6: review-all 통과` |
+| Phase 7 | `change-phase7: test-all 통과 (변경 기능 + 회귀)` |
+| Phase 8 | `change-phase8: ship 완료` → PR → main 머지 |
+
+### 브랜치 전략
+
+```
+main      ← 보호됨, PR로만 머지 (배포 완료 버전)
+develop   ← 작업 기준 브랜치
+feature/* ← 기능별 작업 브랜치
+```
+
+---
+
 ## 품질 게이트 — reviewed/ 승격 시스템
 
 각 단계 완료 시 자동으로 체크리스트를 검증합니다.

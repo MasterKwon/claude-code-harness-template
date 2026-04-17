@@ -41,6 +41,13 @@ Read `.claude/skills/analyze-gap.md` and follow all instructions. (`docs/01.anal
 
 **→ 분석 Phase 완료 후 반드시 사용자 확인을 받고 다음 Phase로 진행하세요.**
 
+품질 게이트 통과 및 사용자 확인 후 커밋:
+```bash
+git add docs/01.analyze/
+git commit -m "phase1: analyze-all 완료"
+git push
+```
+
 ### Phase 2 — 설계
 Read `.claude/skills/design-screen.md` and follow all instructions. (`docs/02.design/screen.md` 생성)
 Read `.claude/skills/design-db.md` and follow all instructions. (`docs/02.design/db.md` 생성)
@@ -48,12 +55,26 @@ Read `.claude/skills/design-api.md` and follow all instructions. (`docs/02.desig
 
 **→ 설계 Phase 완료 후 반드시 사용자 확인을 받고 다음 Phase로 진행하세요.**
 
+품질 게이트 통과 및 사용자 확인 후 커밋:
+```bash
+git add docs/02.design/
+git commit -m "phase2: design-all 완료"
+git push
+```
+
 ### Phase 3 — 구현
 Read `.claude/skills/build-db.md` and follow all instructions.
 Read `.claude/skills/build-api.md` and follow all instructions.
 Read `.claude/skills/build-screen.md` and follow all instructions.
 
 **→ 구현 Phase 완료 후 반드시 사용자 확인을 받고 다음 Phase로 진행하세요.**
+
+품질 게이트 통과 및 사용자 확인 후 커밋:
+```bash
+git add .
+git commit -m "phase3: build-all 완료"
+git push
+```
 
 ### Phase 4 — 리뷰
 Read `.claude/skills/review-all.md` and follow all instructions. (`docs/04.review/report.md` 생성)
@@ -63,6 +84,13 @@ Read `.claude/skills/review-all.md` and follow all instructions. (`docs/04.revie
 
 **→ 리뷰 통과 확인 후 다음 Phase로 진행하세요.**
 
+리뷰 통과 후 커밋:
+```bash
+git add docs/04.review/
+git commit -m "phase4: review-all 통과"
+git push
+```
+
 ### Phase 5 — 테스트
 Read `.claude/skills/test-db.md` and follow all instructions. (`docs/05.test/report-db.md` 생성)
 Read `.claude/skills/test-api.md` and follow all instructions. (`docs/05.test/report-api.md` 생성)
@@ -71,8 +99,23 @@ Read `.claude/skills/test-e2e.md` and follow all instructions. (`docs/05.test/re
 
 **→ 테스트 Phase 완료 후 반드시 사용자 확인을 받고 다음 Phase로 진행하세요.**
 
+테스트 통과 후 커밋:
+```bash
+git add docs/05.test/
+git commit -m "phase5: test-all 통과"
+git push
+```
+
 ### Phase 6 — 배포
 Read `.claude/skills/ship.md` and follow all instructions. (`docs/06.ship/checklist.md` 생성)
+
+배포 체크리스트 완료 후 커밋 및 main 머지:
+```bash
+git add docs/06.ship/
+git commit -m "phase6: ship 완료"
+git push
+# GitHub에서 PR → main 머지
+```
 
 **→ 전체 파이프라인 완료.**
 
