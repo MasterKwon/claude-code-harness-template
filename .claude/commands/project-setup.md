@@ -1,0 +1,1 @@
+Read the file `.claude/skills/project-setup.md` and follow all instructions in it exactly.

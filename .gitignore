@@ -1,0 +1,23 @@
+# Claude Code 로컬 설정 (개인 환경마다 다름)
+.claude/settings.local.json
+
+# 산출물 — 템플릿에 포함하지 않음
+docs/00.input/extracted/
+docs/01.analyze/*.md
+docs/02.design/*.md
+docs/03.build/*.md
+docs/04.review/*.md
+docs/05.test/*.md
+docs/06.ship/*.md
+
+# reviewed/ 안의 산출물도 제외 (빈 폴더 구조만 유지)
+docs/*/reviewed/*.md
+
+# Python
+__pycache__/
+*.pyc
+
+# Node (실제 프로젝트 생성 후 생기는 것들)
+node_modules/
+.env
+.env.local

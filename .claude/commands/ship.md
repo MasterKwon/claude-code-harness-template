@@ -1,0 +1,1 @@
+Read the file `.claude/skills/ship.md` and follow all instructions in it exactly.
