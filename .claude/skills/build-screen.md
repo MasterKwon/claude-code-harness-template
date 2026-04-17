@@ -12,12 +12,14 @@
 framework: CLAUDE.md에 명시된 경로 읽기  (서버/클라이언트 컴포넌트 패턴, middleware, layout, Swagger UI 페이지)
 arch:       CLAUDE.md에 명시된 경로 읽기  (컴포넌트 레이어 규칙, 비즈니스 로직 금지 영역)
 state:      CLAUDE.md에 명시된 경로 읽기  (서버/클라이언트 상태 관리 패턴)
+ui:         CLAUDE.md에 명시된 경로 읽기  (컴포넌트 사용법, 클래스 규칙, 폼 패턴)
 ```
 
 Active Skills가 없거나 비어 있으면 기본값 사용:
 - framework: `.claude/skills/stacks/framework/nextjs.md`
 - arch: `.claude/skills/stacks/arch/msa.md`
 - state: `.claude/skills/stacks/state/tanstack-query.md`
+- ui: `.claude/skills/stacks/ui/shadcn.md`
 
 ## 프로세스
 1. `docs/02.design/reviewed/screen.md` 읽기

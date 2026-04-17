@@ -19,6 +19,7 @@ Next.js + MSA 구조 학습 프로젝트. 바이브코딩으로 React/Next.js를
 - orm:       .claude/skills/stacks/orm/prisma.md
 - api-style: .claude/skills/stacks/api-style/rest.md
 - state:     .claude/skills/stacks/state/tanstack-query.md
+- ui:        .claude/skills/stacks/ui/shadcn.md
 
 ## Guidelines
 - 모든 응답은 한국어로

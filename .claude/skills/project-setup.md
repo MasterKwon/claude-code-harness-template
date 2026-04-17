@@ -61,6 +61,12 @@ npm -v
     A. Docker + docker-compose ★
     B. Vercel (프론트) + 별도 서버
     C. PM2 (프로세스 매니저)
+
+[10] UI 컴포넌트 라이브러리
+    A. shadcn/ui + Tailwind CSS — 코드 직접 소유, AI 친화적 ★
+    B. Material UI (MUI) — Google Material Design
+    C. Ant Design — 엔터프라이즈 테이블/폼 특화
+    D. Tailwind CSS only — 라이브러리 없이 직접 작성
 ```
 
 사용자 응답을 받은 후 Step 2부터 실행합니다.
@@ -165,6 +171,20 @@ npm install -D @types/swagger-ui-react
 |------|------|
 | AWS S3 [8-A] | `npm install @aws-sdk/client-s3 multer` + `npm install -D @types/multer` |
 | 로컬 [8-B] | `npm install multer` + `npm install -D @types/multer` |
+
+### UI 컴포넌트 라이브러리 (gateway에서 설치)
+
+| 선택 | 명령 |
+|------|------|
+| shadcn/ui [10-A] | `npx shadcn@latest init` (대화형 설정) → `npx shadcn@latest add button input label card` |
+| MUI [10-B] | `npm install @mui/material @emotion/react @emotion/styled @mui/icons-material` |
+| Ant Design [10-C] | `npm install antd @ant-design/icons` |
+| Tailwind only [10-D] | 추가 설치 없음 (Next.js 초기화 시 이미 포함) |
+
+> shadcn/ui 선택 시 `npx shadcn@latest init` 실행 중 아래 옵션 선택:
+> - Style: Default
+> - Base color: Slate
+> - CSS variables: Yes
 
 ### 배포
 
@@ -333,6 +353,7 @@ uname -s     # OS 확인 (Linux/Darwin/Windows_NT)
 ```markdown
 ## Tech Stack
 - Frontend: Next.js (App Router), TypeScript, Tailwind CSS
+- UI Library: [shadcn/ui / MUI / Ant Design / Tailwind only]
 - Architecture: [MSA / 모노리스]
 - Database: [PostgreSQL / MySQL / MongoDB / SQLite]
 - ORM: [Prisma / TypeORM / Mongoose / Raw SQL]
@@ -361,9 +382,10 @@ uname -s     # OS 확인 (Linux/Darwin/Windows_NT)
 - orm:       .claude/skills/stacks/orm/[prisma | typeorm | mongoose | raw-sql].md
 - api-style: .claude/skills/stacks/api-style/[rest | trpc | graphql].md
 - state:     .claude/skills/stacks/state/[tanstack-query | zustand | redux].md
+- ui:        .claude/skills/stacks/ui/[shadcn | mui | antd | tailwind-only].md
 ```
 
-예시 (MSA + Prisma + REST + TanStack Query 선택 시):
+예시 (MSA + Prisma + REST + TanStack Query + shadcn/ui 선택 시):
 ```markdown
 ## Active Skills
 - framework: .claude/skills/stacks/framework/nextjs.md
@@ -371,6 +393,7 @@ uname -s     # OS 확인 (Linux/Darwin/Windows_NT)
 - orm:       .claude/skills/stacks/orm/prisma.md
 - api-style: .claude/skills/stacks/api-style/rest.md
 - state:     .claude/skills/stacks/state/tanstack-query.md
+- ui:        .claude/skills/stacks/ui/shadcn.md
 ```
 
 ---

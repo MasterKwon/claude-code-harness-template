@@ -11,11 +11,13 @@
 ```
 framework: CLAUDE.md에 명시된 경로 읽기  (페이지/레이아웃/컴포넌트 구조, 서버/클라이언트 컴포넌트 분리 기준)
 arch:       CLAUDE.md에 명시된 경로 읽기  (공통 컴포넌트 위치 기준)
+ui:         CLAUDE.md에 명시된 경로 읽기  (사용 가능한 컴포넌트 목록, 화면 설계 시 컴포넌트명 명시)
 ```
 
 Active Skills가 없거나 비어 있으면 기본값 사용:
 - framework: `.claude/skills/stacks/framework/nextjs.md`
 - arch: `.claude/skills/stacks/arch/msa.md`
+- ui: `.claude/skills/stacks/ui/shadcn.md`
 
 ## 프로세스
 1. 요구사항에서 화면 목록 추출
