@@ -4,9 +4,9 @@
 Next.js + MSA 구조 학습 프로젝트. 바이브코딩으로 React/Next.js를 처음 경험하는 백엔드 20년차 개발자의 실험 공간.
 
 ## Environment
-- Platform: Windows 11
+- Platform: {{PLATFORM}}
 - Shell: bash (Unix syntax)
-- Working directory: C:\WorkSpace\00.Dev\Claude_Projects\01.FirstProjects
+- Working directory: {{WORKING_DIRECTORY}}
 
 ## Tech Stack
 - Frontend: Next.js (App Router), TypeScript, Tailwind CSS

@@ -305,7 +305,29 @@ module.exports = {
 
 ## Step 5 — CLAUDE.md 업데이트
 
-프로젝트의 `CLAUDE.md`에 아래 두 섹션을 업데이트합니다.
+프로젝트의 `CLAUDE.md`에 아래 내용을 순서대로 업데이트합니다.
+
+### Environment 플레이스홀더 채우기
+
+아래 명령으로 현재 환경 정보를 확인한 후 `CLAUDE.md`의 플레이스홀더를 실제 값으로 교체합니다:
+
+```bash
+pwd          # 현재 작업 디렉터리 확인
+uname -s     # OS 확인 (Linux/Darwin/Windows_NT)
+```
+
+| 플레이스홀더 | 교체 값 |
+|-------------|---------|
+| `{{PLATFORM}}` | Windows 11 / macOS / Ubuntu 등 실제 OS |
+| `{{WORKING_DIRECTORY}}` | `pwd` 결과값 (프로젝트 루트 절대경로) |
+
+예시:
+```markdown
+## Environment
+- Platform: Windows 11
+- Shell: bash (Unix syntax)
+- Working directory: C:\WorkSpace\MyProject
+```
 
 ### Tech Stack 섹션
 ```markdown
