@@ -5,6 +5,16 @@
 - 설계서에 없는 컬럼/테이블은 임의로 추가하지 않음
 - 마이그레이션은 되돌릴 수 있게 (up/down) 작성
 
+## 참조 스킬
+`CLAUDE.md`의 `## Active Skills` 섹션을 읽고 해당 파일들을 순서대로 참조합니다.
+
+```
+orm: CLAUDE.md에 명시된 경로 읽기  (스키마 패턴, DB 클라이언트, 마이그레이션 커맨드)
+```
+
+Active Skills가 없거나 비어 있으면 기본값 사용:
+- orm: `.claude/skills/stacks/orm/prisma.md`
+
 ## 프로세스
 1. `docs/02.design/reviewed/db.md` 읽기
 2. 프로젝트의 DB/ORM 기술 스택 확인

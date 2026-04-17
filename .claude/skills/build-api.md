@@ -6,7 +6,18 @@
 - 프로젝트 CLAUDE.md의 기술 스택 및 컨벤션을 따름
 
 ## 참조 스킬
-- Read `.claude/msa-skill.md` — 폴더 구조, 서비스 간 통신, 환경변수 패턴 확인
+`CLAUDE.md`의 `## Active Skills` 섹션을 읽고 해당 파일들을 순서대로 참조합니다.
+
+```
+arch:      CLAUDE.md에 명시된 경로 읽기  (레이어 구조, Controller/Service/Repository 분리 기준)
+orm:       CLAUDE.md에 명시된 경로 읽기  (DB 클라이언트, Repository 패턴, 트랜잭션)
+api-style: CLAUDE.md에 명시된 경로 읽기  (Route Handler 패턴, 응답 형식)
+```
+
+Active Skills가 없거나 비어 있으면 기본값 사용:
+- arch: `.claude/skills/stacks/arch/msa.md`
+- orm: `.claude/skills/stacks/orm/prisma.md`
+- api-style: `.claude/skills/stacks/api-style/rest.md`
 
 ## 프로세스
 1. `docs/02.design/reviewed/api.md` 읽기

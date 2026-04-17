@@ -13,6 +13,12 @@ Next.js + MSA 구조 학습 프로젝트. 바이브코딩으로 React/Next.js를
 - Architecture: MSA (Microservices)
 - Package Manager: npm
 
+## Active Skills
+- arch:      .claude/skills/stacks/arch/msa.md
+- orm:       .claude/skills/stacks/orm/prisma.md
+- api-style: .claude/skills/stacks/api-style/rest.md
+- state:     .claude/skills/stacks/state/tanstack-query.md
+
 ## Guidelines
 - 모든 응답은 한국어로
 - 코드 설명은 백엔드 개발자 관점에서 (프론트 개념은 백엔드에 빗대어 설명)

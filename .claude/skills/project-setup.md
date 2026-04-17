@@ -297,8 +297,9 @@ module.exports = {
 
 ## Step 5 — CLAUDE.md 업데이트
 
-프로젝트의 `CLAUDE.md` Tech Stack 섹션을 실제 선택 기준으로 업데이트합니다.
+프로젝트의 `CLAUDE.md`에 아래 두 섹션을 업데이트합니다.
 
+### Tech Stack 섹션
 ```markdown
 ## Tech Stack
 - Frontend: Next.js (App Router), TypeScript, Tailwind CSS
@@ -317,6 +318,27 @@ module.exports = {
 - gateway: port 3000
 - {서비스명}: port 3001
 - (추가 서비스)
+```
+
+### Active Skills 섹션 — 선택한 스택에 해당하는 파일 경로로 업데이트
+
+선택 조합에 따라 아래 매핑을 참조하여 실제 파일 경로로 채웁니다:
+
+```markdown
+## Active Skills
+- arch:      .claude/skills/stacks/arch/[msa | monolith].md
+- orm:       .claude/skills/stacks/orm/[prisma | typeorm | mongoose | raw-sql].md
+- api-style: .claude/skills/stacks/api-style/[rest | trpc | graphql].md
+- state:     .claude/skills/stacks/state/[tanstack-query | zustand | redux].md
+```
+
+예시 (MSA + Prisma + REST + TanStack Query 선택 시):
+```markdown
+## Active Skills
+- arch:      .claude/skills/stacks/arch/msa.md
+- orm:       .claude/skills/stacks/orm/prisma.md
+- api-style: .claude/skills/stacks/api-style/rest.md
+- state:     .claude/skills/stacks/state/tanstack-query.md
 ```
 
 ---
