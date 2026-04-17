@@ -135,12 +135,17 @@ TypeORM 선택 시 `tsconfig.json`에 추가:
 | JWT [4-A] | `npm install jsonwebtoken bcryptjs` + `npm install -D @types/jsonwebtoken @types/bcryptjs` |
 | NextAuth [4-B] | `npm install next-auth` (gateway에서만) |
 
-### Swagger (공통 — 항상 설치)
+### 공통 패키지 (항상 설치)
 
 ```bash
 # gateway에서 실행
+
+# Swagger — API 문서 자동 생성
 npm install next-swagger-doc swagger-ui-react
 npm install -D @types/swagger-ui-react
+
+# Zod — 입력값 유효성 검증 (TypeScript 스키마 기반)
+npm install zod
 ```
 
 ### API 스타일

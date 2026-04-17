@@ -1,312 +1,154 @@
-# Claude Code 프로젝트 템플릿
+# Claude Code Harness Engineering Template
 
-Next.js + MSA 기반 프로젝트를 위한 Claude Code 하네스 엔지니어링 템플릿.
-요구사항 분석부터 배포까지 전체 SDLC를 슬래시 커맨드로 실행할 수 있습니다.
-
----
-
-## 이 템플릿이 하는 일
-
-1. **슬래시 커맨드로 SDLC 실행** — `/analyze-requirements`, `/design-api`, `/build-screen` 등
-2. **품질 게이트 자동 검증** — 각 단계 완료 시 체크리스트 자동 검증 후 `reviewed/` 폴더로 승격
-3. **기술 스택 자동 설정** — 9가지 선택만 하면 프로젝트 초기화 + 패키지 설치 자동 실행
-4. **입력 파일 자동 전처리** — Excel, PPT, PDF, 이미지 등 다양한 형식의 요구사항 문서를 자동으로 읽어서 분석
+Claude Code를 활용한 AI 주도 개발을 위한 템플릿입니다.
+이 저장소를 클론하여 새 프로젝트의 시작점으로 사용합니다.
 
 ---
 
-## 디렉터리 구조
+## 개념
 
 ```
-프로젝트 루트/
-├── CLAUDE.md                    ← 프로젝트 컨텍스트 (기술 스택, 가이드라인)
-├── README.md                    ← 이 파일
-├── .mcp.json                    ← MCP 서버 연결 설정 (로컬 전용, git 제외)
-├── .claude/
-│   ├── settings.json            ← 훅 설정 (PreToolUse / PostToolUse / SessionStart 등)
-│   ├── hooks/
-│   │   └── post-edit.sh         ← .ts/.tsx 수정 시 tsc --noEmit 자동 실행
-│   ├── commands/                ← 슬래시 커맨드 정의 파일 (.md)
-│   ├── skills/                  ← 각 단계별 역할 프롬프트
-│   │   ├── *.md                 ← 스킬 파일
-│   │   ├── scripts/             ← 스킬에서 호출하는 실행 스크립트
-│   │   ├── references/          ← 필요 시 로드되는 참조 문서
-│   │   └── assets/              ← 템플릿, 정적 파일
-│   ├── agents/                  ← 서브에이전트 정의 파일 (.yml)
-│   │   ├── code-reviewer.yml    ← 코드 품질/보안/성능 리뷰 에이전트
-│   │   ├── test-writer.yml      ← 테스트 코드 자동 작성 에이전트
-│   │   └── security-auditor.yml ← 보안 취약점 전문 감사 에이전트
-│   ├── plugins/                 ← 배포 가능한 설정 묶음
-│   │   └── my-plugin/           ← 플러그인 예시
-│   ├── msa-skill.md             ← MSA 폴더 구조 / 서비스 간 통신 패턴 참조
-│   └── nextjs-skill.md          ← Next.js App Router 패턴 참조
-└── docs/
-    ├── 00.input/                ← 요구사항 입력 파일 넣는 곳
-    │   ├── extract.py           ← Excel/PPT/CSV 텍스트 추출 스크립트
-    │   └── extracted/           ← 추출 결과 (자동 생성)
-    ├── 01.analyze/              ← 분석 산출물
-    │   └── reviewed/            ← 품질 게이트 통과한 파일
-    ├── 02.design/               ← 설계 산출물
-    │   └── reviewed/
-    ├── 03.build/                ← 구현 완료 체크리스트
-    │   └── reviewed/
-    ├── 04.review/               ← 코드 리뷰 보고서
-    │   └── reviewed/
-    ├── 05.test/                 ← 테스트 보고서
-    │   └── reviewed/
-    └── 06.ship/                 ← 배포 체크리스트
+이 템플릿 클론 → 새 프로젝트 디렉토리에서 /project-setup → 개발 시작
 ```
+
+Claude Code의 slash command와 skill 파일을 통해 **분석 → 설계 → 구현 → 테스트 → 배포** 전 과정을 AI와 함께 진행합니다. 코드를 직접 작성하지 않아도 됩니다.
 
 ---
 
-## 빠른 시작
+## 시작하기
+
+### 1. 클론
+
+```bash
+git clone https://github.com/MasterKwon/claude-code-harness-template.git my-project
+cd my-project
+```
+
+### 2. 새 저장소로 초기화
+
+```bash
+rm -rf .git
+git init
+git checkout -b develop
+```
+
+### 3. 프로젝트 설정
+
+Claude Code에서 실행:
+
+```
+/project-setup
+```
+
+기술 스택을 선택하면 자동으로 패키지 설치, 환경 변수, Docker 설정, CLAUDE.md가 완성됩니다.
+
+---
+
+## 기술 스택 선택 항목
+
+`/project-setup` 실행 시 아래 항목을 선택합니다. ★ 는 추천 기본값입니다.
+
+| 항목 | 선택지 |
+|------|--------|
+| 프로젝트 구조 | MSA ★ / 모노리스 |
+| 데이터베이스 | PostgreSQL ★ / MySQL / MongoDB / SQLite |
+| ORM | Prisma ★ / TypeORM / Mongoose / Raw SQL |
+| 인증 | JWT ★ / NextAuth / 없음 |
+| API 스타일 | REST ★ / tRPC / GraphQL |
+| 상태 관리 | TanStack Query ★ / Zustand+TanStack / Redux / Context |
+| 서비스 간 통신 | REST ★ / Redis / RabbitMQ |
+| 파일 업로드 | 없음 ★ / S3 / 로컬 |
+| 배포 방식 | Docker ★ / Vercel / PM2 |
+| UI 라이브러리 | shadcn/ui ★ / MUI / Ant Design / Tailwind only |
+
+---
+
+## 개발 파이프라인
 
 ### 신규 프로젝트
 
 ```
-1. 이 템플릿을 새 프로젝트 폴더에 복사
-2. CLAUDE.md의 Working directory 경로 수정
-3. Claude Code에서 /pipeline-full 실행
+/pipeline-full
 ```
 
-`/pipeline-full` 실행 시 흐름:
+| Phase | 명령 | 산출물 |
+|-------|------|--------|
+| 0 | `/project-setup` | 프로젝트 초기화 |
+| 1 | `/analyze-requirements` | `docs/01.analyze/requirements.md` |
+| 2 | `/analyze-asis` | `docs/01.analyze/asis.md` |
+| 3 | `/analyze-gap` | `docs/01.analyze/gap.md` |
+| 4 | `/design-db` `/design-screen` `/design-api` | `docs/02.design/*.md` |
+| 5 | `/build-db` `/build-api` `/build-screen` | 소스코드 |
+| 6 | `/review-all` `/test-all` `/ship` | 검증 + 배포 |
+
+### 기존 프로젝트 기능 추가·변경
 
 ```
-Phase 0  /project-setup       기술 스택 선택 + 패키지 자동 설치
-Phase 1  /analyze-all         요구사항 / AS-IS / GAP 분석
-Phase 2  /design-all          화면 / DB / API 설계
-Phase 3  /build-all           DB / API / 화면 구현
-Phase 4  /review-all          코드 품질 / 보안 / 성능 리뷰
-Phase 5  /test-all            DB / API / 화면 / E2E 테스트
-Phase 6  /ship                배포 체크리스트
+/pipeline-change
 ```
 
-각 Phase 사이에 사용자 확인이 있습니다. 자동으로 다음 단계로 넘어가지 않습니다.
+기술 스택을 자동 감지 (사용자에게 묻지 않음) → 변경 범위만 분석·설계·구현합니다.
 
-### 기존 프로젝트 기능 추가/수정
+---
 
-```
-Claude Code에서 /pipeline-change 실행
-```
-
-`/pipeline-change` 실행 시 흐름:
+## 디렉토리 구조
 
 ```
-Phase 1  analyze-asis         기존 코드 파악 (먼저)
-Phase 2  analyze-requirements 변경/추가할 기능 정의
-Phase 3  analyze-gap          작업 범위 확정 ← 이후 단계의 기준
-Phase 4  영향 범위만 설계      GAP에 없는 레이어는 건너뜀
-Phase 5  영향 범위만 구현      GAP에 없는 코드는 건드리지 않음
-Phase 6  review-all           변경 코드 + 기존 연결 지점 검토
-Phase 7  테스트 + 회귀 테스트  새 기능 + 기존 기능 깨짐 여부
-Phase 8  ship                 배포
+.
+├── CLAUDE.md                    # 프로젝트 컨텍스트 (기술 스택, 가이드라인)
+├── .claude/
+│   ├── commands/                # 슬래시 명령어 진입점
+│   ├── skills/                  # 각 단계별 실행 로직
+│   │   └── stacks/              # 기술스택별 패턴 파일
+│   │       ├── arch/            # msa.md, monolith.md
+│   │       ├── orm/             # prisma.md, typeorm.md, mongoose.md, raw-sql.md
+│   │       ├── api-style/       # rest.md, trpc.md, graphql.md
+│   │       ├── state/           # tanstack-query.md, zustand.md, redux.md
+│   │       ├── framework/       # nextjs.md
+│   │       └── ui/              # shadcn.md, ...
+│   ├── agents/                  # 서브에이전트 (code-reviewer, test-writer, security-auditor)
+│   └── settings.json            # hooks 설정
+└── docs/
+    ├── 00.input/                # 요구사항 원본 자료 (여기에 파일 넣기)
+    ├── 01.analyze/              # 분석 산출물 + reviewed/
+    └── 02.design/               # 설계 산출물 + reviewed/
 ```
 
 ---
 
-## 요구사항 입력 방법
+## Active Skills
 
-`docs/00.input/` 폴더에 파일을 넣고 분석을 시작합니다.
+`CLAUDE.md`의 `## Active Skills` 섹션이 현재 프로젝트의 기술스택을 정의합니다.
+`/project-setup` 실행 시 선택에 따라 자동으로 채워집니다.
 
-| 형식 | 처리 방법 |
-|------|-----------|
-| `.xlsx`, `.pptx`, `.csv` | `extract.py`가 텍스트 추출 (한글 CP949 자동 처리) |
-| `.txt`, `.md` | 인코딩 자동 감지 후 읽기 |
-| `.pdf`, 이미지 | Claude가 직접 읽기 |
-
-최초 1회 라이브러리 설치:
-```bash
-pip install openpyxl python-pptx chardet
+```markdown
+## Active Skills
+- framework: .claude/skills/stacks/framework/nextjs.md
+- arch:      .claude/skills/stacks/arch/msa.md
+- orm:       .claude/skills/stacks/orm/prisma.md
+- api-style: .claude/skills/stacks/api-style/rest.md
+- state:     .claude/skills/stacks/state/tanstack-query.md
+- ui:        .claude/skills/stacks/ui/shadcn.md
 ```
 
 ---
 
-## 기술 스택 처리 방식
+## 개발 컨벤션
 
-### 신규 프로젝트 — `/project-setup` 에서 선택
-
-9가지 항목을 선택하면 자동으로 설정됩니다:
-
-| 항목 | 선택지 |
-|------|--------|
-| 프로젝트 구조 | MSA / 모노리스 |
-| 데이터베이스 | PostgreSQL / MySQL / MongoDB / SQLite |
-| ORM | Prisma / TypeORM / Mongoose / Raw SQL |
-| 인증 | JWT / NextAuth / 없음 |
-| API 스타일 | REST / tRPC / GraphQL |
-| 상태 관리 | TanStack Query / Zustand+TanStack / Redux / Context |
-| 서비스 간 통신 | REST / Redis / RabbitMQ |
-| 파일 업로드 | S3 / 로컬 / 없음 |
-| 배포 방식 | Docker / Vercel / PM2 |
-
-### 기존 프로젝트 — `/pipeline-change` 에서 자동 감지
-
-사용자에게 스택을 묻지 않습니다. `analyze-asis`의 Step 0에서 프로젝트 파일을 직접 읽어 자동으로 확정합니다.
-
-| 감지 파일 | 감지 정보 |
-|-----------|-----------|
-| `package.json` | ORM, 인증, 상태 관리, API 스타일, DB 드라이버 |
-| `docker-compose.yml` | DB 종류, Redis, RabbitMQ, 서비스 목록/포트 |
-| `prisma/schema.prisma` | DB provider |
-| `.env` / `.env.example` | DB URL 형식, 서비스 URL |
-| `tsconfig.json` | TypeORM 여부 (experimentalDecorators) |
-| 디렉터리 구조 | MSA vs 모노리스 |
-
-감지 후 `CLAUDE.md`의 Tech Stack 섹션을 자동 업데이트합니다.
-불확실한 항목이 있을 때만 선택적으로 사용자에게 확인합니다.
+| 항목 | 규칙 |
+|------|------|
+| 응답 언어 | 한국어 |
+| DB 네이밍 | snake_case (테이블명, 컬럼명 모두) |
+| 공통 컬럼 | `id`, `created_at`, `updated_at`, `deleted_at` |
+| 삭제 정책 | Soft delete (`deleted_at` 설정) — hard delete 금지 |
+| 보안 | 시크릿 코드 포함 금지, 파라미터화된 쿼리만 사용 |
+| API 문서 | Swagger 자동 생성 (`/api-docs`) |
 
 ---
 
-### 신규 프로젝트 — 선택 항목
+## 요구사항
 
-선택 후 자동 실행:
-- `npx create-next-app` (프로젝트 생성)
-- `npm install` (선택 패키지 설치)
-- `.env.example` 생성
-- `docker-compose.yml` 생성 (Docker 선택 시)
-- `CLAUDE.md` Tech Stack 섹션 자동 업데이트
-
----
-
-## 전체 커맨드 목록
-
-### 파이프라인
-| 커맨드 | 설명 |
-|--------|------|
-| `/pipeline-full` | 신규 프로젝트 전체 실행 (Phase 0~6) |
-| `/pipeline-change` | 기존 프로젝트 기능 추가/수정 |
-| `/project-setup` | 기술 스택 선택 + 프로젝트 초기화 |
-
-### 분석
-| 커맨드 | 산출물 |
-|--------|--------|
-| `/analyze-requirements` | `docs/01.analyze/requirements.md` |
-| `/analyze-asis` | `docs/01.analyze/asis.md` |
-| `/analyze-gap` | `docs/01.analyze/gap.md` |
-| `/analyze-all` | 위 3개 순서대로 실행 |
-
-### 설계
-| 커맨드 | 산출물 |
-|--------|--------|
-| `/design-screen` | `docs/02.design/screen.md` |
-| `/design-db` | `docs/02.design/db.md` |
-| `/design-api` | `docs/02.design/api.md` |
-| `/design-all` | 위 3개 순서대로 실행 |
-
-### 구현
-| 커맨드 | 설명 |
-|--------|------|
-| `/build-db` | DB 스키마 / 마이그레이션 구현 |
-| `/build-api` | API 엔드포인트 구현 |
-| `/build-screen` | 화면 / 컴포넌트 구현 |
-| `/build-all` | 위 3개 순서대로 실행 |
-
-### 리뷰
-| 커맨드 | 산출물 |
-|--------|--------|
-| `/review-all` | `docs/04.review/report.md` (코드 품질 / 보안 / 성능) |
-
-### 테스트
-| 커맨드 | 산출물 |
-|--------|--------|
-| `/test-db` | `docs/05.test/report-db.md` |
-| `/test-api` | `docs/05.test/report-api.md` |
-| `/test-screen` | `docs/05.test/report-screen.md` |
-| `/test-e2e` | `docs/05.test/report-e2e.md` |
-| `/test-all` | 위 4개 순서대로 실행 |
-
-### 배포
-| 커맨드 | 산출물 |
-|--------|--------|
-| `/ship` | `docs/06.ship/checklist.md` |
-
-### 보완 (`refine-*`)
-문제 발생 시 특정 단계만 다시 실행합니다. 기존 산출물을 유지하면서 미진한 부분만 채웁니다.
-
-```
-/refine-analyze-requirements    /refine-design-screen    /refine-build-db
-/refine-analyze-asis            /refine-design-db        /refine-build-api
-/refine-analyze-gap             /refine-design-api       /refine-build-screen
-                                /refine-review-all
-/refine-test-db                 /refine-test-api
-/refine-test-screen             /refine-test-e2e
-/refine-ship
-```
-
----
-
-## Git 커밋 규칙
-
-각 Phase 완료 시 품질 게이트 통과 → 사용자 확인 → 커밋/푸시 순서로 진행합니다.
-
-### pipeline-full 커밋 메시지
-
-| Phase | 커밋 메시지 |
-|-------|-------------|
-| Phase 1 | `phase1: analyze-all 완료` |
-| Phase 2 | `phase2: design-all 완료` |
-| Phase 3 | `phase3: build-all 완료` |
-| Phase 4 | `phase4: review-all 통과` |
-| Phase 5 | `phase5: test-all 통과` |
-| Phase 6 | `phase6: ship 완료` → PR → main 머지 |
-
-### pipeline-change 커밋 메시지
-
-| Phase | 커밋 메시지 |
-|-------|-------------|
-| Phase 1 | `change-phase1: analyze-asis 완료` |
-| Phase 2 | `change-phase2: analyze-requirements 완료` |
-| Phase 3 | `change-phase3: analyze-gap 완료 — 작업 범위 확정` |
-| Phase 4 | `change-phase4: design 완료 (영향 범위만)` |
-| Phase 5 | `change-phase5: build 완료 (영향 범위만)` |
-| Phase 6 | `change-phase6: review-all 통과` |
-| Phase 7 | `change-phase7: test-all 통과 (변경 기능 + 회귀)` |
-| Phase 8 | `change-phase8: ship 완료` → PR → main 머지 |
-
-### 브랜치 전략
-
-```
-main      ← 보호됨, PR로만 머지 (배포 완료 버전)
-develop   ← 작업 기준 브랜치
-feature/* ← 기능별 작업 브랜치
-```
-
----
-
-## 품질 게이트 — reviewed/ 승격 시스템
-
-각 단계 완료 시 자동으로 체크리스트를 검증합니다.
-모든 항목 통과 시 `reviewed/` 폴더로 복사되며, 다음 단계는 `reviewed/` 파일만 읽습니다.
-
-```
-docs/01.analyze/requirements.md
-        ↓ 품질 게이트 통과
-docs/01.analyze/reviewed/requirements.md  ← 다음 단계가 읽는 파일
-```
-
-미통과 항목이 있으면 해당 항목만 보완 후 재검증합니다.
-
----
-
-## 문제 발생 시 롤백
-
-`/pipeline-full` 또는 `/pipeline-change`의 롤백 맵을 참조합니다.
-
-기본 원칙:
-- 문제 발생 위치에서 원인 단계를 찾아 해당 `refine-*` 실행
-- 그 단계 이후의 모든 산출물 재실행
-- 롤백 범위가 2단계 이상이면 사용자에게 먼저 확인
-
----
-
-## 요구사항 변경 발생 시
-
-진행 중 요구사항이 바뀌는 경우 변경 범위에 따라 대응합니다:
-
-| 변경 내용 | 조치 |
-|-----------|------|
-| 텍스트/레이블 수정 | 화면 구현만 재실행 |
-| 필드 추가/삭제 | DB → API → Screen 순 재실행 |
-| 기능 추가 | `/refine-analyze-requirements` 후 설계부터 재실행 |
-| 기능 제거 | 영향받는 설계/구현 삭제 후 재검증 |
-
-`docs/01.analyze/requirements.md` 하단의 변경 이력 섹션에 날짜/내용/영향 범위를 기록합니다.
+- Node.js 18 이상
+- npm
+- Claude Code CLI
+- Docker (배포 옵션 선택 시)
