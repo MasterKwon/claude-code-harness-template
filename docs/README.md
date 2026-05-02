@@ -19,14 +19,32 @@ docs/
 │       ├── asis.md
 │       └── gap.md
 │
-└── 02.design/              # 설계 단계 산출물
-    ├── db.md               # DB 설계 (초안)
-    ├── screen.md           # 화면 설계 (초안)
-    ├── api.md              # API 설계 (초안)
-    └── reviewed/           # 검토·승인 완료본 (다음 단계가 읽는 파일)
-        ├── db.md
-        ├── screen.md
-        └── api.md
+├── 02.design/              # 설계 단계 산출물
+│   ├── db.md               # DB 설계 (초안)
+│   ├── screen.md           # 화면 설계 (초안)
+│   ├── api.md              # API 설계 (초안)
+│   └── reviewed/           # 검토·승인 완료본 (다음 단계가 읽는 파일)
+│       ├── db.md
+│       ├── screen.md
+│       └── api.md
+│
+├── 03.build/               # 구현 단계 산출물
+│   └── reviewed/
+│
+├── 04.review/              # 코드 리뷰 산출물
+│   ├── report.md           # 리뷰 보고서 (초안)
+│   └── reviewed/
+│       └── report.md
+│
+├── 05.test/                # 테스트 단계 산출물
+│   ├── report-db.md        # DB 테스트 보고서 (초안)
+│   ├── report-api.md       # API 테스트 보고서 (초안)
+│   ├── report-screen.md    # 화면 테스트 보고서 (초안)
+│   ├── report-e2e.md       # E2E 테스트 보고서 (초안)
+│   └── reviewed/           # 테스트 통과본 (ship이 읽는 파일)
+│
+└── 06.ship/                # 배포 단계 산출물
+    └── checklist.md        # 배포 체크리스트
 ```
 
 ## 워크플로우
@@ -50,3 +68,9 @@ docs/
 | /build-db | reviewed/db.md | 소스코드 직접 생성 |
 | /build-api | reviewed/api.md | 소스코드 직접 생성 |
 | /build-screen | reviewed/screen.md, reviewed/api.md | 소스코드 직접 생성 |
+| /review-all | 소스코드 전체 | 04.review/report.md |
+| /test-db | reviewed/db.md, 소스코드 | 05.test/report-db.md |
+| /test-api | reviewed/api.md, 소스코드 | 05.test/report-api.md |
+| /test-screen | reviewed/screen.md, 소스코드 | 05.test/report-screen.md |
+| /test-e2e | 소스코드 전체 | 05.test/report-e2e.md |
+| /ship | 05.test/reviewed/* | 06.ship/checklist.md |

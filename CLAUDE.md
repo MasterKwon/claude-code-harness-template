@@ -4,9 +4,9 @@
 Next.js + MSA 구조 학습 프로젝트. 바이브코딩으로 React/Next.js를 처음 경험하는 백엔드 20년차 개발자의 실험 공간.
 
 ## Environment
-- Platform: {{PLATFORM}}
-- Shell: bash (Unix syntax)
-- Working directory: {{WORKING_DIRECTORY}}
+- Platform: macOS (darwin)
+- Shell: zsh (Unix syntax)
+- Working directory: /Users/masterkwon/workspace/00.Dev/Claude_Projects/00.claude_templet
 
 ## Tech Stack
 - Frontend: Next.js (App Router), TypeScript, Tailwind CSS
@@ -27,6 +27,37 @@ Next.js + MSA 구조 학습 프로젝트. 바이브코딩으로 React/Next.js를
 - 단순하고 명확한 코드 우선 — 불필요한 추상화 금지
 - 새 파일 생성보다 기존 파일 수정 우선
 - 응답 마지막에 요약 추가 금지
+
+## 핵심 엔지니어링 원칙 (by Karpathy & Hashimoto)
+
+> 본 가이드는 모든 세션의 최상위 지침이다. 작업 중 위 원칙에 위배되는 상황이 발생하면 즉시 보고하고 수정을 제안하라.
+
+### Surgical Changes (수술적 변경)
+요청받은 범위 외의 주변 코드를 불필요하게 리팩토링하거나 건드리지 마라. 변경은 정교하고 최소한이어야 한다.
+
+### Harness Engineering (하네스 엔지니어링)
+실수가 발생하면 사과하는 대신, 다시는 같은 실수가 반복되지 않도록 CLAUDE.md나 지침 파일을 즉시 업데이트하여 환경을 개선하라.
+
+### Simplicity First
+불필요한 추상화나 과한 설계를 지양하고, 현재 문제를 해결하는 가장 단순하고 명확한 코드를 작성하라.
+
+### Think Before Coding
+코드를 작성하기 전, 반드시 가설과 실행 계획을 먼저 수립하고 확인받아라.
+
+## 도구 및 컨텍스트 관리 (Token Diet)
+
+- **Serena MCP 우선 활용**: 코드 검색 시 grep 대신 Serena MCP를 사용하여 의미 기반 검색을 수행함으로써 탐색 토큰을 절약하라.
+- **Hookiefy 기반 실수 차단**: 반복되는 패턴이나 프로젝트 제약 사항은 Hookiefy 스킬로 등록하여 작업 전 항상 체크하라.
+- **컨텍스트 최적화**:
+  - 대화가 길어지면 `/compact`를 통해 문맥을 요약하라.
+  - 작업 단위가 종료되면 `/clear`로 세션을 초기화하라.
+  - 단순 반복 작업(테스트, 로그 분석)은 `/agents`를 통해 Haiku 모델에게 위임하라.
+
+## 작업 워크플로우
+
+- **Plan Mode**: 복잡한 구현 전 Shift+Tab 또는 "Plan" 접두어를 사용하여 계획을 브리핑할 것.
+- **Surgical Edit**: 답변이 만족스럽지 않을 경우 새로운 질문을 던지는 대신, 이전 프롬프트를 수정(Edit)하여 재생성할 것.
+- **Self-Correction**: 작업 완료 후 스스로 Claude MD Improver를 참고하여 현재 규칙이 효율적인지 자가 진단할 것.
 
 ## 작업 전후 체크 원칙
 
