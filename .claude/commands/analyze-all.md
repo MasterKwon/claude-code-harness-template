@@ -6,7 +6,7 @@
 
 ## Step 1 — 요구사항 분석
 
-Read `.claude/skills/analyze-requirements.md` and follow all instructions.
+Read `.claude/skills/analyze-requirements.md` and follow all instructions. (standalone 모드 — 다음 스킬 자동 연계 없이 이 단계만 실행)
 산출물: `docs/01.analyze/requirements.md`
 
 ### 자동 품질 게이트
@@ -23,7 +23,7 @@ Read `.claude/skills/analyze-requirements.md` and follow all instructions.
 ## Step 2 — AS-IS 분석
 
 `docs/01.analyze/reviewed/requirements.md` 존재 확인 후 진행.
-Read `.claude/skills/analyze-asis.md` and follow all instructions.
+Read `.claude/skills/analyze-asis.md` and follow all instructions. (standalone 모드 — 다음 스킬 자동 연계 없이 이 단계만 실행)
 산출물: `docs/01.analyze/asis.md`
 
 ### 자동 품질 게이트
@@ -41,7 +41,7 @@ Read `.claude/skills/analyze-asis.md` and follow all instructions.
 ## Step 3 — GAP 분석
 
 `docs/01.analyze/reviewed/requirements.md`, `docs/01.analyze/reviewed/asis.md` 존재 확인 후 진행.
-Read `.claude/skills/analyze-gap.md` and follow all instructions.
+Read `.claude/skills/analyze-gap.md` and follow all instructions. (standalone 모드)
 산출물: `docs/01.analyze/gap.md`
 
 ### 자동 품질 게이트

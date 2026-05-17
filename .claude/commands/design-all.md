@@ -9,7 +9,7 @@
 ---
 
 ## Step 1 — 프로세스 정의
-Read `.claude/skills/design-process.md` and follow all instructions.
+Read `.claude/skills/design-process.md` and follow all instructions. (standalone 모드 — 다음 스킬 자동 연계 없이 이 단계만 실행)
 산출물: `docs/02.design/process.md`
 
 ### 자동 품질 게이트
@@ -20,7 +20,7 @@ Read `.claude/skills/design-process.md` and follow all instructions.
 ---
 
 ## Step 2 — 화면 설계
-Read `.claude/skills/design-screen.md` and follow all instructions.
+Read `.claude/skills/design-screen.md` and follow all instructions. (standalone 모드 — 다음 스킬 자동 연계 없이 이 단계만 실행)
 산출물: `docs/02.design/screen.md`
 
 ### 자동 품질 게이트
@@ -31,7 +31,7 @@ Read `.claude/skills/design-screen.md` and follow all instructions.
 ---
 
 ## Step 3 — API 명세 설계
-Read `.claude/skills/design-api.md` and follow all instructions.
+Read `.claude/skills/design-api.md` and follow all instructions. (standalone 모드 — 다음 스킬 자동 연계 없이 이 단계만 실행)
 산출물: `docs/02.design/api.md`
 
 ### 자동 품질 게이트
@@ -42,7 +42,7 @@ Read `.claude/skills/design-api.md` and follow all instructions.
 ---
 
 ## Step 4 — DB 명세 설계
-Read `.claude/skills/design-db.md` and follow all instructions.
+Read `.claude/skills/design-db.md` and follow all instructions. (standalone 모드 — 다음 스킬 자동 연계 없이 이 단계만 실행)
 산출물: `docs/02.design/db.md`
 
 ### 자동 품질 게이트
@@ -53,7 +53,7 @@ Read `.claude/skills/design-db.md` and follow all instructions.
 ---
 
 ## Step 5 — 외부시스템 연계 정의
-Read `.claude/skills/design-integration.md` and follow all instructions.
+Read `.claude/skills/design-integration.md` and follow all instructions. (standalone 모드)
 산출물: `docs/02.design/integration.md`
 
 ### 자동 품질 게이트

@@ -9,7 +9,7 @@
 
 ## Step 1 — DB 테스트
 
-Read `.claude/skills/test-db.md` and follow all instructions.
+Read `.claude/skills/test-db.md` and follow all instructions. (standalone 모드 — 다음 스킬 자동 연계 없이 이 단계만 실행)
 산출물: `docs/05.test/report-db.md`
 
 ### 자동 품질 게이트
@@ -27,7 +27,7 @@ Read `.claude/skills/test-db.md` and follow all instructions.
 
 ## Step 2 — API 테스트
 
-Read `.claude/skills/test-api.md` and follow all instructions.
+Read `.claude/skills/test-api.md` and follow all instructions. (standalone 모드 — 다음 스킬 자동 연계 없이 이 단계만 실행)
 산출물: `docs/05.test/report-api.md`
 
 ### 자동 품질 게이트
@@ -45,7 +45,7 @@ Read `.claude/skills/test-api.md` and follow all instructions.
 
 ## Step 3 — 화면 테스트
 
-Read `.claude/skills/test-screen.md` and follow all instructions.
+Read `.claude/skills/test-screen.md` and follow all instructions. (standalone 모드 — 다음 스킬 자동 연계 없이 이 단계만 실행)
 산출물: `docs/05.test/report-screen.md`
 
 ### 자동 품질 게이트
@@ -64,7 +64,7 @@ Read `.claude/skills/test-screen.md` and follow all instructions.
 ## Step 4 — E2E 테스트
 
 Step 1~3의 reviewed 보고서가 모두 존재하는 것을 확인 후 진행.
-Read `.claude/skills/test-e2e.md` and follow all instructions.
+Read `.claude/skills/test-e2e.md` and follow all instructions. (standalone 모드 — 다음 스킬 자동 연계 없이 이 단계만 실행)
 산출물: `docs/05.test/report-e2e.md`
 
 ### 자동 품질 게이트

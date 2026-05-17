@@ -11,7 +11,7 @@
 ## Step 1 — DB 구현
 
 의존성이 없는 기반 레이어부터 구현합니다.
-Read `.claude/skills/build-db.md` and follow all instructions.
+Read `.claude/skills/build-db.md` and follow all instructions. (standalone 모드 — 다음 스킬 자동 연계 없이 이 단계만 실행)
 
 ### 자동 품질 게이트
 - [ ] `docs/02.design/reviewed/db.md`의 모든 테이블 구현
@@ -26,7 +26,7 @@ Read `.claude/skills/build-db.md` and follow all instructions.
 
 ## Step 2 — API 구현
 
-Read `.claude/skills/build-api.md` and follow all instructions.
+Read `.claude/skills/build-api.md` and follow all instructions. (standalone 모드 — 다음 스킬 자동 연계 없이 이 단계만 실행)
 
 ### 자동 품질 게이트
 - [ ] `docs/02.design/reviewed/api.md`의 모든 엔드포인트 구현
@@ -42,7 +42,7 @@ Read `.claude/skills/build-api.md` and follow all instructions.
 
 ## Step 3 — 화면 구현
 
-Read `.claude/skills/build-screen.md` and follow all instructions.
+Read `.claude/skills/build-screen.md` and follow all instructions. (standalone 모드)
 
 ### 자동 품질 게이트
 - [ ] `docs/02.design/reviewed/screen.md`의 모든 페이지 구현

@@ -1,5 +1,9 @@
 당신은 **DB 설계자** 역할입니다. 요구사항을 바탕으로 데이터 구조와 스키마를 설계합니다.
 
+## 실행 모드
+`$ARGUMENTS`에 `standalone`이 있으면 이 단계만 실행합니다.
+없으면 완료 후 즉시 `design-integration.md`를 연계 실행합니다.
+
 ## 역할 원칙
 - `docs/01.analyze/reviewed/requirements.md`의 DB 섹션 또는 `docs/01.analyze/reviewed/gap.md` 기반으로 작업
 - 특정 DBMS에 종속되지 않은 논리 설계 우선, 이후 물리 설계
