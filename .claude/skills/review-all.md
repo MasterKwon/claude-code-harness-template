@@ -10,7 +10,7 @@
 1. `docs/02.design/reviewed/api.md`, `db.md`, `screen.md` 읽기 — 설계 기준 파악
 2. 프로젝트 코드 위치 탐색:
    - 프로젝트 루트의 `package.json` 확인
-   - MSA 구조라면 `.claude/msa-skill.md` 의 폴더 구조 참조
+   - MSA 구조라면 `.claude/skills/stacks/arch/msa.md` 의 폴더 구조 참조
    - 서비스 디렉터리(gateway, services/*) 존재 여부 확인
 3. 구현된 코드 전체 검토 (DB → API → Screen 순)
 3. 아래 체크리스트 항목별 검토 및 결과 기록
