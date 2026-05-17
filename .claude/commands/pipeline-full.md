@@ -2,6 +2,8 @@
 
 분석 → 설계 → 구현 → 리뷰 → 테스트 → 배포의 전체 SDLC를 순서대로 실행합니다.
 
+> **Agent 위임 규칙**: `[fast]`, `[balanced]`, `[best]` 태그는 CLAUDE.md 모델 티어 기준으로 Agent를 생성하여 위임합니다. 태그 없는 단계는 현재 모델로 직접 실행합니다.
+
 ## 파이프라인 구조
 
 ```
@@ -36,8 +38,8 @@ Read `.claude/skills/project-setup.md` and follow all instructions.
 
 ### Phase 1 — 분석
 Read `.claude/skills/analyze-requirements.md` and follow all instructions. (`docs/01.analyze/requirements.md` 생성)
-Read `.claude/skills/analyze-asis.md` and follow all instructions. (`docs/01.analyze/asis.md` 생성)
-Read `.claude/skills/analyze-gap.md` and follow all instructions. (`docs/01.analyze/gap.md` 생성)
+[fast] Read `.claude/skills/analyze-asis.md` and follow all instructions. (`docs/01.analyze/asis.md` 생성)
+[best] Read `.claude/skills/analyze-gap.md` and follow all instructions. (`docs/01.analyze/gap.md` 생성)
 
 **→ 분석 Phase 완료 후 반드시 사용자 확인을 받고 다음 Phase로 진행하세요.**
 
@@ -63,7 +65,7 @@ git push
 ```
 
 ### Phase 2.5 — 설계 리뷰
-Read `.claude/skills/review-design.md` and follow all instructions.
+[best] Read `.claude/skills/review-design.md` and follow all instructions.
 산출물: `docs/02.design/design-review-report.md`
 
 - PASS → `docs/02.design/cross-check.md` 자동 생성 (타 LLM 교차검증 브리핑) → Phase 2.7로 진행
@@ -100,7 +102,7 @@ git push
 ```
 
 ### Phase 3.5 — 구현 영향도 검사
-Read `.claude/skills/impact-check.md` and follow all instructions.
+[best] Read `.claude/skills/impact-check.md` and follow all instructions.
 산출물: `docs/03.build/impact-check.md`
 
 > 신규 개발에서는 회귀 위험보다 **레이어 간 정합성**을 검증합니다.
@@ -112,7 +114,7 @@ Read `.claude/skills/impact-check.md` and follow all instructions.
 ---
 
 ### Phase 4 — 리뷰
-Read `.claude/skills/review-all.md` and follow all instructions. (`docs/04.review/report.md` 생성)
+[best] Read `.claude/skills/review-all.md` and follow all instructions. (`docs/04.review/report.md` 생성)
 
 > `docs/03.build/impact-check.md`의 High/Medium 항목을 중점 검토합니다.
 
@@ -132,9 +134,9 @@ git push
 
 > 로컬 환경에서 AI가 자동 실행하는 테스트입니다.
 
-Read `.claude/skills/test-db.md` and follow all instructions. (`docs/05.test/report-db.md` 생성)
-Read `.claude/skills/test-api.md` and follow all instructions. (`docs/05.test/report-api.md` 생성)
-Read `.claude/skills/test-screen.md` and follow all instructions. (`docs/05.test/report-screen.md` 생성)
+[fast] Read `.claude/skills/test-db.md` and follow all instructions. (`docs/05.test/report-db.md` 생성)
+[fast] Read `.claude/skills/test-api.md` and follow all instructions. (`docs/05.test/report-api.md` 생성)
+[fast] Read `.claude/skills/test-screen.md` and follow all instructions. (`docs/05.test/report-screen.md` 생성)
 Read `.claude/skills/test-e2e.md` and follow all instructions. (`docs/05.test/report-e2e.md` 생성)
 
 **→ 테스트 Phase 완료 후 반드시 사용자 확인을 받고 다음 Phase로 진행하세요.**
@@ -152,7 +154,7 @@ git push
 
 > UAT를 수행할 수 있는 Dev/Staging 서버에 배포합니다.
 
-Read `.claude/skills/deploy-dev.md` and follow all instructions.
+[fast] Read `.claude/skills/deploy-dev.md` and follow all instructions.
 
 배포 완료 후:
 - `docs/02.design/tc/uat-checklist.md` 를 QA 담당자(개발팀 외 인원)에게 전달합니다.

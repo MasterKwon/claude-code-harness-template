@@ -85,11 +85,10 @@ Claude Code 하네스
 ### 전체 그림
 
 ```
-상황                     파이프라인
+상황                                        파이프라인
 ──────────────────────────────────────────────────────
-처음부터 새로 만들기   →  /pipeline-full
-기존에 기능 추가/변경  →  /pipeline-change
-운영 중 고객 요청 처리 →  /pipeline-maintenance
+처음부터 새로 만들기                       →  /pipeline-full
+오류수정 / 기능개선 / 내부 개선 (운영 중)  →  /pipeline-maintenance
 ```
 
 ---
@@ -126,54 +125,36 @@ impact-check         →  review-all  →  test-db        →  deploy-dev → UA
 
 ---
 
-### 3.2 pipeline-change — 기능 추가·변경
+### 3.2 pipeline-maintenance — 유지보수
 
-신규 개발과의 핵심 차이: **AS-IS 분석이 먼저, GAP이 작업 범위를 결정**합니다.
+오류수정, 기능개선, 내부 개선 모두 이 파이프라인으로 처리합니다.
+신규 개발과의 핵심 차이: **먼저 WHY를 정의하고, AS-IS → GAP으로 범위를 확정**합니다.
 
 ```
-[현황 파악]           [변경 정의]              [범위 확정]
-analyze-asis      →  analyze-requirements  →  analyze-gap
-(기존 코드 먼저)      (변경할 것만)              (작업 목록)
+[변경 정의]           [현황 파악]           [범위 확정]
+WHY 정의          →  analyze-asis      →  analyze-gap
+(유형/이유 명시)      (기존 코드 먼저)      (작업 목록)
 
       ↓
-[영향 범위만 설계]    [영향 범위만 구현]        [리뷰 + 테스트]   [배포]
-GAP 결과 기반        GAP 결과 기반              회귀 테스트 포함   deploy-dev → ship
+[영향 범위만 설계]    [영향 범위만 구현]    [리뷰 + 테스트]      [배포]
+GAP 결과 기반        GAP 결과 기반          회귀 테스트 포함   deploy-dev → ship
+
+↺ 다음 변경 → Phase 1부터 반복
 ```
+
+**변경 유형**
+
+| 유형 | 예시 |
+|------|------|
+| 오류수정 | 계산 오류, 잘못된 데이터 표시 |
+| 기능개선 | 조회 화면 추가, 필드 추가 |
+| 내부 개선 | 성능 개선, 리팩토링 |
 
 **핵심 규칙**: GAP에 없는 코드는 건드리지 않습니다.
 
 ---
 
-### 3.3 pipeline-maintenance — 유지보수
-
-운영 중인 시스템에 고객 변경 요청을 처리합니다.
-
-```
-[요청 수집/분류]        [설계 변경]           [영향도 검증]
-customer-request    →  설계 문서 수정      →  impact-check
-유형 분류(6종)          (변경 범위만)
-
-      ↓
-[구현 - Patch 모드]    [리뷰]           [AI QA]      [배포 - 선택]
-기존 코드 최소 수정  →  review-all   →  test-*    →  deploy-dev → ship
-
-↺ 다음 변경 요청 → Phase 1부터 반복
-```
-
-**고객 요청 6가지 유형**
-
-| 코드 | 설명 | 시작 단계 |
-|------|------|----------|
-| REQ | 요구사항/기능 자체 변경 | 분석 재작성 |
-| SCR | 화면 레이아웃·UX 변경 | 화면 설계 수정 |
-| API | API 스펙 변경 | API 설계 수정 |
-| DB | 데이터 구조 변경 | DB 설계 수정 |
-| INT | 외부 연동 변경 | 통합 설계 수정 |
-| OPS | 인프라·배포 변경 | 구현 단계 직행 |
-
----
-
-## 4. 커맨드 체계 (49개)
+## 4. 커맨드 체계 (48개)
 
 ### 구조 원칙
 
@@ -189,14 +170,14 @@ customer-request    →  설계 문서 수정      →  impact-check
 
 | 카테고리 | 커맨드 수 | 대표 커맨드 |
 |---------|----------|-----------|
-| 파이프라인 | 3 | pipeline-full, pipeline-change, pipeline-maintenance |
+| 파이프라인 | 2 | pipeline-full, pipeline-maintenance |
 | 분석 | 7 | analyze-requirements, analyze-asis, analyze-gap |
 | 설계 | 10 | design-screen, design-db, design-api, design-tc |
 | 구현 | 7 | build-db, build-api, build-screen |
 | 리뷰 | 6 | review-all, review-design, impact-check |
 | 테스트 | 9 | test-db, test-api, test-screen, test-e2e |
 | 배포·운영 | 7 | deploy-dev, ship, customer-request |
-| **합계** | **49** | |
+| **합계** | **48** | |
 
 ### refine-* 패턴
 
@@ -325,8 +306,8 @@ rm -rf .git && git init && git checkout -b develop
 ### 그 다음
 
 ```
-/pipeline-full   ← 신규 프로젝트
-/pipeline-change ← 기존 프로젝트 변경
+/pipeline-full        ← 신규 프로젝트
+/pipeline-maintenance ← 오류수정 / 기능개선 / 내부 개선
 ```
 
 ### 상세 가이드
@@ -343,11 +324,10 @@ rm -rf .git && git init && git checkout -b develop
 .
 ├── CLAUDE.md
 ├── .claude/
-│   ├── commands/       (49개)
+│   ├── commands/       (48개)
 │   ├── skills/
-│   │   ├── *.md        (24개 — 범용 로직)
-│   │   └── stacks/     (16개 — 기술스택 플러그인)
-│   ├── agents/         (3개 — 서브에이전트)
+│   │   ├── *.md        (29개 — 범용 로직)
+│   │   └── stacks/     (17개 — 기술스택 플러그인)
 │   └── hooks/          (1개 — post-edit.sh)
 └── docs/
     ├── 00.input/       요구사항 원본

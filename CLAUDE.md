@@ -13,6 +13,13 @@ Next.js + MSA 구조 학습 프로젝트. 바이브코딩으로 React/Next.js를
 - Architecture: MSA (Microservices)
 - Package Manager: npm
 
+## 모델 티어
+- `[fast]`     → claude-haiku-4-5-20251001  (빠름, 저비용 — 기계적 탐색/검증)
+- `[balanced]` → claude-sonnet-4-6          (균형 — 설계/구현/분석)
+- `[best]`     → claude-opus-4-7            (고품질 — 복잡한 추론/리뷰)
+
+> 모델 업그레이드 시 이 섹션만 수정하세요.
+
 ## Active Skills
 - framework: .claude/skills/stacks/framework/nextjs.md
 - arch:      .claude/skills/stacks/arch/msa.md

@@ -5,7 +5,7 @@
 - [x] V1~V13 취약점 전부 보완
 - [x] 신규 커맨드 추가: customer-request, deploy-dev, design-tc, impact-check, maintenance-init, pipeline-maintenance, review-analyze, review-design
 - [x] 배포 흐름 재정립: AI QA(Local) → Dev 배포 → UAT(Dev 환경) → 운영 배포
-- [x] 파이프라인 3개 체계 확립: pipeline-full / pipeline-change / pipeline-maintenance
+- [x] 파이프라인 2개 체계 확립: pipeline-full / pipeline-maintenance (change 통합)
 - [x] 설계 리뷰 단계 추가 (Phase 2.5, 4.5)
 - [x] UAT 체크리스트 설계 단계 추가 (Phase 2.7)
 - [x] 구현 영향도 검사 단계 추가 (Phase 3.5, 5.5)

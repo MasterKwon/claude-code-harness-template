@@ -13,6 +13,12 @@ Claude Code를 활용한 AI 주도 개발을 위한 템플릿입니다.
 
 Claude Code의 slash command와 skill 파일을 통해 **분석 → 설계 → 구현 → 테스트 → 배포** 전 과정을 AI와 함께 진행합니다. 코드를 직접 작성하지 않아도 됩니다.
 
+## 발표자료
+
+개념과 파이프라인 전체 흐름을 슬라이드로 확인할 수 있습니다.
+
+→ [`docs/harness/presentation.html`](docs/harness/presentation.html) (브라우저에서 열기)
+
 ---
 
 ## 시작하기
@@ -73,21 +79,23 @@ Claude Code에서 실행:
 
 | Phase | 명령 | 산출물 |
 |-------|------|--------|
-| 0 | `/project-setup` | 프로젝트 초기화 |
-| 1 | `/analyze-requirements` | `docs/01.analyze/requirements.md` |
-| 2 | `/analyze-asis` | `docs/01.analyze/asis.md` |
-| 3 | `/analyze-gap` | `docs/01.analyze/gap.md` |
-| 4 | `/design-db` `/design-screen` `/design-api` | `docs/02.design/*.md` |
-| 5 | `/build-db` `/build-api` `/build-screen` | 소스코드 |
-| 6 | `/review-all` `/test-all` `/ship` | 검증 + 배포 |
+| 0 | `/project-setup` | 프로젝트 초기화, CLAUDE.md |
+| 1 | `/analyze-all` | `requirements.md`, `asis.md`, `gap.md` |
+| 2 | `/design-all` + `/review-design` | `screen.md`, `db.md`, `api.md`, `uat-checklist.md` |
+| 3 | `/build-all` + `/impact-check` | 소스코드, `impact-check.md` |
+| 4 | `/review-all` | `review-report.md` |
+| 5 | `/test-all` | `test-report-*.md` |
+| 5.5 | `/deploy-dev` | Dev 환경 배포 |
+| 6 | UAT | `uat-result.md` |
+| 7 | `/ship` | 운영 배포 체크리스트 |
 
-### 기존 프로젝트 기능 추가·변경
+### 기존 프로젝트 유지보수 (오류수정 / 기능개선 / 내부 개선)
 
 ```
-/pipeline-change
+/pipeline-maintenance
 ```
 
-기술 스택을 자동 감지 (사용자에게 묻지 않음) → 변경 범위만 분석·설계·구현합니다.
+WHY 정의 → AS-IS 분석 → GAP 확정 → 영향 범위만 설계·구현·테스트·배포합니다.
 
 ---
 
@@ -105,13 +113,20 @@ Claude Code에서 실행:
 │   │       ├── api-style/       # rest.md, trpc.md, graphql.md
 │   │       ├── state/           # tanstack-query.md, zustand.md, redux.md
 │   │       ├── framework/       # nextjs.md
-│   │       └── ui/              # shadcn.md, ...
-│   ├── agents/                  # 서브에이전트 (code-reviewer, test-writer, security-auditor)
+│   │       └── ui/              # shadcn.md, mui.md, antd.md, tailwind-only.md
 │   └── settings.json            # hooks 설정
 └── docs/
     ├── 00.input/                # 요구사항 원본 자료 (여기에 파일 넣기)
-    ├── 01.analyze/              # 분석 산출물 + reviewed/
-    └── 02.design/               # 설계 산출물 + reviewed/
+    ├── 01.analyze/              # 분석 산출물
+    ├── 02.design/               # 설계 산출물
+    ├── 03.build/                # 구현 산출물 (impact-check.md)
+    ├── 04.review/               # 리뷰 보고서
+    ├── 05.test/                 # 테스트 보고서
+    ├── 06.ship/                 # 배포 체크리스트
+    └── harness/                 # 하네스 가이드 문서
+        ├── presentation.html    # 발표자료
+        ├── onboarding.md        # 온보딩 가이드
+        └── CHANGELOG.md         # 변경 이력
 ```
 
 ---

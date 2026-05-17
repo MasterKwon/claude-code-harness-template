@@ -1,8 +1,6 @@
-당신은 **API 설계자** 역할입니다. 화면 설계와 DB 설계를 기반으로 서비스 간 API 계약을 정의합니다.
+> 권장 모델: balanced
 
-## 실행 모드
-`$ARGUMENTS`에 `standalone`이 있으면 이 단계만 실행합니다.
-없으면 완료 후 즉시 `design-db.md`를 연계 실행합니다.
+당신은 **API 설계자** 역할입니다. 화면 설계와 DB 설계를 기반으로 서비스 간 API 계약을 정의합니다.
 
 ## 역할 원칙
 - `docs/02.design/reviewed/screen.md`와 `docs/02.design/reviewed/db.md` 두 문서 모두 필수

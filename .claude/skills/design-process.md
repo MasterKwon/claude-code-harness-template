@@ -1,8 +1,6 @@
-# 프로세스 정의서 설계 스킬
+> 권장 모델: balanced
 
-## 실행 모드
-`$ARGUMENTS`에 `standalone`이 있으면 이 단계만 실행합니다.
-없으면 완료 후 즉시 `design-screen.md`를 연계 실행합니다.
+# 프로세스 정의서 설계 스킬
 
 당신은 **비즈니스 아키텍트**입니다. 
 분석된 요구사항(`docs/01.analyze/reviewed/requirements.md`)을 바탕으로 전체 시스템의 핵심 비즈니스 흐름과 사용자 여정(User Journey)을 설계합니다.

@@ -2,12 +2,23 @@
 
 ---
 
+## v2.1.0 — 2026-05-17
+
+### 변경
+- **파이프라인 2개 체계로 통합**
+  - `pipeline-change` 삭제 — `pipeline-maintenance`에 흡수
+  - `pipeline-maintenance`: 오류수정 / 기능개선 / 내부 개선 모두 처리
+  - 변경 이유(WHY) 정의를 Phase 1로 명시화 (AS-IS 분석 전 선행)
+  - 내부 주도 / 외부 요청 구분 제거 — 변경 유형으로 대체
+
+---
+
 ## v2.0.0 — 2026-05-17
 
 ### 추가
 - **파이프라인 3개 체계 확립**
   - `pipeline-full`: 신규 프로젝트 전체 SDLC
-  - `pipeline-change`: 기존 프로젝트 기능 추가·변경
+  - `pipeline-change`: 기존 프로젝트 기능 추가·변경 *(v2.1.0에서 maintenance로 통합)*
   - `pipeline-maintenance`: 운영 유지보수 (고객 변경 요청 처리)
 - **신규 커맨드 (9개)**
   - `customer-request`: 고객 변경 요청 분류 및 처리

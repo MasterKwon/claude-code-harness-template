@@ -121,19 +121,17 @@ git checkout -b develop
 | 상황 | 사용 파이프라인 |
 |------|---------------|
 | 처음부터 새 기능 개발 | `/pipeline-full` |
-| 운영 중인 프로젝트에 기능 추가/변경 | `/pipeline-change` |
-| 고객 변경 요청 반복 처리 (운영 유지보수) | `/pipeline-maintenance` |
+| 운영 중인 프로젝트 변경 (오류수정 / 기능개선 / 내부 개선) | `/pipeline-maintenance` |
 
 ---
 
-## 커맨드 전체 목록 (49개)
+## 커맨드 전체 목록 (48개)
 
-### 파이프라인 (3)
+### 파이프라인 (2)
 | 커맨드 | 설명 |
 |--------|------|
 | `/pipeline-full` | 신규 프로젝트 전체 SDLC |
-| `/pipeline-change` | 기존 프로젝트 기능 추가·변경 |
-| `/pipeline-maintenance` | 운영 유지보수 (고객 변경 요청 처리) |
+| `/pipeline-maintenance` | 오류수정 / 기능개선 / 내부 개선 |
 
 ### 분석 (7)
 | 커맨드 | 설명 |
