@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code 하네스 엔지니어링</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #0d1117;
+    --bg2:      #161b22;
+    --bg3:      #21262d;
+    --border:   #30363d;
+    --blue:     #58a6ff;
+    --cyan:     #39d353;
+    --purple:   #bc8cff;
+    --yellow:   #e3b341;
+    --red:      #f85149;
+    --text:     #e6edf3;
+    --text2:    #8b949e;
+    --accent:   #1f6feb;
+  }
+
+  html, body { height: 100%; overflow: hidden; background: var(--bg); font-family: 'Noto Sans KR', -apple-system, sans-serif; color: var(--text); }
+
+  /* ── 슬라이드 컨테이너 ── */
+  .deck { width: 100vw; height: 100vh; position: relative; }
+
+  .slide {
+    position: absolute; inset: 0;
+    display: none; flex-direction: column;
+    padding: 56px 72px 48px;
+    opacity: 0; transition: opacity .25s;
+  }
+  .slide.active { display: flex; opacity: 1; }
+
+  /* ── 공통 요소 ── */
+  h1 { font-size: 2.8rem; font-weight: 700; line-height: 1.2; color: #fff; }
+  h2 { font-size: 1.9rem; font-weight: 700; color: var(--blue); margin-bottom: 28px; border-bottom: 2px solid var(--border); padding-bottom: 12px; }
+  h3 { font-size: 1.2rem; font-weight: 600; color: var(--yellow); margin: 20px 0 10px; }
+  p  { line-height: 1.75; color: var(--text); font-size: .95rem; }
+  strong { color: var(--yellow); font-weight: 600; }
+  em { color: var(--cyan); font-style: normal; }
+
+  ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  ul li { display: flex; align-items: flex-start; gap: 10px; font-size: .95rem; line-height: 1.6; }
+  ul li::before { content: '▸'; color: var(--blue); flex-shrink: 0; margin-top: 2px; }
+
+  /* ── 코드 블록 ── */
+  pre {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 18px 22px;
+    font-family: 'JetBrains Mono', 'Consolas', monospace;
+    font-size: .78rem; line-height: 1.7; color: #cdd9e5;
+    overflow-x: auto; white-space: pre;
+  }
+  code { font-family: 'JetBrains Mono', monospace; font-size: .82rem; background: var(--bg3); color: var(--purple); padding: 2px 6px; border-radius: 4px; }
+
+  /* ── 테이블 ── */
+  table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+  th { background: var(--bg3); color: var(--blue); font-weight: 600; text-align: left; padding: 10px 14px; border-bottom: 2px solid var(--accent); }
+  td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #ffffff08; }
+  td:first-child { color: var(--yellow); font-weight: 500; }
+
+  /* ── 인용구 ── */
+  blockquote {
+    border-left: 4px solid var(--blue); padding: 16px 22px;
+    background: #1f6feb18; border-radius: 0 8px 8px 0;
+    font-size: 1rem; line-height: 1.75; color: var(--text2);
+    font-style: italic;
+  }
+  blockquote strong { color: var(--cyan); font-style: normal; }
+
+  /* ── 뱃지 ── */
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: .75rem; font-weight: 600; }
+  .badge-blue   { background: #1f6feb30; color: var(--blue); border: 1px solid #1f6feb60; }
+  .badge-green  { background: #39d35330; color: var(--cyan); border: 1px solid #39d35360; }
+  .badge-yellow { background: #e3b34130; color: var(--yellow); border: 1px solid #e3b34160; }
+  .badge-red    { background: #f8514930; color: var(--red); border: 1px solid #f8514960; }
+
+  /* ── 그리드 ── */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  /* ── 카드 ── */
+  .card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px 22px;
+  }
+  .card h3 { margin-top: 0; }
+
+  /* ── 흐름도 박스 ── */
+  .flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+  .flow-box { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; font-size: .78rem; font-family: 'JetBrains Mono', monospace; color: #cdd9e5; white-space: nowrap; }
+  .flow-arrow { color: var(--blue); font-size: 1.1rem; }
+  .flow-group { display: flex; flex-direction: column; gap: 4px; }
+  .flow-label { font-size: .7rem; color: var(--text2); font-weight: 600; letter-spacing: .05em; margin-bottom: 4px; }
+
+  /* ── 숫자 강조 ── */
+  .stat { text-align: center; }
+  .stat-num { font-size: 3.5rem; font-weight: 700; color: var(--blue); line-height: 1; }
+  .stat-label { font-size: .85rem; color: var(--text2); margin-top: 6px; }
+
+  /* ── 내비게이션 ── */
+  #nav {
+    position: fixed; bottom: 24px; right: 32px;
+    display: flex; align-items: center; gap: 14px; z-index: 100;
+  }
+  #counter { font-size: .8rem; color: var(--text2); min-width: 48px; text-align: center; }
+  .nav-btn {
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text); width: 36px; height: 36px; border-radius: 8px;
+    cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center;
+    transition: background .15s, border-color .15s;
+  }
+  .nav-btn:hover { background: var(--accent); border-color: var(--blue); }
+
+  /* ── 진행 바 ── */
+  #progress-bar {
+    position: fixed; bottom: 0; left: 0; height: 3px;
+    background: var(--blue); transition: width .3s;
+  }
+
+  /* ── 슬라이드별 특수 스타일 ── */
+
+  /* 타이틀 슬라이드 */
+  .slide-title {
+    justify-content: center; align-items: center; text-align: center;
+    background: radial-gradient(ellipse at 60% 40%, #1f6feb18 0%, transparent 70%),
+                radial-gradient(ellipse at 20% 80%, #bc8cff12 0%, transparent 60%);
+  }
+  .slide-title .logo { font-size: .9rem; color: var(--text2); margin-bottom: 24px; letter-spacing: .1em; text-transform: uppercase; }
+  .slide-title h1 { font-size: 3.4rem; margin-bottom: 16px; }
+  .slide-title .subtitle { font-size: 1.3rem; color: var(--text2); margin-bottom: 40px; }
+  .slide-title .meta { font-size: .8rem; color: var(--text2); border-top: 1px solid var(--border); padding-top: 16px; }
+
+  /* 섹션 구분 슬라이드 */
+  .slide-section {
+    justify-content: center; align-items: flex-start;
+    background: linear-gradient(135deg, #1f6feb10 0%, transparent 60%);
+  }
+  .slide-section .section-num { font-size: 6rem; font-weight: 700; color: #ffffff08; line-height: 1; margin-bottom: -20px; }
+  .slide-section h1 { font-size: 2.6rem; color: var(--blue); }
+  .slide-section p { font-size: 1.1rem; color: var(--text2); margin-top: 16px; max-width: 560px; }
+
+  /* 비교표 강조 */
+  .highlight-row td { color: var(--cyan) !important; background: #39d35310 !important; }
+
+  /* 체크리스트 */
+  .checklist { display: flex; flex-direction: column; gap: 10px; }
+  .check-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; font-size: .9rem; }
+  .check-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+  /* vuln 테이블 축소 */
+  .vuln-table td, .vuln-table th { padding: 7px 10px; font-size: .82rem; }
+
+  /* 마지막 슬라이드 */
+  .slide-end { justify-content: center; align-items: center; text-align: center; }
+  .slide-end h1 { font-size: 3rem; color: var(--blue); margin-bottom: 20px; }
+  .slide-end p { font-size: 1.1rem; color: var(--text2); }
+
+  /* ── 키보드 힌트 ── */
+  #hint { position: fixed; bottom: 24px; left: 32px; font-size: .72rem; color: var(--text2); }
+
+  /* ── 인쇄 ── */
+  @media print {
+    .slide { display: flex !important; opacity: 1 !important; position: relative !important; page-break-after: always; height: 100vh; }
+    #nav, #progress-bar, #hint { display: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 1 · 타이틀 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide slide-title active">
+    <div class="logo">Claude Code · Internal Tech Talk · 2026-05-17</div>
+    <h1>하네스 엔지니어링</h1>
+    <div class="subtitle">AI 주도 개발 파이프라인 구축 사례</div>
+    <div class="meta">발표 대상: 개발팀 내부 &nbsp;|&nbsp; 백엔드 20년차가 바이브코딩을 체계화한 과정</div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 2 · 목차 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide">
+    <h2>목차</h2>
+    <div class="grid2" style="margin-top:12px; gap:14px;">
+      <div class="card">
+        <h3 style="color:var(--red)">🔥 문제</h3>
+        <ul>
+          <li>배경과 문제 의식</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="color:var(--blue)">💡 개념</h3>
+        <ul>
+          <li>하네스 엔지니어링이란</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="color:var(--cyan)">⚙️ 구조</h3>
+        <ul>
+          <li>파이프라인 3개 체계</li>
+          <li>커맨드 체계 49개</li>
+          <li>실제 동작 방식</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="color:var(--yellow)">📊 결과</h3>
+        <ul>
+          <li>01.WebDesktop 적용 사례</li>
+          <li>기대 효과</li>
+          <li>시작하기</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 3 · 섹션 1 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide slide-section">
+    <div class="section-num">01</div>
+    <h1>배경과 문제 의식</h1>
+    <p>AI 코딩 도구를 쓰기 시작하면 처음에는 빠릅니다.<br>그런데 시간이 지나면…</p>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 4 · AI 코딩의 현실 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide">
+    <h2>AI 코딩의 현실</h2>
+    <div style="display:flex; flex-direction:column; gap:14px; margin-top:8px;">
+      <div class="card" style="border-left:3px solid var(--red)">
+        <p>😤 &nbsp;"이거 지난번에도 물어봤는데 또 잊어버렸네"</p>
+      </div>
+      <div class="card" style="border-left:3px solid var(--yellow)">
+        <p>😰 &nbsp;"AI가 만들어준 코드인데 왜 DB와 API가 따로 놀지?"</p>
+      </div>
+      <div class="card" style="border-left:3px solid var(--yellow)">
+        <p>😩 &nbsp;"어디서부터 다시 시작해야 하지?"</p>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red)">
+        <p>😱 &nbsp;"테스트는 했는데 배포하고 나서 다른 게 깨졌어"</p>
+      </div>
+    </div>
+    <div style="margin-top:20px; padding:14px 20px; background:var(--bg2); border-radius:8px; border:1px solid var(--border);">
+      <p><strong>핵심 문제</strong> &nbsp;—&nbsp; AI는 강력하지만, 가이드가 없으면 <em>매 세션마다 처음부터 다시 설명</em>해야 합니다.</p>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 5 · 기존 접근의 한계 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide">
+    <h2>기존 접근의 한계</h2>
+    <table style="margin-top:16px;">
+      <tr><th>방식</th><th>문제</th></tr>
+      <tr><td>프롬프트 직접 작성</td><td>매번 다르고, 품질이 들쭉날쭉</td></tr>
+      <tr><td>단계별 수동 진행</td><td>단계 누락, 산출물 불일치</td></tr>
+      <tr><td>AI에게 전부 맡기기</td><td>범위 초과, 예상 못한 변경</td></tr>
+    </table>
+    <div style="margin-top:32px;">
+      <h3>결국 필요한 것은</h3>
+      <div class="grid3" style="margin-top:12px;">
+        <div class="card" style="text-align:center;">
+          <div style="font-size:2rem;margin-bottom:8px;">🧠</div>
+          <p style="font-size:.85rem;color:var(--text2);">세션이 바뀌어도<br><strong>컨텍스트 유지</strong></p>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div style="font-size:2rem;margin-bottom:8px;">📋</div>
+          <p style="font-size:.85rem;color:var(--text2);">단계 누락 없는<br><strong>구조화된 흐름</strong></p>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div style="font-size:2rem;margin-bottom:8px;">🎯</div>
+          <p style="font-size:.85rem;color:var(--text2);">AI 범위를<br><strong>정교하게 제어</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 6 · 섹션 2 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide slide-section">
+    <div class="section-num">02</div>
+    <h1>하네스 엔지니어링이란</h1>
+    <p>AI의 강력한 능력을 통제된 방향으로 흐르게 만드는 구조물</p>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 7 · 개념 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide">
+    <h2>개념</h2>
+    <blockquote style="margin-top:16px;">
+      "실수가 발생하면 사과하는 대신,<br>
+      다시는 같은 실수가 반복되지 않도록 <strong>환경을 개선</strong>한다."
+      <br><br>
+      <span style="font-size:.85rem;">— Andrej Karpathy &amp; Jeff Hashimoto</span>
+    </blockquote>
+    <div class="grid2" style="margin-top:28px;">
+      <div class="card">
+        <h3>하네스 (Harness)</h3>
+        <p style="font-size:.9rem;">말에 채우는 마구(馬具).<br>힘을 <em>방향 있게</em> 쓰도록 제어하는 장치.</p>
+        <p style="font-size:.85rem; color:var(--text2); margin-top:10px;">→ AI의 능력을 통제된 방향으로 흐르게 만드는 구조물</p>
+      </div>
+      <div class="card">
+        <h3>적용 원칙 3가지</h3>
+        <ul>
+          <li><strong>Surgical Changes</strong> — 요청 범위만 건드린다</li>
+          <li><strong>Think Before Coding</strong> — 분석 → 설계 → 구현 순서</li>
+          <li><strong>Simplicity First</strong> — 가장 단순한 코드</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 8 · 구성 요소 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide">
+    <h2>하네스 구성 요소</h2>
+    <div style="display:flex; gap:24px; margin-top:16px; align-items:flex-start;">
+      <pre style="flex:1.2; font-size:.82rem;">Claude Code 하네스
+│
+├── CLAUDE.md          프로젝트 컨텍스트
+│                      기술스택 · 가이드라인 · 원칙
+│
+├── .claude/commands/  슬래시 커맨드 진입점
+│                      <span style="color:#58a6ff">49개</span>
+│
+├── .claude/skills/    단계별 실행 로직
+│                      상세 지침 · 품질 게이트
+│
+├── .claude/stacks/    기술스택별 패턴
+│                      플러그인 방식으로 교체 가능
+│
+└── .claude/hooks/     자동화 트리거
+                       수정 후 타입체크 등</pre>
+      <div style="flex:1; display:flex; flex-direction:column; gap:12px;">
+        <div class="card" style="border-left:3px solid var(--blue)">
+          <h3 style="font-size:.95rem;">CLAUDE.md</h3>
+          <p style="font-size:.83rem; color:var(--text2);">세션이 바뀌어도 프로젝트 컨텍스트가 유지되는 영구 메모리</p>
+        </div>
+        <div class="card" style="border-left:3px solid var(--cyan)">
+          <h3 style="font-size:.95rem;">commands/ + skills/</h3>
+          <p style="font-size:.83rem; color:var(--text2);">슬래시 명령어로 시작 → 스킬 파일이 단계별 지침 실행</p>
+        </div>
+        <div class="card" style="border-left:3px solid var(--purple)">
+          <h3 style="font-size:.95rem;">stacks/</h3>
+          <p style="font-size:.83rem; color:var(--text2);">Prisma ↔ TypeORM처럼 기술스택 파일 한 줄로 전환</p>
+        </div>
+        <div class="card" style="border-left:3px solid var(--yellow)">
+          <h3 style="font-size:.95rem;">hooks/</h3>
+          <p style="font-size:.83rem; color:var(--text2);">파일 수정 즉시 TypeScript 타입체크 자동 실행</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 9 · 섹션 3 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide slide-section">
+    <div class="section-num">03</div>
+    <h1>파이프라인 3개 체계</h1>
+    <p>상황에 맞는 파이프라인을 선택합니다</p>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 10 · 파이프라인 개요 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide">
+    <h2>파이프라인 3개 체계 — 한눈에</h2>
+    <div style="display:flex; flex-direction:column; gap:16px; margin-top:20px;">
+      <div class="card" style="border-left:4px solid var(--blue); display:flex; align-items:center; gap:20px;">
+        <code style="font-size:1rem; padding:6px 14px;">/pipeline-full</code>
+        <div>
+          <p style="font-weight:600; margin-bottom:4px;">신규 프로젝트</p>
+          <p style="font-size:.85rem; color:var(--text2);">처음부터 새로 만들기 · 분석 → 설계 → 구현 → 리뷰 → 테스트 → UAT → 배포</p>
+        </div>
+      </div>
+      <div class="card" style="border-left:4px solid var(--cyan); display:flex; align-items:center; gap:20px;">
+        <code style="font-size:1rem; padding:6px 14px;">/pipeline-change</code>
+        <div>
+          <p style="font-weight:600; margin-bottom:4px;">기능 추가·변경</p>
+          <p style="font-size:.85rem; color:var(--text2);">기존 프로젝트 · AS-IS 먼저, GAP이 작업 범위 결정 · 회귀 테스트 포함</p>
+        </div>
+      </div>
+      <div class="card" style="border-left:4px solid var(--yellow); display:flex; align-items:center; gap:20px;">
+        <code style="font-size:1rem; padding:6px 14px;">/pipeline-maintenance</code>
+        <div>
+          <p style="font-weight:600; margin-bottom:4px;">운영 유지보수</p>
+          <p style="font-size:.85rem; color:var(--text2);">고객 변경 요청 반복 처리 · Patch 모드 구현 · 6종 요청 유형 분류</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 11 · pipeline-full -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide">
+    <h2>/pipeline-full — 신규 프로젝트</h2>
+    <pre style="margin-top:10px; font-size:.75rem;">[분석]                     [설계]           [설계리뷰]  [TC설계]       [구현]
+analyze-requirements  →   design-screen  →           →  design-tc →  build-db
+analyze-asis          →   design-db      → review-   →             →  build-api
+analyze-gap           →   design-api     →  design   →             →  build-screen
+                                                              ↓
+[영향도 검사]          [리뷰]          [AI QA · Local]      [Dev 배포]    [UAT]     [운영 배포]
+impact-check       →  review-all  →  test-db          →  deploy-dev →  UAT    →  ship
+                                  →  test-api
+                                  →  test-screen, test-e2e</pre>
+    <table style="margin-top:12px; font-size:.82rem;">
+      <tr><th>Phase</th><th>명령</th><th>산출물</th></tr>
+      <tr><td>0</td><td><code>/project-setup</code></td><td>프로젝트 초기화, CLAUDE.md</td></tr>
+      <tr><td>1</td><td><code>/analyze-all</code></td><td>requirements.md, asis.md, gap.md</td></tr>
+      <tr><td>2</td><td><code>/design-all</code> + <code>/review-design</code> + <code>/design-tc</code></td><td>설계 3종 + UAT 체크리스트</td></tr>
+      <tr><td>3</td><td><code>/build-all</code> + <code>/impact-check</code></td><td>소스코드 + 영향도 보고서</td></tr>
+      <tr><td>4~5</td><td><code>/review-all</code> → <code>/test-all</code></td><td>리뷰·테스트 보고서</td></tr>
+      <tr class="highlight-row"><td>5.5</td><td><code>/deploy-dev</code></td><td>Dev 환경 배포 → UAT 수행</td></tr>
+      <tr><td>7</td><td><code>/ship</code></td><td>운영 배포 체크리스트</td></tr>
+    </table>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 12 · pipeline-change -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide">
+    <h2>/pipeline-change — 기능 추가·변경</h2>
+    <div style="margin-top:10px; padding:12px 18px; background:var(--bg2); border-radius:8px; border:1px solid var(--border); margin-bottom:16px;">
+      <p><strong>핵심 차이</strong> — AS-IS 분석이 먼저, GAP이 작업 범위를 결정합니다.<br>
+      <em>GAP에 없는 코드는 건드리지 않습니다.</em></p>
+    </div>
+    <pre style="font-size:.78rem;">[현황 파악]           [변경 정의]               [범위 확정]
+analyze-asis      →  analyze-requirements  →   analyze-gap
+(기존 코드 먼저)      (변경할 것만)                (작업 목록 확정)
+
+      ↓
+[영향 범위만 설계]    [영향 범위만 구현]       [리뷰 + 테스트]         [배포]
+GAP 결과 기반        GAP 결과 기반            회귀 테스트 포함    →   deploy-dev → ship</pre>
+    <div class="grid2" style="margin-top:16px;">
+      <div class="card">
+        <h3>pipeline-full 과의 차이</h3>
+        <ul>
+          <li>AS-IS 분석이 <em>먼저</em> 실행</li>
+          <li>GAP 항목만 설계·구현</li>
+          <li>회귀 테스트 별도 실행</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>GAP 분류 기준</h3>
+        <ul>
+          <li><strong>신규</strong> — 없던 것을 추가</li>
+          <li><strong>변경</strong> — 기존 것을 수정</li>
+          <li><strong>유지</strong> — 건드리지 않음</li>
+          <li><strong>제거</strong> — 삭제 대상</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 13 · pipeline-maintenance -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide">
+    <h2>/pipeline-maintenance — 운영 유지보수</h2>
+    <pre style="font-size:.78rem; margin-top:10px;">[요청 분류]           [설계 변경]          [영향도 검증]
+customer-request →   설계 문서 수정    →  impact-check
+6종 유형 분류         (변경 범위만)
+
+      ↓
+[구현 · Patch 모드]   [리뷰]         [AI QA]       [배포 · 선택]
+기존 코드 최소 수정 →  review-all →  test-*     →  deploy-dev → ship
+
+↺  다음 변경 요청이 오면 Phase 1부터 반복</pre>
+    <h3 style="margin-top:16px;">고객 요청 6가지 유형</h3>
+    <table style="font-size:.84rem;">
+      <tr><th>코드</th><th>설명</th><th>시작 단계</th></tr>
+      <tr><td>REQ</td><td>요구사항/기능 자체 변경</td><td>분석 재작성</td></tr>
+      <tr><td>SCR</td><td>화면 레이아웃·UX 변경</td><td>화면 설계 수정</td></tr>
+      <tr><td>API</td><td>API 스펙 변경</td><td>API 설계 수정</td></tr>
+      <tr><td>DB</td><td>데이터 구조 변경</td><td>DB 설계 수정</td></tr>
+      <tr><td>INT</td><td>외부 연동 변경</td><td>통합 설계 수정</td></tr>
+      <tr><td>OPS</td><td>인프라·배포 변경</td><td>구현 단계 직행</td></tr>
+    </table>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 14 · 섹션 4 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide slide-section">
+    <div class="section-num">04</div>
+    <h1>커맨드 체계</h1>
+    <p>49개의 슬래시 커맨드로 전체 SDLC를 커버합니다</p>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 15 · 커맨드 카테고리 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide">
+    <h2>커맨드 카테고리 (49개)</h2>
+    <div class="grid2" style="margin-top:12px; gap:12px;">
+      <table style="font-size:.84rem;">
+        <tr><th>카테고리</th><th style="text-align:center;">수</th><th>대표 커맨드</th></tr>
+        <tr><td>파이프라인</td><td style="text-align:center;"><span class="badge badge-blue">3</span></td><td>pipeline-full, change, maintenance</td></tr>
+        <tr><td>분석</td><td style="text-align:center;"><span class="badge badge-blue">7</span></td><td>analyze-requirements, asis, gap</td></tr>
+        <tr><td>설계</td><td style="text-align:center;"><span class="badge badge-blue">10</span></td><td>design-screen, db, api, tc</td></tr>
+        <tr><td>구현</td><td style="text-align:center;"><span class="badge badge-blue">7</span></td><td>build-db, api, screen</td></tr>
+        <tr><td>리뷰</td><td style="text-align:center;"><span class="badge badge-blue">6</span></td><td>review-all, design, impact-check</td></tr>
+        <tr><td>테스트</td><td style="text-align:center;"><span class="badge badge-blue">9</span></td><td>test-db, api, screen, e2e</td></tr>
+        <tr><td>배포·운영</td><td style="text-align:center;"><span class="badge badge-blue">7</span></td><td>deploy-dev, ship, customer-request</td></tr>
+        <tr style="background:var(--bg3);"><td><strong>합계</strong></td><td style="text-align:center;"><strong style="color:var(--yellow)">49</strong></td><td></td></tr>
+      </table>
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div class="card">
+          <h3>커맨드 구조</h3>
+          <pre style="font-size:.72rem; padding:12px;">/커맨드명
+    ↓ commands/커맨드명.md
+실행 로직
+    ↓ skills/커맨드명.md
+기술스택 패턴
+    ↓ stacks/{카테고리}/{스택}.md</pre>
+        </div>
+        <div class="card">
+          <h3>refine-* 패턴</h3>
+          <p style="font-size:.84rem; color:var(--text2);">모든 주요 단계에 보완 커맨드가 존재합니다.</p>
+          <pre style="font-size:.72rem; padding:10px; margin-top:8px;">/analyze-requirements
+    → /refine-analyze-requirements
+/design-api
+    → /refine-design-api</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 16 · 섹션 5 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide slide-section">
+    <div class="section-num">05</div>
+    <h1>실제 동작 방식</h1>
+    <p>품질 게이트 · 롤백 맵 · 스택 플러그인</p>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 17 · 품질 게이트 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide">
+    <h2>품질 게이트 &amp; 롤백 맵</h2>
+    <div class="grid2" style="margin-top:12px;">
+      <div>
+        <h3>품질 게이트 — 각 Phase 완료 시 자동 검증</h3>
+        <div class="checklist" style="margin-top:10px;">
+          <div class="check-item"><span class="check-icon">✅</span><span>요구사항: Must/Should/Could 우선순위 부여됨</span></div>
+          <div class="check-item"><span class="check-icon">✅</span><span>DB 설계: ERD + 인덱스 전략 포함</span></div>
+          <div class="check-item"><span class="check-icon">✅</span><span>API 설계: Swagger 명세 포함</span></div>
+          <div class="check-item"><span class="check-icon">✅</span><span>구현: TypeScript 타입 에러 없음 (hook 자동 체크)</span></div>
+          <div class="check-item"><span class="check-icon">✅</span><span>리뷰: High 심각도 없음</span></div>
+          <div class="check-item"><span class="check-icon">✅</span><span>테스트: E2E 전체 통과</span></div>
+        </div>
+        <p style="font-size:.8rem; color:var(--red); margin-top:10px;">⛔ 게이트 실패 시 다음 Phase로 진행하지 않습니다.</p>
+      </div>
+      <div>
+        <h3>롤백 맵 — 문제 위치마다 명시된 복구 경로</h3>
+        <pre style="font-size:.73rem; margin-top:10px;">발견 위치         원인           조치
+──────────────────────────────────────────
+테스트 실패   → API 구현 오류  →
+  /refine-build-api → 리뷰 → 테스트 재실행
+
+UAT FAIL      → 기능 누락     →
+  /refine-design-* → 구현 → 테스트 → UAT
+
+운영 배포 실패 → 환경설정 오류 →
+  직접 수정 → /ship 재실행</pre>
+        <div class="card" style="margin-top:12px; border-left:3px solid var(--purple)">
+          <h3>스택 플러그인 전환</h3>
+          <pre style="font-size:.72rem; padding:10px;">## Active Skills
+- orm: stacks/orm/prisma.md
+         ↑ 이 줄 하나만 바꾸면
+         typeorm.md / mongoose.md</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 18 · 섹션 6 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide slide-section">
+    <div class="section-num">06</div>
+    <h1>01.WebDesktop 적용 사례</h1>
+    <p>실제 프로젝트에 적용하며 발견한 13가지 취약점과 보완 과정</p>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 19 · V1~V7 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide">
+    <h2>발견된 취약점 V1 ~ V7</h2>
+    <table class="vuln-table" style="margin-top:12px;">
+      <tr><th>#</th><th>취약점</th><th>보완 방법</th></tr>
+      <tr><td>V1</td><td>분석 품질 게이트 부재</td><td>각 분석 단계에 체크리스트 추가</td></tr>
+      <tr><td>V2</td><td>설계 리뷰 단계 누락</td><td><code>review-design</code> 커맨드 + Phase 2.5 추가</td></tr>
+      <tr><td>V3</td><td>구현 후 레이어 정합성 미검증</td><td><code>impact-check</code> + Phase 3.5 추가</td></tr>
+      <tr><td>V4</td><td>유지보수 파이프라인 부재</td><td><code>pipeline-maintenance</code> 신규 구축</td></tr>
+      <tr><td>V5</td><td>고객 요청 처리 체계 없음</td><td><code>customer-request</code> + 6종 분류 체계</td></tr>
+      <tr><td>V6</td><td>Dev 배포 단계 누락</td><td><code>deploy-dev</code> 커맨드 추가</td></tr>
+      <tr><td>V7</td><td>UAT와 AI 테스트 혼재</td><td>AI QA(Local) / UAT(사람) 명확히 분리</td></tr>
+    </table>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 20 · V8~V13 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide">
+    <h2>발견된 취약점 V8 ~ V13</h2>
+    <table class="vuln-table" style="margin-top:12px;">
+      <tr><th>#</th><th>취약점</th><th>보완 방법</th></tr>
+      <tr><td>V8</td><td>UAT 체크리스트 사후 작성</td><td><code>design-tc</code>를 구현 전(Phase 2.7)으로 이동</td></tr>
+      <tr><td>V9</td><td>롤백 경로 미명시</td><td>파이프라인 내 롤백 맵 전면 작성</td></tr>
+      <tr><td>V10</td><td>요구사항 변경 시나리오 없음</td><td>변경 발생 시점별 대응 절차 추가</td></tr>
+      <tr><td>V11</td><td>refine-* 커맨드 일부 누락</td><td>전체 주요 단계에 refine 커맨드 완비</td></tr>
+      <tr><td>V12</td><td>설계 산출물 리뷰 미분리</td><td><code>review-analyze</code> / <code>review-design</code> 분리</td></tr>
+      <tr><td>V13</td><td>유지보수 초기화 절차 없음</td><td><code>maintenance-init</code> 커맨드 추가</td></tr>
+    </table>
+    <div style="margin-top:18px; padding:14px 20px; background:var(--bg2); border-radius:8px; border:1px solid var(--border); text-align:center;">
+      <p><strong>13개 취약점 보완 → 커맨드 40개에서 49개로 확장 · 파이프라인 2개 → 3개</strong></p>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 21 · 섹션 7 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide slide-section">
+    <div class="section-num">07</div>
+    <h1>기대 효과</h1>
+    <p>속도 · 품질 · 지식 축적</p>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 22 · 기대 효과 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide">
+    <h2>기대 효과</h2>
+    <div class="grid2" style="margin-top:14px; gap:20px;">
+      <div>
+        <h3>⚡ 개발 속도</h3>
+        <table style="margin-top:10px; font-size:.84rem;">
+          <tr><th>작업</th><th>기존</th><th style="color:var(--cyan)">하네스</th></tr>
+          <tr><td>요구사항 → 설계</td><td>1~2일</td><td style="color:var(--cyan)">2~4시간</td></tr>
+          <tr><td>설계 → API 구현</td><td>3~5일</td><td style="color:var(--cyan)">반나절~1일</td></tr>
+          <tr><td>코드 리뷰</td><td>2~4시간 (사람)</td><td style="color:var(--cyan)">10~30분 (AI)</td></tr>
+          <tr><td>테스트 작성</td><td>1~2일</td><td style="color:var(--cyan)">1~2시간</td></tr>
+        </table>
+      </div>
+      <div>
+        <h3>🔒 품질</h3>
+        <ul style="margin-top:10px;">
+          <li>단계 누락 방지 <em>(품질 게이트)</em></li>
+          <li>레이어 간 불일치 조기 발견 <em>(impact-check)</em></li>
+          <li>회귀 버그 조기 차단 <em>(회귀 테스트)</em></li>
+        </ul>
+        <h3 style="margin-top:18px;">📚 지식 축적</h3>
+        <ul>
+          <li>CLAUDE.md에 컨텍스트 영속 보존</li>
+          <li>docs/ 산출물이 자동 문서화</li>
+          <li>변경 이력 자동 기록</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 23 · 시작하기 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide">
+    <h2>시작하기</h2>
+    <div class="grid2" style="margin-top:14px;">
+      <div>
+        <h3>3단계로 시작</h3>
+        <pre style="margin-top:10px; font-size:.82rem;"># 1. 템플릿 클론
+git clone https://github.com/MasterKwon/
+  claude-code-harness-template.git my-project
+cd my-project
+
+# 2. 새 저장소 초기화
+rm -rf .git
+git init && git checkout -b develop
+
+# 3. Claude Code에서
+/project-setup</pre>
+        <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+          <code>/pipeline-full</code>
+          <span style="color:var(--text2); font-size:.85rem;">← 신규 프로젝트</span>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;">
+          <code>/pipeline-change</code>
+          <span style="color:var(--text2); font-size:.85rem;">← 기존 프로젝트 변경</span>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;">
+          <code>/pipeline-maintenance</code>
+          <span style="color:var(--text2); font-size:.85rem;">← 운영 유지보수</span>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div class="card">
+          <h3>포함된 가이드</h3>
+          <ul>
+            <li><code>docs/harness/onboarding.md</code> — 온보딩 가이드</li>
+            <li><code>docs/harness/CLAUDE.md.template</code> — 빈 템플릿</li>
+            <li><code>docs/harness/CHANGELOG.md</code> — 변경 이력</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>파일 구조</h3>
+          <pre style="font-size:.7rem; padding:10px;">.claude/
+├── commands/    49개
+├── skills/      단계별 로직
+│   └── stacks/  기술스택 플러그인
+└── hooks/       자동화 트리거
+docs/
+├── 00.input ~ 06.ship/</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 24 · 마지막 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide slide-end">
+    <div style="font-size:4rem; margin-bottom:24px;">🎯</div>
+    <h1>Q &amp; A</h1>
+    <p style="margin-top:16px;">github.com/MasterKwon/claude-code-harness-template</p>
+    <div style="margin-top:40px; display:flex; gap:24px; justify-content:center;">
+      <div class="stat">
+        <div class="stat-num">49</div>
+        <div class="stat-label">슬래시 커맨드</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">3</div>
+        <div class="stat-label">파이프라인</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">13</div>
+        <div class="stat-label">보완된 취약점</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /deck -->
+
+<!-- ── 내비게이션 UI ── -->
+<div id="nav">
+  <button class="nav-btn" id="btn-prev" title="이전 (←)">‹</button>
+  <span id="counter">1 / 24</span>
+  <button class="nav-btn" id="btn-next" title="다음 (→)">›</button>
+</div>
+<div id="progress-bar"></div>
+<div id="hint">← → Space · F 전체화면 · P 인쇄</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let cur = 0;
+
+  function go(n) {
+    slides[cur].classList.remove('active');
+    cur = Math.max(0, Math.min(total - 1, n));
+    slides[cur].classList.add('active');
+    document.getElementById('counter').textContent = `${cur + 1} / ${total}`;
+    document.getElementById('progress-bar').style.width = `${((cur + 1) / total) * 100}%`;
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => go(cur - 1));
+  document.getElementById('btn-next').addEventListener('click', () => go(cur + 1));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); go(cur + 1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp')                   { e.preventDefault(); go(cur - 1); }
+    if (e.key === 'Home') go(0);
+    if (e.key === 'End')  go(total - 1);
+    if (e.key === 'f' || e.key === 'F') document.documentElement.requestFullscreen?.();
+    if ((e.key === 'p' || e.key === 'P') && !e.metaKey && !e.ctrlKey) window.print();
+  });
+
+  // 스와이프 지원
+  let touchX = 0;
+  document.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; });
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 50) go(dx < 0 ? cur + 1 : cur - 1);
+  });
+</script>
+</body>
+</html>
