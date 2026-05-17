@@ -76,4 +76,5 @@ Read `.claude/skills/test-e2e.md` and follow all instructions.
 **실패 항목 있으면**: 롤백 맵(`/pipeline-full` 참조)을 기준으로 원인 단계 특정 후 조치.
 **모두 통과하면**: `docs/05.test/report-e2e.md`를 `docs/05.test/reviewed/report-e2e.md`로 복사.
 
-테스트 단계 완료. 사용자에게 최종 결과를 보고합니다.
+테스트 단계 완료. 사용자에게 묻지 말고 즉시 `.claude/skills/cross-check-test.md` 스킬을 연계 실행하여 `docs/05.test/cross-check.md`를 생성합니다.
+생성 완료 후 최종 결과를 보고합니다.

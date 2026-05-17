@@ -72,6 +72,10 @@ git add docs/
 git commit -m "maint: 설계 변경 — (변경 요청 내용 요약)"
 ```
 
+설계 변경 완료 후 사용자에게 묻지 말고 즉시 `.claude/skills/cross-check-design.md` 스킬을 연계 실행하여 `docs/02.design/cross-check.md`를 생성합니다.
+
+> **교차검증 권장**: `docs/02.design/cross-check.md`를 타 LLM에 붙여넣고 구현 시작 전 설계 변경을 검증하세요.
+
 ---
 
 ## Phase 3 — 영향도 검증
@@ -148,6 +152,10 @@ QA 통과 후 커밋:
 git add docs/05.test/
 git commit -m "maint: AI QA 통과 — (변경 요청 내용 요약)"
 ```
+
+QA 완료 후 사용자에게 묻지 말고 즉시 `.claude/skills/cross-check-test.md` 스킬을 연계 실행하여 `docs/05.test/cross-check.md`를 생성합니다.
+
+> **교차검증 권장**: `docs/05.test/cross-check.md`를 타 LLM에 붙여넣고 Dev 배포 전 테스트 커버리지를 검증하세요.
 
 ---
 

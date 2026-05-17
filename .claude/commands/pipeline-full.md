@@ -66,9 +66,11 @@ git push
 Read `.claude/skills/review-design.md` and follow all instructions.
 산출물: `docs/02.design/design-review-report.md`
 
-- PASS → Phase 2.7로 진행
+- PASS → `docs/02.design/cross-check.md` 자동 생성 (타 LLM 교차검증 브리핑) → Phase 2.7로 진행
 - FAIL (설계 문제만) → 해당 설계 스킬 Patch 모드 실행 (`/design-api`, `/design-screen`, `/design-db`) 후 재리뷰
 - FAIL (분석 보완 사항 있음) → `/refine-analyze-requirements` → 영향 설계 재실행 → 재리뷰
+
+> **교차검증 권장**: `docs/02.design/cross-check.md`를 타 LLM에 붙여넣고 개발 시작 전 설계를 검증하세요.
 
 ---
 

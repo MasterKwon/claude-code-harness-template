@@ -125,9 +125,11 @@ git push
 Read `.claude/skills/review-design.md` and follow all instructions.
 산출물: `docs/02.design/design-review-report.md`
 
-- PASS → Phase 5로 진행
+- PASS → `docs/02.design/cross-check.md` 자동 생성 (타 LLM 교차검증 브리핑) → Phase 5로 진행
 - FAIL (설계 문제만) → 해당 설계 스킬 Patch 모드 실행 후 재리뷰
 - FAIL (분석 보완 사항 있음) → `/refine-analyze-requirements` → 영향 설계 재실행 → 재리뷰
+
+> **교차검증 권장**: `docs/02.design/cross-check.md`를 타 LLM에 붙여넣고 구현 시작 전 설계를 검증하세요.
 
 ---
 
@@ -215,6 +217,10 @@ Read `.claude/skills/test-e2e.md` and follow all instructions.
 
 > E2E 시나리오에 **변경 전 기존 흐름도 포함**합니다.
 > 새 기능만 통과해도 기존 흐름이 깨지면 실패입니다.
+
+테스트 완료 후 사용자에게 묻지 말고 즉시 `.claude/skills/cross-check-test.md` 스킬을 연계 실행하여 `docs/05.test/cross-check.md`를 생성합니다.
+
+> **교차검증 권장**: `docs/05.test/cross-check.md`를 타 LLM에 붙여넣고 Dev 배포 전 테스트 커버리지를 검증하세요.
 
 **→ 테스트 완료 후 사용자 확인을 받고 다음 Phase로 진행하세요.**
 

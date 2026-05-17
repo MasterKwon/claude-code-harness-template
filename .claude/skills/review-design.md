@@ -93,7 +93,12 @@
 (2~3줄 요약)
 
 ## 산출물 자동 생성 파이프라인
-종합 결과가 `PASS`로 판정된 경우, 사용자에게 묻지 말고 즉시 `.claude/skills/deliverable-design.md` 스킬을 연계 실행하여 고객용 요약 산출물(Markdown 및 PDF) 생성을 완전히 마친 후 최종 결과를 보고하세요.
+종합 결과가 `PASS`로 판정된 경우, 사용자에게 묻지 말고 즉시 아래 두 스킬을 순서대로 연계 실행합니다.
+
+1. `.claude/skills/deliverable-design.md` — 고객용 요약 산출물(Markdown 및 PDF) 생성
+2. `.claude/skills/cross-check-design.md` — 타 LLM 교차검증 브리핑(`docs/02.design/cross-check.md`) 생성
+
+두 파일 생성이 모두 완료된 후 최종 결과를 보고하세요.
 
 ## 다음 단계
 - PASS: 산출물 생성 완료 후 `/build-all` 실행 안내
