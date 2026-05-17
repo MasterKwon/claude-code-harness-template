@@ -5,17 +5,17 @@
 ## 파이프라인 구조
 
 ```
-[분석]                    [설계]                    [구현]
-analyze-requirements  →  design-screen         →  build-db
-analyze-asis          →  design-db             →  build-api
-analyze-gap           →  design-api            →  build-screen
+[분석]                    [설계]          [설계리뷰]    [TC설계]         [구현]
+analyze-requirements  →  design-screen  →            →  design-tc    →  build-db
+analyze-asis          →  design-db      → review-    →               →  build-api
+analyze-gap           →  design-api     →  design    →               →  build-screen
 
-      ↓
-[리뷰]                    [테스트]                  [배포]
-review-all            →  test-db               →  ship
-                      →  test-api
-                      →  test-screen
-                      →  test-e2e
+                                                                ↓
+[영향도 검사]             [리뷰]         [AI QA - Local]   [Dev 배포]   [UAT]        [운영 배포]
+impact-check          →  review-all  →  test-db        →  deploy-dev → uat-check →  ship
+                                     →  test-api
+                                     →  test-screen
+                                     →  test-e2e
 ```
 
 ## 실행 순서
@@ -62,6 +62,27 @@ git commit -m "phase2: design-all 완료"
 git push
 ```
 
+### Phase 2.5 — 설계 리뷰
+Read `.claude/skills/review-design.md` and follow all instructions.
+산출물: `docs/02.design/design-review-report.md`
+
+- PASS → Phase 2.7로 진행
+- FAIL (설계 문제만) → 해당 설계 스킬 Patch 모드 실행 (`/design-api`, `/design-screen`, `/design-db`) 후 재리뷰
+- FAIL (분석 보완 사항 있음) → `/refine-analyze-requirements` → 영향 설계 재실행 → 재리뷰
+
+---
+
+### Phase 2.7 — UAT 체크리스트 설계
+Read `.claude/skills/design-tc.md` and follow all instructions.
+산출물: `docs/02.design/tc/uat-checklist.md`
+
+> 구현 시작 전에 **사람이 Dev 환경에서 직접 수행할 UAT 항목**을 먼저 정의합니다.
+> Phase 5.5 Dev 배포 완료 후, 이 체크리스트를 QA 담당자에게 전달합니다.
+
+**→ UAT 체크리스트 작성 완료 후 Phase 3으로 진행하세요.**
+
+---
+
 ### Phase 3 — 구현
 Read `.claude/skills/build-db.md` and follow all instructions.
 Read `.claude/skills/build-api.md` and follow all instructions.
@@ -76,8 +97,22 @@ git commit -m "phase3: build-all 완료"
 git push
 ```
 
+### Phase 3.5 — 구현 영향도 검사
+Read `.claude/skills/impact-check.md` and follow all instructions.
+산출물: `docs/03.build/impact-check.md`
+
+> 신규 개발에서는 회귀 위험보다 **레이어 간 정합성**을 검증합니다.
+> build-db → build-api → build-screen 순서로 구현했을 때 각 레이어 간 가정이 일치하는지 확인합니다.
+
+**불일치 항목 발견 시**: 해당 레이어 `/refine-build-*` 실행 후 재검사.
+**High 항목 없으면**: 즉시 Phase 4로 진행.
+
+---
+
 ### Phase 4 — 리뷰
 Read `.claude/skills/review-all.md` and follow all instructions. (`docs/04.review/report.md` 생성)
+
+> `docs/03.build/impact-check.md`의 High/Medium 항목을 중점 검토합니다.
 
 - High 심각도 문제 발견 시: 해당 구현 단계로 롤백 후 재실행
 - 모두 통과 시: `docs/04.review/reviewed/report.md`로 복사 후 다음 Phase 진행
@@ -91,7 +126,10 @@ git commit -m "phase4: review-all 통과"
 git push
 ```
 
-### Phase 5 — 테스트
+### Phase 5 — AI 자동화 테스트 (Local)
+
+> 로컬 환경에서 AI가 자동 실행하는 테스트입니다.
+
 Read `.claude/skills/test-db.md` and follow all instructions. (`docs/05.test/report-db.md` 생성)
 Read `.claude/skills/test-api.md` and follow all instructions. (`docs/05.test/report-api.md` 생성)
 Read `.claude/skills/test-screen.md` and follow all instructions. (`docs/05.test/report-screen.md` 생성)
@@ -106,13 +144,42 @@ git commit -m "phase5: test-all 통과"
 git push
 ```
 
-### Phase 6 — 배포
+---
+
+### Phase 5.5 — Dev 서버 배포
+
+> UAT를 수행할 수 있는 Dev/Staging 서버에 배포합니다.
+
+Read `.claude/skills/deploy-dev.md` and follow all instructions.
+
+배포 완료 후:
+- `docs/02.design/tc/uat-checklist.md` 를 QA 담당자(개발팀 외 인원)에게 전달합니다.
+- UAT 완료를 기다립니다.
+
+---
+
+### Phase 6 — UAT (Dev 환경)
+
+> QA 담당자가 Dev 서버에서 `docs/02.design/tc/uat-checklist.md` 기준으로 직접 수행합니다.
+> 개발팀이 대신 수행하지 않습니다.
+
+UAT 완료 기준:
+- 체크리스트 전체 P/F 기입 완료
+- FAIL 항목 없음
+- 결과를 `docs/06.uat/uat-result.md` 에 기록
+
+**→ UAT PASS 확인 후 Phase 7로 진행합니다.**
+
+---
+
+### Phase 7 — 운영 배포
+
 Read `.claude/skills/ship.md` and follow all instructions. (`docs/06.ship/checklist.md` 생성)
 
 배포 체크리스트 완료 후 커밋 및 main 머지:
 ```bash
 git add docs/06.ship/
-git commit -m "phase6: ship 완료"
+git commit -m "phase7: ship 완료"
 git push
 # GitHub에서 PR → main 머지
 ```
@@ -130,9 +197,18 @@ git push
 ```
 문제 발견 위치          원인                       조치 커맨드                       이후 재실행 범위
 ─────────────────────────────────────────────────────────────────────────────────────────────────
-[배포]
-  ship 실패           → 테스트 미완료              /test-all                         ship
+[운영 배포]
+  ship 실패           → UAT 미완료                 UAT 재수행                        ship
   ship 실패           → 환경설정 오류              직접 수정                         ship
+
+[UAT]
+  UAT FAIL            → 화면 구현 오류             /refine-build-screen              test-screen, deploy-dev, UAT
+  UAT FAIL            → API 오류                   /refine-build-api                 test-api, deploy-dev, UAT
+  UAT FAIL            → 기능 누락                  /refine-design-{api|screen|db}    build-*, test-*, deploy-dev, UAT
+
+[Dev 배포]
+  deploy-dev 실패     → 테스트 미통과              /test-all                         deploy-dev
+  deploy-dev 실패     → 환경설정 오류              직접 수정                         deploy-dev
 
 [테스트]
   test-e2e 실패      → 화면 구현 오류             /refine-build-screen              review-all, test-screen, test-e2e
@@ -150,6 +226,10 @@ git push
   build-screen 중    → API 설계 누락              /refine-design-api                build-api, build-screen 재실행
   build-api 중       → DB 설계 누락               /refine-design-db                 build-db, build-api 재실행
   build-db 중        → DB 설계 오류               /refine-design-db                 build-db 재실행
+
+[설계 리뷰]
+  review-design FAIL → 설계 문제                  /design-{api|screen|db}           review-design 재실행
+  review-design FAIL → 분석 보완 필요              /refine-analyze-requirements      영향 설계 재실행, review-design
 
 [설계]
   design-api 중      → 화면 설계 누락             /refine-design-screen             design-api 재실행

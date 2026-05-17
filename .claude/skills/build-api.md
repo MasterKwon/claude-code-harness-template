@@ -24,6 +24,12 @@ Active Skills가 없거나 비어 있으면 기본값 사용:
 - orm: `.claude/skills/stacks/orm/prisma.md`
 - api-style: `.claude/skills/stacks/api-style/rest.md`
 
+## 기존 구현 확인 (증분 빌드)
+작업 전 반드시 현재 구현 상태를 파악합니다:
+- 라우트 파일이 존재하면 → 읽고 설계서 대비 누락된 엔드포인트만 추가
+- 기존 엔드포인트가 설계서와 일치하면 → 건너뜀
+- 기존 엔드포인트가 설계서와 다르면 → 해당 부분만 수정 (파일 전체 재작성 금지)
+
 ## 프로세스
 1. `docs/02.design/reviewed/api.md` 읽기
 2. 프로젝트 구조 파악 (라우터, 미들웨어, 서비스 레이어)

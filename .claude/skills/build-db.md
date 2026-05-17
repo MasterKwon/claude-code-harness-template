@@ -15,6 +15,13 @@ orm: CLAUDE.md에 명시된 경로 읽기  (스키마 패턴, DB 클라이언트
 Active Skills가 없거나 비어 있으면 기본값 사용:
 - orm: `.claude/skills/stacks/orm/prisma.md`
 
+## 기존 구현 확인 (증분 빌드)
+작업 전 반드시 현재 구현 상태를 파악합니다:
+- `schema.prisma`가 존재하면 → 읽고 설계서 대비 누락된 모델·컬럼만 추가
+- 마이그레이션 파일이 있으면 → 기존 migration 위에 새 migration 추가 (기존 파일 수정 금지)
+- 파일이 없으면 → 새로 구현
+기존 스키마 전체 삭제·재작성 금지
+
 ## 프로세스
 1. `docs/02.design/reviewed/db.md` 읽기
 2. 프로젝트의 DB/ORM 기술 스택 확인

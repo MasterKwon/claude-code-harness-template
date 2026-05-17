@@ -108,3 +108,16 @@ python docs/00.input/extract.py
 ```bash
 pip install openpyxl python-pptx chardet
 ```
+
+---
+
+## 리뷰 보완(Refinement) 모드 (옵션)
+만약 사용자가 아래 리뷰 보고서 중 하나를 제공하거나 리뷰 보완을 지시한 경우:
+- `docs/01.analyze/analyze-review-report.md` (분석 리뷰에서 발견된 문제)
+- `docs/02.design/design-review-report.md` (설계 리뷰에서 발견된 분석 보완 사항)
+
+1. **전체 재작성 금지**: 기존 `requirements.md` 문서를 처음부터 끝까지 다시 쓰지 마세요.
+2. **문제 식별**: 리뷰 보고서의 "문제 목록" 및 "분석 보완 사항" 중 분석 단계와 관련된 항목만 타겟팅합니다. 설계 리뷰 보고서의 경우 "분석 보완 사항" 섹션을 우선 확인합니다.
+3. **부분 수정(Patch)**: 기존 문서에서 지적된 부분만 정밀하게 수정 및 추가하여 문서를 보완합니다.
+4. **reviewed 갱신**: 보완 완료 후 `docs/01.analyze/requirements.md`를 `docs/01.analyze/reviewed/requirements.md`로 복사합니다.
+

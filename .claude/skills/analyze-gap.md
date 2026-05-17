@@ -42,3 +42,11 @@
 
 ---
 `docs/01.analyze/reviewed/requirements.md`와 `docs/01.analyze/reviewed/asis.md`가 준비되어 있어야 합니다. 두 파일이 있으면 바로 분석을 시작합니다.
+
+---
+
+## 리뷰 보완(Refinement) 모드 (옵션)
+만약 사용자가 `docs/01.analyze/analyze-review-report.md` 파일을 제공하거나 리뷰 보완을 지시한 경우:
+1. **전체 재작성 금지**: 기존 `gap.md` 문서를 처음부터 끝까지 다시 쓰지 마세요.
+2. **문제 식별**: 리뷰 보고서의 "문제 목록" 중 GAP 분석 결과와 관련된 항목만 타겟팅합니다.
+3. **부분 수정(Patch)**: 기존 문서에서 지적된 부분만 정밀하게 수정 및 추가하여 문서를 보완합니다.

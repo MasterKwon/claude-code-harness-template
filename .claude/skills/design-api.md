@@ -17,6 +17,34 @@ Active Skills가 없거나 비어 있으면 기본값 사용:
 - arch: `.claude/skills/stacks/arch/msa.md`
 - api-style: `.claude/skills/stacks/api-style/rest.md`
 
+## 기존 설계 확인 (증분 설계)
+작업 전 반드시 현재 설계 상태를 파악합니다:
+- `docs/02.design/api.md`가 존재하면 → 읽고 요구사항 대비 누락된 엔드포인트만 추가
+- 기존 엔드포인트가 요구사항과 일치하면 → 건너뜀
+- 기존 설계를 변경해야 하는 경우 → 변경 내용과 영향받는 구현 파일을 **구현 영향도** 섹션에 기록
+기존 설계 전체 삭제·재작성 금지
+
+## Step 0 — REQ ↔ ASIS 충돌 사전 감지
+
+`docs/01.analyze/reviewed/asis.md`가 존재하면 설계 시작 전 아래를 확인합니다.
+
+1. `requirements.md`와 `asis.md`를 교차 읽기
+2. 동일 대상(API/엔드포인트/인증 방식)에 대해 상충되는 내용 발견 시 **즉시 중단**하고 사용자에게 보고:
+
+```
+[REQ ↔ ASIS 충돌 감지]
+- 대상: (충돌 항목명)
+- requirements.md: (내용)
+- asis.md: (내용)
+→ 어느 쪽을 기준으로 설계할지 결정해 주세요.
+```
+
+3. 사용자 결정을 받은 후 설계 진행
+
+`asis.md`가 없으면 이 단계를 Skip하고 바로 설계를 시작합니다.
+
+---
+
 ## 프로세스
 1. `docs/02.design/reviewed/screen.md`에서 화면이 호출하는 API 목록 추출
 2. `docs/02.design/reviewed/db.md`에서 각 API가 접근할 데이터 구조 확인
@@ -60,7 +88,21 @@ Active Skills가 없거나 비어 있으면 기본값 사용:
 - 인증: Bearer Token (JWT)
 - 에러 응답 형식: `{ "code": "string", "message": "string" }`
 - 페이지네이션: `?page=1&size=20`
+
+## 구현 영향도
+기존 구현 중 이번 설계 변경으로 영향받는 파일 목록:
+| 파일 | 변경 이유 |
+|------|----------|
+| (없으면 "없음") | |
 ```
 
 ---
 `docs/02.design/reviewed/screen.md`와 `docs/02.design/reviewed/db.md`가 준비되어 있어야 합니다.
+
+---
+
+## 리뷰 보완(Refinement) 모드 (옵션)
+만약 사용자가 `docs/02.design/design-review-report.md` 파일을 제공하거나 리뷰 보완을 지시한 경우:
+1. **전체 재작성 금지**: 기존 `api.md` 문서를 처음부터 끝까지 다시 쓰지 마세요.
+2. **문제 식별**: 리뷰 보고서의 "문제 목록" 및 "분석 보완 사항" 중 API 설계와 관련된 항목만 타겟팅합니다.
+3. **부분 수정(Patch)**: 기존 문서에서 지적된 부분(누락된 API 등)만 정밀하게 수정 및 추가하여 문서를 보완합니다.

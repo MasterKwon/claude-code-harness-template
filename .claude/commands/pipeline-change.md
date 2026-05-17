@@ -15,8 +15,8 @@ analyze-asis         →  analyze-requirements  →  analyze-gap
 GAP 결과 기반            GAP 결과 기반             review-all
 
       ↓
-[테스트]                                          [배포]
-변경 기능 + 회귀 테스트                             ship
+[AI QA - Local]         [Dev 배포]               [UAT]            [운영 배포]
+변경 기능 + 회귀 테스트  →  deploy-dev           →  uat-checklist  →  ship
 ```
 
 ---
@@ -121,6 +121,14 @@ git commit -m "change-phase4: design 완료 (영향 범위만)"
 git push
 ```
 
+### Phase 4.5 — 설계 리뷰
+Read `.claude/skills/review-design.md` and follow all instructions.
+산출물: `docs/02.design/design-review-report.md`
+
+- PASS → Phase 5로 진행
+- FAIL (설계 문제만) → 해당 설계 스킬 Patch 모드 실행 후 재리뷰
+- FAIL (분석 보완 사항 있음) → `/refine-analyze-requirements` → 영향 설계 재실행 → 재리뷰
+
 ---
 
 ### Phase 5 — 영향 범위 구현
@@ -147,12 +155,27 @@ git push
 
 ---
 
+### Phase 5.5 — 변경 영향도 검사
+
+Phase 5 구현 완료 직후 실행합니다.
+Read `.claude/skills/impact-check.md` and follow all instructions.
+산출물: `docs/03.build/impact-check.md`
+
+> GAP에서 계획한 변경 범위와 실제 구현된 변경 범위를 교차 검증합니다.
+> 기존 기능에 미치는 영향을 파악하여 리뷰와 회귀 테스트 범위를 결정합니다.
+
+**계획 외 변경 발견 시**: 작업 중단 후 사용자에게 보고. 의도된 변경이면 GAP에 추가, 아니면 롤백.
+**High 영향도 항목 발견 시**: 사용자에게 보고하고 확인 후 Phase 6 진행.
+**Medium 이하만 있으면**: 즉시 Phase 6으로 진행.
+
+---
+
 ### Phase 6 — 리뷰
 
 Read `.claude/skills/review-all.md` and follow all instructions.
 산출물: `docs/04.review/report.md`
 
-> 변경된 코드와 **기존 코드와의 연결 지점**을 중점 검토합니다.
+> `docs/03.build/impact-check.md`의 High/Medium 항목을 중점 검토합니다.
 > (수정된 API를 호출하는 기존 화면, 변경된 DB 컬럼을 쓰는 기존 로직 등)
 
 **→ High 심각도 없으면** `docs/04.review/reviewed/report.md`로 복사 후 커밋:
@@ -164,7 +187,9 @@ git push
 
 ---
 
-### Phase 7 — 테스트 (변경 기능 + 회귀)
+### Phase 7 — AI 자동화 테스트 (Local)
+
+> 로컬 환경에서 AI가 자동 실행하는 테스트입니다.
 
 #### 변경/신규 기능 테스트
 GAP에 있는 항목만 테스트합니다.
@@ -177,14 +202,11 @@ GAP에 Screen 신규/변경 있음 → Read `.claude/skills/test-screen.md` and 
 
 #### 회귀 테스트 ← 신규 파이프라인과의 차이점
 
-변경 사항이 기존 기능을 깨뜨리지 않았는지 확인합니다.
+`docs/03.build/impact-check.md`의 회귀 테스트 대상 목록을 참조합니다.
 
-```
-회귀 테스트 대상 식별:
-1. 수정된 API를 호출하는 기존 화면/서비스
-2. 변경된 DB 테이블/컬럼을 사용하는 기존 로직
-3. 수정된 공통 컴포넌트를 사용하는 기존 화면
-```
+- **High 항목**: 반드시 테스트. 실패 시 릴리즈 차단.
+- **Medium 항목**: 테스트. 실패 시 사용자에게 보고.
+- **Low 항목**: 선택적으로 테스트.
 
 각 대상에 대해 **기존 동작이 유지되는지** 확인하고 결과를 테스트 보고서에 포함합니다.
 
@@ -205,7 +227,31 @@ git push
 
 ---
 
-### Phase 8 — 배포
+### Phase 7.5 — Dev 서버 배포
+
+> UAT를 수행할 수 있는 Dev/Staging 서버에 배포합니다.
+
+Read `.claude/skills/deploy-dev.md` and follow all instructions.
+
+배포 완료 후:
+- `docs/02.design/tc/uat-checklist.md` 를 QA 담당자에게 전달합니다.
+
+---
+
+### Phase 8 — UAT (Dev 환경)
+
+> QA 담당자가 Dev 서버에서 `docs/02.design/tc/uat-checklist.md` 기준으로 직접 수행합니다.
+
+UAT 완료 기준:
+- 체크리스트 전체 P/F 기입 완료
+- FAIL 항목 없음
+- 결과를 `docs/06.uat/uat-result.md` 에 기록
+
+**→ UAT PASS 확인 후 Phase 9로 진행합니다.**
+
+---
+
+### Phase 9 — 운영 배포
 
 Read `.claude/skills/ship.md` and follow all instructions.
 산출물: `docs/06.ship/checklist.md`
@@ -213,7 +259,7 @@ Read `.claude/skills/ship.md` and follow all instructions.
 배포 체크리스트 완료 후 커밋 및 main 머지:
 ```bash
 git add docs/06.ship/
-git commit -m "change-phase8: ship 완료"
+git commit -m "change-phase9: ship 완료"
 git push
 # GitHub에서 PR → main 머지
 ```
@@ -240,6 +286,10 @@ git push
 [구현 중]
   기존 코드 충돌       → AS-IS 분석 부족          /refine-analyze-asis              GAP 재확인 후 구현 재실행
   설계 누락 발견       → GAP 범위 오류            /refine-analyze-gap               영향 설계 재실행
+
+[설계 리뷰]
+  review-design FAIL → 설계 문제                  /design-{api|screen|db}           review-design 재실행
+  review-design FAIL → 분석 보완 필요              /refine-analyze-requirements      영향 설계 재실행, review-design
 
 [설계 중]
   기존 API 충돌        → AS-IS 분석 부족          /refine-analyze-asis              analyze-gap, 해당 설계 재실행

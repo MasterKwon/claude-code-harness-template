@@ -4,8 +4,11 @@
 
 ## 실행 순서
 1. `docs/01.analyze/requirements.md` 읽기
-2. Read `.claude/skills/analyze-requirements.md` — 완료 기준 확인
-3. 누락/불완전 항목 식별 후 해당 항목만 보완
+2. 리뷰 보고서 확인 (존재하는 것 모두 읽기):
+   - `docs/01.analyze/analyze-review-report.md`
+   - `docs/02.design/design-review-report.md` (분석 보완 사항 섹션)
+3. Read `.claude/skills/analyze-requirements.md` — 리뷰 보완(Refinement) 모드로 실행
+4. 지적된 항목만 보완
 
 ## 보완 후 확인
 - [ ] 모든 기능 요구사항에 우선순위(Must/Should/Could) 부여
