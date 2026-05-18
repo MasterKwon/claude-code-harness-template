@@ -103,7 +103,7 @@ analyze-gap           →  design-api     →  design    →             →  bu
 
                                                               ↓
 [영향도 검사]            [리뷰]          [AI QA - Local]   [Dev 배포]  [UAT]     [운영 배포]
-impact-check         →  review-all  →  test-db        →  deploy-dev → UAT    →  ship
+impact-check         →  review-all  →  test-db        →  deploy-dev → UAT    →  deploy-prd
                                      →  test-api
                                      →  test-screen
                                      →  test-e2e
@@ -119,9 +119,9 @@ impact-check         →  review-all  →  test-db        →  deploy-dev → UA
 | 3 | `/build-all` + `/impact-check` | 소스코드, impact-check.md |
 | 4 | `/review-all` | review-report.md |
 | 5 | `/test-all` | test-report-*.md |
-| 5.5 | `/deploy-dev` | Dev 환경 배포 |
-| 6 | UAT | uat-result.md |
-| 7 | `/ship` | 운영 배포 체크리스트 |
+| 5.5 | `/deploy-dev` | Dev 배포, `06.deploy/deploy-dev.md` |
+| 6 | UAT | `06.deploy/uat-result.md` — QA 담당자 수행 |
+| 7 | `/deploy-prd` | 운영 배포 체크리스트, `06.deploy/deploy-prd.md` |
 
 ---
 
@@ -137,7 +137,7 @@ WHY 정의          →  analyze-asis      →  analyze-gap
 
       ↓
 [영향 범위만 설계]    [영향 범위만 구현]    [리뷰 + 테스트]      [배포]
-GAP 결과 기반        GAP 결과 기반          회귀 테스트 포함   deploy-dev → ship
+GAP 결과 기반        GAP 결과 기반          회귀 테스트 포함   deploy-dev → deploy-prd
 
 ↺ 다음 변경 → Phase 1부터 반복
 ```
@@ -176,7 +176,7 @@ GAP 결과 기반        GAP 결과 기반          회귀 테스트 포함   de
 | 구현 | 7 | build-db, build-api, build-screen |
 | 리뷰 | 6 | review-all, review-design, impact-check |
 | 테스트 | 10 | test-db, api, screen, e2e, **test-ui-chrome** |
-| 배포·운영 | 7 | deploy-dev, ship, customer-request |
+| 배포·운영 | 7 | deploy-dev, deploy-prd, customer-request |
 | **합계** | **51** | |
 
 ### refine-* 패턴
@@ -221,7 +221,7 @@ GAP 결과 기반        GAP 결과 기반          회귀 테스트 포함   de
 ────────────────────────────────────────────────────
 테스트 실패    → API 구현 오류  → /refine-build-api → 리뷰 → 테스트 재실행
 UAT FAIL      → 기능 누락      → /refine-design-*  → 구현 → 테스트 → 배포 → UAT
-운영 배포 실패 → 환경설정 오류  → 직접 수정         → ship 재실행
+운영 배포 실패 → 환경설정 오류  → 직접 수정         → deploy-prd 재실행
 ```
 
 ### 기술스택 플러그인
@@ -350,6 +350,6 @@ rm -rf .git && git init && git checkout -b develop
     ├── 03.build/       구현 산출물 (impact-check)
     ├── 04.review/      리뷰 보고서
     ├── 05.test/        테스트 보고서
-    ├── 06.ship/        배포 체크리스트
+    ├── 06.deploy/      배포 산출물 (deploy-dev, uat-result, deploy-prd)
     └── harness/        이 문서들
 ```

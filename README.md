@@ -87,9 +87,9 @@ Claude Code에서 실행:
 | 3 | `/build-all` + `/impact-check` | 소스코드, `impact-check.md` |
 | 4 | `/review-all` | `review-report.md` |
 | 5 | `/test-all` | `test-report-*.md`, `ui-test-chrome.md` + `.xlsx` (Chrome 사이드패널 지시문) |
-| 5.5 | `/deploy-dev` | Dev 환경 배포 |
-| 6 | UAT | `uat-result.md` |
-| 7 | `/ship` | 운영 배포 체크리스트 |
+| 5.5 | `/deploy-dev` | Dev 환경 배포, `06.deploy/deploy-dev.md` |
+| 6 | UAT | `06.deploy/uat-result.md` — QA 담당자 수행 |
+| 7 | `/deploy-prd` | 운영 배포 체크리스트, `06.deploy/deploy-prd.md` |
 
 > Phase 0.5 / 1.7 은 v2.2.0에 추가된 **선택적 Bridge 단계**입니다. AI 산출물을 사람 작업(대화·시각 검토)과 잇는 단계로, 필요할 때만 실행합니다. 자세한 내용은 [`docs/harness/CHANGELOG.md`](docs/harness/CHANGELOG.md) 참고.
 
@@ -126,7 +126,7 @@ WHY 정의 → AS-IS 분석 → GAP 확정 → 영향 범위만 설계·구현·
     ├── 03.build/                # 구현 산출물 (impact-check.md)
     ├── 04.review/               # 리뷰 보고서
     ├── 05.test/                 # 테스트 보고서
-    ├── 06.ship/                 # 배포 체크리스트
+    ├── 06.deploy/               # 배포 산출물 (deploy-dev, uat-result, deploy-prd)
     └── harness/                 # 하네스 가이드 문서
         ├── presentation.html    # 발표자료
         ├── onboarding.md        # 온보딩 가이드

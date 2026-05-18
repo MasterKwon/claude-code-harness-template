@@ -5,7 +5,7 @@
 당신은 **DevOps 엔지니어** 역할입니다.
 AI QA(Local) 통과 후, UAT 수행 전에 **개발/스테이징 서버에 배포**합니다.
 
-> 이 배포는 UAT를 위한 배포입니다. 운영 배포(`/ship`)와 다릅니다.
+> 이 배포는 UAT를 위한 배포입니다. 운영 배포(`/deploy-prd`)와 다릅니다.
 
 ---
 
@@ -53,6 +53,8 @@ curl http://{DEV_SERVER}/health
 
 ## 완료 보고
 
+`docs/06.deploy/deploy-dev.md` 에 저장합니다:
+
 ```
 [Dev 배포 완료]
 배포 환경: Dev / Staging
@@ -61,5 +63,6 @@ curl http://{DEV_SERVER}/health
 헬스체크: 정상 / 비정상
 
 → UAT 체크리스트(docs/02.design/tc/uat-checklist.md)를 QA 담당자에게 전달하세요.
-→ UAT 완료 후 /ship 으로 운영 배포를 진행합니다.
+→ UAT 결과는 docs/06.deploy/uat-result.md 에 기록합니다.
+→ UAT 완료 후 /deploy-prd 로 운영 배포를 진행합니다.
 ```

@@ -48,10 +48,12 @@ docs/
 │   ├── ui-test-chrome.md       # Chrome 사이드패널 지시문 (v2.2.0, AI 생성)
 │   ├── ui-test-chrome.xlsx     # QA 체크리스트 템플릿 (v2.2.0, AI 생성)
 │   ├── ui-test-chrome_result.xlsx  # QA 기입 결과본 (v2.2.0, QA 수동 추가)
-│   └── reviewed/               # 테스트 통과본 (ship이 읽는 파일)
+│   └── reviewed/               # 테스트 통과본 (deploy-prd이 읽는 파일)
 │
-└── 06.ship/                # 배포 단계 산출물
-    └── checklist.md        # 배포 체크리스트
+└── 06.deploy/              # 배포 단계 산출물
+    ├── deploy-dev.md       # Dev 배포 체크리스트 (deploy-dev 산출물)
+    ├── uat-result.md       # UAT 결과 (QA 기록)
+    └── deploy-prd.md       # 운영 배포 체크리스트 (deploy-prd 산출물)
 ```
 
 ## 워크플로우
@@ -84,4 +86,5 @@ docs/
 | /test-screen | reviewed/screen.md, 소스코드 | 05.test/report-screen.md |
 | /test-e2e | 소스코드 전체 | 05.test/report-e2e.md |
 | /test-ui-chrome *(v2.2.0)* | 02.design/tc/uat-checklist.md | 05.test/ui-test-chrome.md + .xlsx |
-| /ship | 05.test/reviewed/* | 06.ship/checklist.md |
+| /deploy-dev | 소스코드, 테스트 보고서 | 06.deploy/deploy-dev.md |
+| /deploy-prd | 06.deploy/uat-result.md, 05.test/reviewed/* | 06.deploy/deploy-prd.md |

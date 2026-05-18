@@ -28,7 +28,7 @@ GAP 결과 기반            GAP 결과 기반             review-all
 
       ↓
 [AI QA - Local]         [Dev 배포]               [UAT]            [운영 배포]
-변경 기능 + 회귀 테스트  →  deploy-dev           →  uat-checklist  →  ship
+변경 기능 + 회귀 테스트  →  deploy-dev           →  uat-checklist  →  deploy-prd
 ```
 
 ---
@@ -314,7 +314,7 @@ git push
 UAT 완료 기준:
 - 체크리스트 전체 P/F 기입 완료
 - FAIL 항목 없음
-- 결과를 `docs/06.uat/uat-result.md` 에 기록
+- 결과를 `docs/06.deploy/uat-result.md` 에 기록
 
 **→ UAT PASS 확인 후 Phase 10으로 진행합니다.**
 
@@ -322,13 +322,13 @@ UAT 완료 기준:
 
 ## Phase 10 — 운영 배포
 
-Read `.claude/skills/ship.md` and follow all instructions.
-산출물: `docs/06.ship/checklist.md`
+Read `.claude/skills/deploy-prd.md` and follow all instructions.
+산출물: `docs/06.deploy/deploy-prd.md`
 
 배포 체크리스트 완료 후 커밋 및 main 머지:
 ```bash
-git add docs/06.ship/
-git commit -m "maint: ship 완료"
+git add docs/06.deploy/
+git commit -m "maint: deploy-prd 완료"
 git push
 # GitHub에서 PR → main 머지
 ```

@@ -49,7 +49,7 @@
 │   ├── impact-check.md
 │   ├── maintenance-init.md
 │   ├── project-setup.md
-│   └── ship.md
+│   └── deploy-prd.md
 ├── agents/            # 서브에이전트 정의
 │   ├── code-reviewer.yml
 │   ├── security-auditor.yml

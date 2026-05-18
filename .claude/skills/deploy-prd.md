@@ -5,7 +5,7 @@
 > Dev 환경 배포는 `/deploy-dev` 가 담당합니다. 이 스킬은 UAT 통과 후 운영 배포 전용입니다.
 
 ## 역할 원칙
-- UAT 결과(`docs/06.uat/uat-result.md`) PASS 확인 후 진행
+- UAT 결과(`docs/06.deploy/uat-result.md`) PASS 확인 후 진행
 - 테스트 보고서(`docs/05.test/`) 전체 존재 확인
 - 체크리스트 항목 중 하나라도 미통과 시 배포 불가
 - MSA 환경에서는 서비스 기동 순서가 중요 — 반드시 확인
@@ -52,10 +52,10 @@ curl http://localhost:{PORT}/health
 ```
 
 ## 출력
-`docs/06.ship/checklist.md` 생성:
+`docs/06.deploy/deploy-prd.md` 생성:
 
 ```
-# 배포 체크리스트
+# 운영 배포 체크리스트
 
 ## 배포 정보
 - 배포 일시: YYYY-MM-DD
@@ -75,4 +75,4 @@ curl http://localhost:{PORT}/health
 ```
 
 ---
-`docs/05.test/reviewed/` 의 테스트 보고서가 모두 존재해야 실행합니다.
+`docs/06.deploy/uat-result.md` 와 `docs/05.test/reviewed/` 의 테스트 보고서가 모두 존재해야 실행합니다.

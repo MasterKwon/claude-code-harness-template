@@ -38,7 +38,7 @@ git checkout -b develop
 │   └── settings.json                ← 필요 시 수정
 └── docs/
     ├── 00.input/                    ← 요구사항 원본 넣는 곳
-    ├── 01.analyze/ ~ 06.ship/       ← 파이프라인 산출물 (자동 생성)
+    ├── 01.analyze/ ~ 06.deploy/     ← 파이프라인 산출물 (자동 생성)
     └── harness/                     ← 이 가이드
 ```
 
@@ -197,8 +197,8 @@ git checkout -b develop
 |--------|------|
 | `/project-setup` | 신규 프로젝트 기술스택 선택 및 초기화 |
 | `/deploy-dev` | Dev 서버 배포 |
-| `/ship` | 운영 배포 체크리스트 |
-| `/refine-ship` | 배포 체크리스트 보완 |
+| `/deploy-prd` | 운영 배포 체크리스트 |
+| `/refine-deploy-prd` | 배포 체크리스트 보완 |
 | `/customer-request` | 고객 변경 요청 분류 및 처리 |
 | `/maintenance-init` | 유지보수 모드 초기화 (설계 문서 동기화) |
 | `/refine-impact-check` | 영향도 검사 보완 |
