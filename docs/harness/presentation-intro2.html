@@ -365,7 +365,46 @@ docs/02.design/db.md 를 읽어서
   </div>
 
   <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-  <!-- SLIDE 6 · 실습 · 내 스킬 만들기 -->
+  <!-- SLIDE 7 · 훅 자동 체크 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide">
+    <h2>스킬이 생성되는 순간 — 하네스가 스스로 검증한다</h2>
+    <p style="color: var(--text2); margin-bottom: 20px;">
+      Claude가 <code>.claude/skills/design-presentation.md</code>를 저장하는 순간,<br>
+      <strong style="color: var(--text);">PostToolUse 훅이 자동으로 구조를 점검합니다.</strong>
+    </p>
+
+    <div class="card" style="border-color: var(--cyan); margin-bottom: 20px;">
+      <div style="font-size: .72rem; color: var(--text2); margin-bottom: 10px; letter-spacing: .08em;">TERMINAL OUTPUT</div>
+      <pre style="font-size: .88rem; line-height: 2; background: transparent; border: none; padding: 0;">
+<span style="color: #8b949e;">[PostToolUse] .claude/hooks/skill-structure-check.sh 실행 중...</span>
+
+<span style="color: #39d353;">[skill-check] ✅ design-presentation — 구조 정상</span></pre>
+    </div>
+
+    <div class="grid2" style="gap: 16px; margin-bottom: 20px;">
+      <div class="card" style="border-left: 4px solid var(--cyan);">
+        <p style="font-size: .82rem; color: var(--text2); margin-bottom: 8px;">구조가 맞으면</p>
+        <p style="font-weight: 600; color: var(--cyan);">✅ 즉시 실행 가능</p>
+        <p style="font-size: .82rem; color: var(--text2); margin-top: 6px;">권장 모델 · 역할 정의 · 프로세스 섹션 모두 확인됨</p>
+      </div>
+      <div class="card" style="border-left: 4px solid var(--yellow);">
+        <p style="font-size: .82rem; color: var(--text2); margin-bottom: 8px;">구조가 틀리면</p>
+        <p style="font-weight: 600; color: var(--yellow);">⚠️ 항목별 안내 출력</p>
+        <pre style="font-size: .75rem; margin-top: 6px; background: transparent; border: none; padding: 0; color: var(--text2);">  • 권장 모델 누락
+  • 역할 정의 누락</pre>
+      </div>
+    </div>
+
+    <blockquote>
+      사람이 검사하지 않아도 됩니다.<br>
+      <strong>하네스가 새 스킬을 받자마자 스스로 검증합니다.</strong>
+      이게 하네스 엔지니어링입니다.
+    </blockquote>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 8 · 실습 · 내 스킬 만들기 -->
   <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
   <div class="slide">
     <div class="lab-header">
@@ -520,7 +559,7 @@ docs/02.design/db.md 를 읽어서
 <!-- ── 내비게이션 UI ── -->
 <div id="nav">
   <button class="nav-btn" id="btn-prev" title="이전 (←)">‹</button>
-  <span id="counter">1 / 10</span>
+  <span id="counter">1 / 11</span>
   <button class="nav-btn" id="btn-next" title="다음 (→)">›</button>
 </div>
 <div id="progress-bar"></div>
