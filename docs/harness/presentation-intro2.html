@@ -186,7 +186,43 @@
   </div>
 
   <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-  <!-- SLIDE 3 · 스킬은 어떻게 태어나나 -->
+  <!-- SLIDE 3 · 스킬이 꼭 필요한가? -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide">
+    <h2>그런데, 스킬이 꼭 필요한가?</h2>
+    <p style="color:var(--text2); margin-bottom:18px;">솔직히 말하면 — AI 자체로도 잘 합니다. 그런데 왜 굳이 <code>.claude/skills/</code> 폴더에 스킬을 만들까요?</p>
+
+    <div class="grid2" style="gap:18px; margin-bottom:18px;">
+      <div class="card" style="border-left:4px solid var(--text2);">
+        <h3 style="margin-top:0; color:var(--text2);">AI만 쓰면 (스킬 없이)</h3>
+        <ul>
+          <li>일회성 작업은 충분합니다</li>
+          <li>매번 처음부터 맥락을 설명해야 합니다</li>
+          <li>같은 요청이라도 답이 들쑥날쑥합니다</li>
+          <li>팀원마다 받는 결과가 다릅니다</li>
+          <li>좋은 결과는 그 대화창에서만 살아 있습니다</li>
+        </ul>
+      </div>
+      <div class="card" style="border-left:4px solid var(--cyan);">
+        <h3 style="margin-top:0; color:var(--cyan);">스킬을 만들면</h3>
+        <ul>
+          <li><strong style="color:var(--text);">재현성</strong> — 같은 작업이 항상 같은 흐름으로</li>
+          <li><strong style="color:var(--text);">표준화</strong> — 팀 전체가 같은 결과</li>
+          <li><strong style="color:var(--text);">자산화</strong> — 한 번 만들면 두고두고 쓰임</li>
+          <li><strong style="color:var(--text);">검증된 패턴</strong> — 누군가 이미 다듬어 둔 흐름</li>
+          <li><strong style="color:var(--text);">컨텍스트 절약</strong> — 매번 설명할 필요 없음</li>
+        </ul>
+      </div>
+    </div>
+
+    <blockquote>
+      AI는 <strong>도구</strong>, 스킬은 그 도구의 <strong>사용 설명서</strong>입니다.<br>
+      매번 처음부터 설명하지 않으려고 만듭니다.
+    </blockquote>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 4 · 스킬은 어떻게 태어나나 -->
   <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
   <div class="slide">
     <h2>스킬은 어떻게 태어나는가</h2>
@@ -524,7 +560,55 @@ docs/02.design/db.md 를 읽어서
   </div>
 
   <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-  <!-- SLIDE 9 · 마무리 -->
+  <!-- SLIDE · 만들기 전에 검색 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide">
+    <h2>만들기 전에 — 이미 누가 만들었을 수 있다</h2>
+    <p style="color:var(--text2); margin-bottom:16px;">스킬 생태계는 빠르게 커지고 있습니다. 만들기 전에 <strong style="color:var(--text);">검색</strong>부터 — 공식·커뮤니티를 합치면 <strong style="color:var(--text);">수천 개 이상</strong>이 이미 공개되어 있습니다.</p>
+
+    <div class="grid2" style="gap:16px; margin-bottom:14px;">
+      <div class="card" style="border-top:3px solid var(--blue);">
+        <h3 style="color:var(--blue); margin-top:0;">어디서 찾나</h3>
+        <ul style="font-size:.83rem;">
+          <li><strong>공식</strong>: <code>github.com/anthropics/skills</code></li>
+          <li><strong>큐레이션</strong>: <code>ComposioHQ/awesome-claude-skills</code> (1000+)</li>
+          <li><strong>큐레이션</strong>: <code>VoltAgent/awesome-agent-skills</code> (1000+)</li>
+          <li><strong>마켓플레이스</strong>: <code>claudemarketplaces.com</code></li>
+          <li><strong>커뮤니티</strong>: <code>skills.pawgrammer.com</code></li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:3px solid var(--cyan);">
+        <h3 style="color:var(--cyan); margin-top:0;">어떻게 설치하나</h3>
+        <p style="font-size:.85rem; margin-bottom:6px;"><strong style="color:var(--text);">① 플러그인 시스템 (빠름)</strong></p>
+        <pre style="font-size:.72rem; margin-bottom:10px;">/plugin
+  → Discover 탭에서 검색
+  → Enter 로 설치
+  → User (전역) / Project (프로젝트)</pre>
+        <p style="font-size:.85rem; margin-bottom:6px;"><strong style="color:var(--text);">② 수동 설치</strong></p>
+        <pre style="font-size:.72rem;">~/.claude/skills/       ← 전역 (모든 프로젝트)
+.claude/skills/         ← 현재 프로젝트
+└── {skill-name}/SKILL.md</pre>
+      </div>
+    </div>
+
+    <div class="card" style="border-left:4px solid var(--yellow);">
+      <h3 style="margin-top:0;">우리 팀이 직접 만들 것</h3>
+      <ul>
+        <li>검색했는데 <strong style="color:var(--text);">없는 것</strong></li>
+        <li>우리 팀 <strong style="color:var(--text);">도메인 특화</strong> 작업 (예: work-management, payroll 같은 사내 규칙)</li>
+        <li>외부 스킬을 우리 컨벤션에 맞게 <strong style="color:var(--text);">개조</strong>한 것</li>
+      </ul>
+    </div>
+
+    <div style="margin-top:14px;">
+      <blockquote style="border-left-color:var(--red);">
+        <strong style="color:var(--red);">⚠️ 보안</strong>: 스킬도 소프트웨어입니다. 신뢰할 수 있는 출처에서만 설치하세요.
+      </blockquote>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE · 마무리 -->
   <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
   <div class="slide slide-end">
     <div style="max-width: 680px;">
@@ -560,7 +644,7 @@ docs/02.design/db.md 를 읽어서
 <!-- ── 내비게이션 UI ── -->
 <div id="nav">
   <button class="nav-btn" id="btn-prev" title="이전 (←)">‹</button>
-  <span id="counter">1 / 11</span>
+  <span id="counter">1 / 13</span>
   <button class="nav-btn" id="btn-next" title="다음 (→)">›</button>
 </div>
 <div id="progress-bar"></div>
