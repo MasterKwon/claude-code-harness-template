@@ -2,6 +2,35 @@
 
 ---
 
+## v2.2.0 — 2026-05-18
+
+### 추가
+- **Bridge 패턴 정착 — AI 산출물을 사람 작업과 잇는 3개 신규 커맨드**
+  - `grill-me`: 집중 인터뷰 (원형: [mattpocock/skills](https://github.com/mattpocock/skills), 한국어/백엔드 관점으로 커스터마이징)
+    - 산출물: `docs/00.input/grill-result.md`
+    - 위치: `pipeline-full` Phase 0.5 (선택), `pipeline-maintenance` Phase 1.5 (선택)
+  - `design-prompt-gen`: Claude Design 입력용 화면별 프롬프트 생성
+    - 산출물: `docs/02.design/design-prompts.md` (화면별 섹션)
+    - 위치: `pipeline-full` Phase 1.7 (선택), `pipeline-maintenance` Phase 5.0 (Screen 변경 시)
+  - `test-ui-chrome`: UAT 체크리스트 → Chrome 사이드패널 지시문 + xlsx 체크리스트 변환
+    - 산출물: `docs/05.test/ui-test-chrome.md` + `.xlsx` (AI), `_result.xlsx` (QA 수동 추가)
+    - 위치: `test-all` Step 5, `pipeline-maintenance` Phase 8 (Screen 변경 시)
+
+### 변경
+- `pipeline-full.md` 상단 다이어그램에 grill-me / design-prompt-gen / test-ui-chrome 반영
+- `test-all.md` Step 5 추가 (Chrome 지시문 생성 Bridge)
+
+### 보완 (V14~V16 취약점)
+- **V14** 요구사항 모호성 사전 제거 부재 → `grill-me` 추가
+- **V15** UI 설계 시 시각적 목업 부재 → `design-prompt-gen` 추가
+- **V16** 화면 수동 검증 표준화 부재 → `test-ui-chrome` 추가 (AI 자동 테스트와 사람 검증의 이중 확인 구조)
+
+### 설계 결정
+- **회차 폴더 도입 거부**: 기존 하네스의 "단일 파일 + git history" 패턴 유지. 회차 추적은 git 책임.
+- **Bridge 단계 명시**: AI 자동(Auto) / 사람용 산출물(Bridge) / 사람 수행(Human) 세 단계 구분을 파이프라인 문서에 명문화.
+
+---
+
 ## v2.1.0 — 2026-05-17
 
 ### 변경

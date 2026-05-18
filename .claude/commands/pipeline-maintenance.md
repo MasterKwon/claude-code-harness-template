@@ -56,6 +56,16 @@ GAP 결과 기반            GAP 결과 기반             review-all
 → 진행하시겠습니까? (Y/N)
 ```
 
+### Phase 1.5 — 집중 인터뷰 (Grill Me) [선택]
+
+> 변경 내용이 모호하거나 의사결정이 여러 갈래로 갈리는 경우에만 실행합니다.
+> 단순 버그수정·텍스트 변경 등 분기 없는 변경은 건너뜁니다.
+
+[best] Read `.claude/skills/grill-me.md` and follow all instructions.
+산출물: `docs/00.input/grill-result.md`
+
+`analyze-requirements` 단계에서 이 파일을 추가 입력으로 활용합니다.
+
 ---
 
 ## Phase 2 — 현황 파악 (AS-IS)
@@ -135,6 +145,16 @@ git push
 ## Phase 5 — 영향 범위 설계
 
 `docs/01.analyze/reviewed/gap.md`를 읽고 **신규/변경 항목이 있는 레이어만** 설계합니다.
+
+#### Phase 5.0 — Claude Design 프롬프트 [Screen 변경 시 권장]
+
+GAP 에 Screen 신규/변경 항목이 있으면, `design-screen` 전에 프롬프트를 생성하여 사람이 `claude.ai/design` 에서 시각 검토합니다.
+
+```
+GAP에 Screen 신규/변경 항목 있음 → [balanced] Read `.claude/skills/design-prompt-gen.md` and follow all instructions.
+                                   → claude.ai/design 검토 후 design-screen 진입
+없음                              → 건너뜀
+```
 
 #### 레이어별 실행 여부 판단
 
@@ -251,6 +271,17 @@ Read `.claude/skills/test-e2e.md` and follow all instructions.
 
 > E2E 시나리오에 **변경 전 기존 흐름도 포함**합니다.
 > 새 기능만 통과해도 기존 흐름이 깨지면 실패입니다.
+
+#### Chrome UI 테스트 지시문 생성 (Bridge)
+
+GAP 에 Screen 신규/변경 항목이 있으면 실행합니다.
+
+```
+GAP에 Screen 신규/변경 항목 있음 → [balanced] Read `.claude/skills/test-ui-chrome.md` and follow all instructions.
+없음                              → 건너뜀
+```
+
+산출물: `docs/05.test/ui-test-chrome.md` + `.xlsx`. QA 가 Chrome 사이드패널에서 이중 검증합니다.
 
 테스트 완료 후 사용자에게 묻지 말고 즉시 [fast] `.claude/skills/cross-check-test.md` 스킬을 연계 실행하여 `docs/05.test/cross-check.md`를 생성합니다.
 

@@ -7,17 +7,18 @@
 ## 파이프라인 구조
 
 ```
-[분석]                    [설계]          [설계리뷰]    [TC설계]         [구현]
-analyze-requirements  →  design-screen  →            →  design-tc    →  build-db
-analyze-asis          →  design-db      → review-    →               →  build-api
-analyze-gap           →  design-api     →  design    →               →  build-screen
+[킥오프]      [분석]                   [설계 프롬프트]      [설계]         [설계리뷰]  [TC설계]      [구현]
+grill-me  →  analyze-requirements  →  design-prompt-gen → design-screen → review-  → design-tc → build-db
+             analyze-asis             (claude.ai/design   design-db        design                build-api
+             analyze-gap              에서 목업 확인)      design-api                              build-screen
 
-                                                                ↓
-[영향도 검사]             [리뷰]         [AI QA - Local]   [Dev 배포]   [UAT]        [운영 배포]
-impact-check          →  review-all  →  test-db        →  deploy-dev → uat-check →  ship
-                                     →  test-api
-                                     →  test-screen
-                                     →  test-e2e
+                                                                              ↓
+[영향도 검사]    [리뷰]           [AI QA - Local]              [Dev 배포]    [UAT]      [운영 배포]
+impact-check → review-all  →  test-db                    → deploy-dev → uat-check → ship
+                              test-api
+                              test-screen
+                              test-e2e
+                              test-ui-chrome (Chrome 지시문)
 ```
 
 ## 실행 순서
@@ -32,7 +33,20 @@ Read `.claude/skills/project-setup.md` and follow all instructions.
 - 9가지 항목 선택 → 프로젝트 초기화 → 패키지 자동 설치
 - 완료 후 `CLAUDE.md` Tech Stack 섹션 자동 업데이트
 
-**→ 설치 완료 및 CLAUDE.md 확인 후 Phase 1로 진행하세요.**
+**→ 설치 완료 및 CLAUDE.md 확인 후 Phase 0.5로 진행하세요.**
+
+---
+
+### Phase 0.5 — 집중 인터뷰 (Grill Me) [선택, 권장]
+
+> 요구사항이 머릿속에만 있고 모호한 경우, 분석 진입 **전에** 의사결정 트리를 정리합니다.
+> `docs/00.input/` 에 잘 정리된 문서가 이미 있으면 이 단계는 건너뛰어도 됩니다.
+
+[best] Read `.claude/skills/grill-me.md` and follow all instructions.
+산출물: `docs/00.input/grill-result.md`
+
+**→ 인터뷰 결과 확인 후 Phase 1로 진행하세요.**
+`analyze-requirements` 가 이 파일을 추가 입력으로 자동 활용합니다.
 
 ---
 
@@ -49,6 +63,19 @@ git add docs/01.analyze/
 git commit -m "phase1: analyze-all 완료"
 git push
 ```
+
+### Phase 1.7 — Claude Design 프롬프트 생성 [선택, 권장]
+
+> 화면을 텍스트로만 설계하면 시각적 누락이 생기기 쉽습니다.
+> `design-screen` 진입 **전에** Claude Design 용 프롬프트를 생성하고, 사람이 `claude.ai/design` 에서 목업을 확인합니다.
+
+[balanced] Read `.claude/skills/design-prompt-gen.md` and follow all instructions.
+산출물: `docs/02.design/design-prompts.md`
+
+**→ 목업 검토 후 Phase 2로 진행하세요.**
+검토 결과(레이아웃 결정, 컴포넌트 선택 등)는 `design-screen` 입력에 반영합니다.
+
+---
 
 ### Phase 2 — 설계
 Read `.claude/skills/design-screen.md` and follow all instructions. (`docs/02.design/screen.md` 생성)
@@ -138,6 +165,10 @@ git push
 [fast] Read `.claude/skills/test-api.md` and follow all instructions. (`docs/05.test/report-api.md` 생성)
 [fast] Read `.claude/skills/test-screen.md` and follow all instructions. (`docs/05.test/report-screen.md` 생성)
 Read `.claude/skills/test-e2e.md` and follow all instructions. (`docs/05.test/report-e2e.md` 생성)
+[balanced] Read `.claude/skills/test-ui-chrome.md` and follow all instructions. (`docs/05.test/ui-test-chrome.md` + `.xlsx` 생성)
+
+> `test-ui-chrome` 은 자동 테스트가 아닙니다. AI 자동 테스트 통과 후, **사람이 Chrome 사이드패널로 이중 검증**할 수 있도록 지시문/체크리스트를 생성하는 Bridge 단계입니다.
+> QA 담당자는 `ui-test-chrome.xlsx` 를 복사하여 `ui-test-chrome_result.xlsx` 로 작업합니다.
 
 **→ 테스트 Phase 완료 후 반드시 사용자 확인을 받고 다음 Phase로 진행하세요.**
 

@@ -76,7 +76,29 @@ Read `.claude/skills/test-e2e.md` and follow all instructions.
 - [ ] 실패 항목에 원인 및 조치 방안 명시
 
 **실패 항목 있으면**: 롤백 맵(`/pipeline-full` 참조)을 기준으로 원인 단계 특정 후 조치.
-**모두 통과하면**: `docs/05.test/report-e2e.md`를 `docs/05.test/reviewed/report-e2e.md`로 복사.
+**모두 통과하면**: `docs/05.test/report-e2e.md`를 `docs/05.test/reviewed/report-e2e.md`로 복사 후 Step 5로 진행.
+
+---
+
+## Step 5 — Claude in Chrome UI 테스트 지시문 생성 (Bridge)
+
+> AI 자동 테스트가 모두 통과한 뒤, **사람이 Chrome 사이드패널로 한 번 더 검증**할 수 있도록 지시문과 체크리스트를 준비합니다.
+> 동일 TC 를 AI(자동)와 사람(Chrome)이 이중 검증하여 자동화가 놓친 시각·UX 이슈를 잡습니다.
+
+사전 조건: `docs/02.design/tc/uat-checklist.md` 존재.
+
+[balanced] Read `.claude/skills/test-ui-chrome.md` and follow all instructions.
+
+산출물:
+- `docs/05.test/ui-test-chrome.md` (Chrome 사이드패널 지시문)
+- `docs/05.test/ui-test-chrome.xlsx` (QA 체크리스트 템플릿)
+
+### 자동 품질 게이트
+- [ ] `docs/02.design/tc/uat-checklist.md` 의 모든 TC 가 Chrome 지시문으로 변환됨
+- [ ] xlsx 가 정상 생성됨 (헤더, 행 수 일치)
+- [ ] 사람에게 다음 행동(`_result.xlsx` 작성) 안내 포함
+
+---
 
 테스트 단계 완료. 사용자에게 묻지 말고 즉시 [fast] `.claude/skills/cross-check-test.md` 스킬을 연계 실행하여 `docs/05.test/cross-check.md`를 생성합니다.
 생성 완료 후 최종 결과를 보고합니다.
