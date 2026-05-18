@@ -80,14 +80,18 @@ Claude Code에서 실행:
 | Phase | 명령 | 산출물 |
 |-------|------|--------|
 | 0 | `/project-setup` | 프로젝트 초기화, CLAUDE.md |
+| 0.5 | `/grill-me` *(선택)* | `grill-result.md` — 요구사항 모호성 사전 제거 |
 | 1 | `/analyze-all` | `requirements.md`, `asis.md`, `gap.md` |
+| 1.7 | `/design-prompt-gen` *(선택)* | `design-prompts.md` — Claude Design 입력용 프롬프트 |
 | 2 | `/design-all` + `/review-design` | `screen.md`, `db.md`, `api.md`, `uat-checklist.md` |
 | 3 | `/build-all` + `/impact-check` | 소스코드, `impact-check.md` |
 | 4 | `/review-all` | `review-report.md` |
-| 5 | `/test-all` | `test-report-*.md` |
+| 5 | `/test-all` | `test-report-*.md`, `ui-test-chrome.md` + `.xlsx` (Chrome 사이드패널 지시문) |
 | 5.5 | `/deploy-dev` | Dev 환경 배포 |
 | 6 | UAT | `uat-result.md` |
 | 7 | `/ship` | 운영 배포 체크리스트 |
+
+> Phase 0.5 / 1.7 은 v2.2.0에 추가된 **선택적 Bridge 단계**입니다. AI 산출물을 사람 작업(대화·시각 검토)과 잇는 단계로, 필요할 때만 실행합니다. 자세한 내용은 [`docs/harness/CHANGELOG.md`](docs/harness/CHANGELOG.md) 참고.
 
 ### 기존 프로젝트 유지보수 (오류수정 / 기능개선 / 내부 개선)
 
