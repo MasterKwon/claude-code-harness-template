@@ -28,6 +28,25 @@ Next.js + MSA 구조 학습 프로젝트. 바이브코딩으로 React/Next.js를
 - state:     .claude/skills/stacks/state/tanstack-query.md
 - ui:        .claude/skills/stacks/ui/shadcn.md
 
+## 자연어 트리거
+
+아래 의도가 감지되면 해당 스킬을 즉시 실행한다. 슬래시 커맨드를 명시하지 않아도 된다.
+
+| 의도 (예시 표현) | 실행 스킬 |
+|----------------|----------|
+| 스킬 구조 점검 / 스킬 포맷 확인 / 스킬 감사 | `skill-formatter` |
+| 요구사항 인터뷰 / 뭘 만들지 정리 / 모호한 거 짚어줘 | `grill-me` |
+| 분석 결과 리뷰 / 요구사항 검토 | `review-analyze` |
+| 설계 리뷰 / 설계 검토 | `review-design` |
+| 코드 리뷰 / 전체 리뷰 | `review-all` |
+| 영향도 점검 / 변경 영향 분석 | `impact-check` |
+| 화면 프롬프트 만들어줘 / Claude Design용 프롬프트 | `design-prompt-gen` |
+| Chrome 테스트 지시문 / UI 체크리스트 | `test-ui-chrome` |
+| Dev 배포 / 개발 서버 배포 | `deploy-dev` |
+| 운영 배포 / 실서버 배포 / 릴리즈 | `deploy-prd` |
+
+> 위 표에 없는 의도라도 컨텍스트에서 적합한 스킬을 추론하여 실행한다.
+
 ## Guidelines
 - 모든 응답은 한국어로
 - 코드 설명은 백엔드 개발자 관점에서 (프론트 개념은 백엔드에 빗대어 설명)
