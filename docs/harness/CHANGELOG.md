@@ -2,6 +2,32 @@
 
 ---
 
+## v2.3.0 — 2026-05-18
+
+### 추가
+- **교육자료 3부작 장표** (`docs/harness/`)
+  - `presentation-intro.html`: 1부 — 체험형 실습 30분 (파이프라인 데모 중심)
+  - `presentation-intro2.html`: 2부 — 나만의 스킬 만들기 워크샵 30분
+  - `presentation-intro3.html`: 3부 — 심화 (파이프라인 전체·품질 게이트·롤백 맵·커맨드 체계)
+- **스킬 구조 자동 점검 훅** (`.claude/hooks/skill-structure-check.sh`)
+  - `.claude/skills/*.md` 파일 Edit/Write 시 `PostToolUse`로 자동 실행
+  - 권장 모델 · 역할 정의 · 프로세스 섹션 3항목 bash 기반 점검
+  - `stacks/` 하위 파일 제외, 작업 차단 없이 경고만 출력
+
+### 변경
+- `onboarding.md` 현행화
+  - 커맨드 수 48 → 52개로 정정
+  - 누락 커맨드 추가: `grill-me`, `design-prompt-gen`, `test-ui-chrome`, `skill-formatter`
+  - `refine-impact-check` 배포·운영 → 리뷰 섹션으로 이동
+  - `harness/` 디렉터리 구조에 3부작 발표자료 반영
+  - 유틸 카테고리 신설 (`skill-formatter`)
+- `README.md` 발표자료 섹션 표 형식으로 정비 (3부작 링크 추가)
+
+### 삭제
+- `docs/harness/checklist.md` — 내부 개발 작업 로그, 외부 공유 불필요
+
+---
+
 ## v2.2.0 — 2026-05-18
 
 ### 추가
