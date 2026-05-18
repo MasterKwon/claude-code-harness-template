@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code 워크숍 3부 — 하네스 심화</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #0d1117;
+    --bg2:      #161b22;
+    --bg3:      #21262d;
+    --border:   #30363d;
+    --blue:     #58a6ff;
+    --cyan:     #39d353;
+    --purple:   #bc8cff;
+    --yellow:   #e3b341;
+    --red:      #f85149;
+    --text:     #e6edf3;
+    --text2:    #8b949e;
+    --accent:   #1f6feb;
+  }
+
+  html, body { height: 100%; overflow: hidden; background: var(--bg); font-family: 'Noto Sans KR', -apple-system, sans-serif; color: var(--text); }
+
+  .deck { width: 100vw; height: 100vh; position: relative; }
+  .slide { position: absolute; inset: 0; display: none; flex-direction: column; padding: 48px 72px 44px; opacity: 0; transition: opacity .25s; }
+  .slide.active { display: flex; opacity: 1; }
+
+  h1 { font-size: 2.8rem; font-weight: 700; line-height: 1.2; color: #fff; }
+  h2 { font-size: 1.8rem; font-weight: 700; color: var(--blue); margin-bottom: 24px; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
+  h3 { font-size: 1.1rem; font-weight: 600; color: var(--yellow); margin: 16px 0 8px; }
+  p  { line-height: 1.75; color: var(--text); font-size: .92rem; }
+  strong { color: var(--yellow); font-weight: 600; }
+  em { color: var(--cyan); font-style: normal; }
+
+  ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  ul li { display: flex; align-items: flex-start; gap: 10px; font-size: .9rem; line-height: 1.6; }
+  ul li::before { content: '▸'; color: var(--blue); flex-shrink: 0; margin-top: 2px; }
+
+  pre { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; font-family: 'JetBrains Mono', monospace; font-size: .76rem; line-height: 1.7; color: #cdd9e5; overflow-x: auto; white-space: pre; }
+  code { font-family: 'JetBrains Mono', monospace; font-size: .8rem; background: var(--bg3); color: var(--purple); padding: 2px 6px; border-radius: 4px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+  th { background: var(--bg3); color: var(--blue); font-weight: 600; text-align: left; padding: 8px 12px; border-bottom: 2px solid var(--accent); }
+  td { padding: 7px 12px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.5; font-size: .83rem; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #ffffff08; }
+  td:first-child { color: var(--yellow); font-weight: 500; }
+
+  blockquote { border-left: 4px solid var(--blue); padding: 14px 20px; background: #1f6feb18; border-radius: 0 8px 8px 0; font-size: .92rem; line-height: 1.75; color: var(--text2); }
+  blockquote strong { color: var(--cyan); font-style: normal; }
+
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: .74rem; font-weight: 600; }
+  .badge-blue   { background: #1f6feb30; color: var(--blue);   border: 1px solid #1f6feb60; }
+  .badge-green  { background: #39d35330; color: var(--cyan);   border: 1px solid #39d35360; }
+  .badge-yellow { background: #e3b34130; color: var(--yellow); border: 1px solid #e3b34160; }
+  .badge-red    { background: #f8514930; color: var(--red);    border: 1px solid #f8514960; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+
+  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; }
+  .card h3 { margin-top: 0; }
+
+  /* 흐름도 */
+  .flow { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .flow-box { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 5px 10px; font-size: .72rem; font-family: 'JetBrains Mono', monospace; color: #cdd9e5; white-space: nowrap; }
+  .flow-box.hi { border-color: var(--blue); color: var(--blue); background: #1f6feb18; }
+  .flow-box.ok { border-color: var(--cyan); color: var(--cyan); background: #39d35318; }
+  .flow-box.warn { border-color: var(--yellow); color: var(--yellow); background: #e3b34118; }
+  .flow-arrow { color: var(--blue); font-size: 1rem; }
+
+  /* 타이틀 */
+  .slide-title { justify-content: center; align-items: center; text-align: center;
+    background: radial-gradient(ellipse at 60% 40%, #39d35318 0%, transparent 70%),
+                radial-gradient(ellipse at 20% 80%, #1f6feb12 0%, transparent 60%); }
+  .slide-title .logo { font-size: .9rem; color: var(--text2); margin-bottom: 24px; letter-spacing: .1em; text-transform: uppercase; }
+  .slide-title h1 { font-size: 3rem; margin-bottom: 16px; }
+  .slide-title .subtitle { font-size: 1.2rem; color: var(--text2); margin-bottom: 40px; }
+  .slide-title .meta { font-size: .8rem; color: var(--text2); border-top: 1px solid var(--border); padding-top: 16px; }
+
+  /* 마지막 */
+  .slide-end { justify-content: center; align-items: center; text-align: center; }
+
+  /* 내비게이션 */
+  #nav { position: fixed; bottom: 24px; right: 32px; display: flex; align-items: center; gap: 14px; z-index: 100; }
+  #counter { font-size: .8rem; color: var(--text2); min-width: 48px; text-align: center; }
+  .nav-btn { background: var(--bg3); border: 1px solid var(--border); color: var(--text); width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: background .15s; }
+  .nav-btn:hover { background: var(--accent); border-color: var(--blue); }
+  #progress-bar { position: fixed; bottom: 0; left: 0; height: 3px; background: var(--cyan); transition: width .3s; }
+  #hint { position: fixed; bottom: 24px; left: 32px; font-size: .72rem; color: var(--text2); }
+
+  @media print {
+    .slide { display: flex !important; opacity: 1 !important; position: relative !important; page-break-after: always; height: 100vh; }
+    #nav, #progress-bar, #hint { display: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+  <!-- ━━ SLIDE 1 · 타이틀 ━━ -->
+  <div class="slide slide-title active">
+    <div class="logo">Claude Code 워크숍 3부 · 2026</div>
+    <h1>하네스 <span style="color:var(--cyan)">심화</span></h1>
+    <div class="subtitle">파이프라인 · 품질 게이트 · 롤백 · 스택 플러그인</div>
+    <div class="meta">선수 조건: 1부 + 2부 완료 &nbsp;|&nbsp; 강의 중심 (실습 없음)</div>
+  </div>
+
+  <!-- ━━ SLIDE 2 · 파이프라인 전체 흐름 ━━ -->
+  <div class="slide">
+    <h2>파이프라인 전체 흐름 — 단계별 산출물 지도</h2>
+    <p style="color:var(--text2); margin-bottom:16px;">각 Phase가 끝나면 파일이 생깁니다. 다음 Phase는 그 파일을 읽고 시작합니다.</p>
+    <table>
+      <thead><tr><th>Phase</th><th>커맨드</th><th>산출물 (docs/)</th></tr></thead>
+      <tbody>
+        <tr><td>0 — 초기화</td><td><code>/project-setup</code></td><td>CLAUDE.md</td></tr>
+        <tr><td>0.5 — 인터뷰</td><td><code>/grill-me</code></td><td>00.input/grill-result.md</td></tr>
+        <tr><td>1 — 분석</td><td><code>/analyze-all</code></td><td>01.analyze/ requirements · asis · gap</td></tr>
+        <tr><td>2 — 설계</td><td><code>/design-all</code> + <code>/review-design</code></td><td>02.design/ screen · db · api · uat-checklist</td></tr>
+        <tr><td>3 — 구현</td><td><code>/build-all</code> + <code>/impact-check</code></td><td>소스코드 + impact-check.md</td></tr>
+        <tr><td>4 — 리뷰</td><td><code>/review-all</code></td><td>05.review/review-report.md</td></tr>
+        <tr><td>5 — 테스트</td><td><code>/test-all</code></td><td>05.review/test-report-*.md</td></tr>
+        <tr><td>5.5 — Dev 배포</td><td><code>/deploy-dev</code></td><td>06.deploy/deploy-dev.md</td></tr>
+        <tr><td>6 — UAT</td><td>사람이 직접 수행</td><td>06.deploy/uat-result.md</td></tr>
+        <tr><td>7 — 운영 배포</td><td><code>/deploy-prd</code></td><td>06.deploy/deploy-prd.md</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:14px;">
+      <blockquote>각 Phase의 산출물이 다음 Phase의 <strong>입력</strong>이 됩니다. 빠진 단계가 없으면 AI가 앞 파일을 자동으로 참조합니다.</blockquote>
+    </div>
+  </div>
+
+  <!-- ━━ SLIDE 3 · pipeline-full vs maintenance ━━ -->
+  <div class="slide">
+    <h2>두 가지 파이프라인 — 언제 무엇을 쓰나</h2>
+    <div class="grid2" style="margin-top:4px; gap:20px;">
+      <div class="card" style="border-top: 3px solid var(--blue);">
+        <h3 style="color:var(--blue);">/pipeline-full</h3>
+        <p style="color:var(--text2); font-size:.85rem; margin-bottom:12px;">처음부터 새로 만드는 프로젝트</p>
+        <div class="flow" style="flex-direction:column; align-items:flex-start; gap:6px;">
+          <div class="flow-box hi">Phase 0 — 초기화</div>
+          <div class="flow-arrow" style="margin-left:12px;">↓</div>
+          <div class="flow-box hi">Phase 1 — 분석 (요구사항·AS-IS·GAP)</div>
+          <div class="flow-arrow" style="margin-left:12px;">↓</div>
+          <div class="flow-box hi">Phase 2 — 설계 (화면·DB·API)</div>
+          <div class="flow-arrow" style="margin-left:12px;">↓</div>
+          <div class="flow-box hi">Phase 3 — 구현</div>
+          <div class="flow-arrow" style="margin-left:12px;">↓</div>
+          <div class="flow-box hi">Phase 4~5 — 리뷰·테스트</div>
+          <div class="flow-arrow" style="margin-left:12px;">↓</div>
+          <div class="flow-box hi">Phase 5.5~7 — Dev·UAT·운영 배포</div>
+        </div>
+      </div>
+      <div class="card" style="border-top: 3px solid var(--yellow);">
+        <h3 style="color:var(--yellow);">/pipeline-maintenance</h3>
+        <p style="color:var(--text2); font-size:.85rem; margin-bottom:12px;">오류수정 / 기능개선 / 내부 개선</p>
+        <div class="flow" style="flex-direction:column; align-items:flex-start; gap:6px;">
+          <div class="flow-box warn">WHY 정의 — 유형·이유 명시</div>
+          <div class="flow-arrow" style="margin-left:12px;">↓</div>
+          <div class="flow-box warn">analyze-asis → analyze-gap</div>
+          <div class="flow-arrow" style="margin-left:12px;">↓</div>
+          <div class="flow-box warn">GAP 범위만 설계</div>
+          <div class="flow-arrow" style="margin-left:12px;">↓</div>
+          <div class="flow-box warn">GAP 범위만 구현</div>
+          <div class="flow-arrow" style="margin-left:12px;">↓</div>
+          <div class="flow-box warn">리뷰 + 회귀 테스트</div>
+          <div class="flow-arrow" style="margin-left:12px;">↓</div>
+          <div class="flow-box warn">deploy-dev → deploy-prd</div>
+        </div>
+        <p style="margin-top:12px; font-size:.8rem; color:var(--red);">핵심: GAP에 없는 코드는 건드리지 않습니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ━━ SLIDE 4 · refine-* 패턴 ━━ -->
+  <div class="slide">
+    <h2>refine-* 패턴 — "마음에 안 들면 다시"</h2>
+    <p style="color:var(--text2); margin-bottom:20px;">모든 주요 단계에는 <strong style="color:var(--text);">보완 커맨드</strong>가 짝으로 존재합니다. 전체를 처음부터 다시 실행하지 않아도 됩니다.</p>
+
+    <div class="grid2" style="gap:16px; margin-bottom:16px;">
+      <div>
+        <h3>원본 커맨드</h3>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div class="flow-box" style="display:block;">/analyze-requirements</div>
+          <div class="flow-box" style="display:block;">/design-api</div>
+          <div class="flow-box" style="display:block;">/build-screen</div>
+          <div class="flow-box" style="display:block;">/test-e2e</div>
+          <div class="flow-box" style="display:block;">/deploy-prd</div>
+        </div>
+      </div>
+      <div>
+        <h3>보완 커맨드</h3>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div class="flow-box ok" style="display:block;">/refine-analyze-requirements</div>
+          <div class="flow-box ok" style="display:block;">/refine-design-api</div>
+          <div class="flow-box ok" style="display:block;">/refine-build-screen</div>
+          <div class="flow-box ok" style="display:block;">/refine-test-e2e</div>
+          <div class="flow-box ok" style="display:block;">/refine-deploy-prd</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;">언제 쓰나</h3>
+      <ul>
+        <li>결과물이 아쉽지만 처음부터 다시 하기엔 비용이 크다</li>
+        <li>"이 부분만 보완해줘" 라고 말하기 애매할 때</li>
+        <li>품질 게이트 통과 실패 후 해당 단계만 재실행할 때</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ━━ SLIDE 5 · 품질 게이트 ━━ -->
+  <div class="slide">
+    <h2>품질 게이트 — AI가 스스로 PASS / FAIL 판단</h2>
+    <p style="color:var(--text2); margin-bottom:16px;">각 Phase 완료 시 자동으로 기준을 점검합니다. <strong style="color:var(--text);">FAIL이면 다음 Phase로 진행하지 않습니다.</strong></p>
+
+    <table style="margin-bottom:16px;">
+      <thead><tr><th>Phase</th><th>PASS 기준</th><th>FAIL 시 조치</th></tr></thead>
+      <tbody>
+        <tr><td>분석</td><td><code>docs/01.analyze/reviewed/</code> 파일 생성 완료</td><td><code>/refine-analyze-requirements</code></td></tr>
+        <tr><td>DB 설계</td><td><code>docs/02.design/reviewed/db.md</code> 생성 완료</td><td><code>/refine-design-db</code></td></tr>
+        <tr><td>API 설계</td><td><code>docs/02.design/reviewed/api.md</code> 생성 완료</td><td><code>/refine-design-api</code></td></tr>
+        <tr><td>구현</td><td>TypeScript 타입 에러 없음</td><td><code>/refine-build-*</code></td></tr>
+        <tr><td>리뷰</td><td><code>docs/04.review/reviewed/report.md</code> 생성 완료</td><td><code>/refine-review-all</code></td></tr>
+        <tr><td>테스트</td><td><code>docs/05.test/reviewed/report-*.md</code> 생성 완료</td><td><code>/refine-test-e2e</code></td></tr>
+      </tbody>
+    </table>
+
+    <div class="grid2" style="gap:14px;">
+      <div class="card" style="border-left: 4px solid var(--cyan);">
+        <p style="font-size:1.1rem; font-weight:700; color:var(--cyan);">✅ PASS</p>
+        <p style="font-size:.88rem; color:var(--text2); margin-top:6px;">다음 Phase 자동 진행</p>
+      </div>
+      <div class="card" style="border-left: 4px solid var(--red);">
+        <p style="font-size:1.1rem; font-weight:700; color:var(--red);">❌ FAIL</p>
+        <p style="font-size:.88rem; color:var(--text2); margin-top:6px;">해당 Phase refine 후 재점검</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ━━ SLIDE 6 · 롤백 맵 ━━ -->
+  <div class="slide">
+    <h2>롤백 맵 — 실패해도 돌아갈 수 있다</h2>
+    <p style="color:var(--text2); margin-bottom:16px;">문제 발견 위치에 따라 <strong style="color:var(--text);">어느 단계로 돌아갈지</strong>가 파이프라인에 명시되어 있습니다.</p>
+
+    <table style="margin-bottom:16px;">
+      <thead><tr><th>문제 발견 위치</th><th>원인</th><th>조치</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>테스트 실패</td>
+          <td>API 구현 오류</td>
+          <td><code>/refine-build-api</code> → 리뷰 → 테스트 재실행</td>
+        </tr>
+        <tr>
+          <td>UAT FAIL</td>
+          <td>기능 누락</td>
+          <td><code>/refine-design-*</code> → 구현 → 테스트 → 배포</td>
+        </tr>
+        <tr>
+          <td>운영 배포 실패</td>
+          <td>환경 설정 오류</td>
+          <td>직접 수정 → <code>/deploy-prd</code> 재실행</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="card" style="margin-bottom:14px;">
+      <h3 style="margin-top:0;">롤백의 핵심 원칙</h3>
+      <ul>
+        <li>문제가 생긴 Phase의 <strong>직전 단계</strong>로만 돌아갑니다</li>
+        <li>더 앞 단계를 건드리면 <strong>연쇄 변경</strong>이 발생하므로 금지</li>
+        <li>롤백 경로가 명시되어 있어 패닉 없이 대응 가능</li>
+      </ul>
+    </div>
+
+    <blockquote>
+      "어디로 돌아가야 할지 모르는 상황"이 가장 위험합니다.<br>
+      <strong>롤백 맵은 그 불안을 제거하는 안전망입니다.</strong>
+    </blockquote>
+  </div>
+
+  <!-- ━━ SLIDE 7 · 기술스택 플러그인 ━━ -->
+  <div class="slide">
+    <h2>기술스택 플러그인 — 한 줄만 바꾸면 됩니다</h2>
+    <p style="color:var(--text2); margin-bottom:16px;"><code>CLAUDE.md</code>의 <code>Active Skills</code> 경로만 바꾸면 AI가 다른 스택 기준으로 동작합니다.</p>
+
+    <div class="card" style="margin-bottom:16px;">
+      <h3 style="margin-top:0;">Active Skills 변경 예시</h3>
+      <pre style="margin-top:8px;">## Active Skills
+- framework: .claude/skills/stacks/framework/nextjs.md
+- arch:      .claude/skills/stacks/arch/msa.md
+- orm:       .claude/skills/stacks/orm/<strong>prisma</strong>.md   ← 여기만 typeorm.md 로 바꾸면 끝
+- api-style: .claude/skills/stacks/api-style/rest.md
+- state:     .claude/skills/stacks/state/tanstack-query.md
+- ui:        .claude/skills/stacks/ui/shadcn.md</pre>
+    </div>
+
+    <table>
+      <thead><tr><th>카테고리</th><th>선택 가능한 스택</th></tr></thead>
+      <tbody>
+        <tr><td>아키텍처</td><td>msa · monolith</td></tr>
+        <tr><td>ORM</td><td>prisma · typeorm · mongoose · raw-sql</td></tr>
+        <tr><td>API 스타일</td><td>rest · trpc · graphql</td></tr>
+        <tr><td>상태관리</td><td>tanstack-query · zustand · redux</td></tr>
+        <tr><td>UI</td><td>shadcn · mui · antd · tailwind-only</td></tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:14px;">
+      <blockquote>
+        스택을 바꿔도 파이프라인·커맨드·스킬 구조는 그대로입니다.<br>
+        <strong>하네스는 스택에 종속되지 않습니다.</strong>
+      </blockquote>
+    </div>
+  </div>
+
+  <!-- ━━ SLIDE 8 · 커맨드 체계 조감도 ━━ -->
+  <div class="slide">
+    <h2>커맨드 체계 전체 조감도 — 51개</h2>
+    <p style="color:var(--text2); margin-bottom:14px;">모든 커맨드는 <strong style="color:var(--text);">카테고리 + refine 짝</strong> 구조입니다.</p>
+    <table>
+      <thead><tr><th>카테고리</th><th>수</th><th>대표 커맨드</th><th>용도</th></tr></thead>
+      <tbody>
+        <tr><td>파이프라인</td><td>2</td><td><code>pipeline-full</code> · <code>pipeline-maintenance</code></td><td>전체 흐름 자동 실행</td></tr>
+        <tr><td>분석</td><td>8</td><td><code>analyze-requirements</code> · <code>grill-me</code></td><td>요구사항·현황·GAP</td></tr>
+        <tr><td>설계</td><td>11</td><td><code>design-db</code> · <code>design-prompt-gen</code></td><td>화면·DB·API·TC</td></tr>
+        <tr><td>구현</td><td>7</td><td><code>build-db</code> · <code>build-api</code> · <code>build-screen</code></td><td>코드 자동 생성</td></tr>
+        <tr><td>리뷰</td><td>7</td><td><code>review-all</code> · <code>impact-check</code></td><td>품질 검증·영향도</td></tr>
+        <tr><td>테스트</td><td>10</td><td><code>test-all</code> · <code>test-ui-chrome</code></td><td>DB·API·화면·E2E</td></tr>
+        <tr><td>배포·운영</td><td>6</td><td><code>deploy-dev</code> · <code>deploy-prd</code></td><td>배포·고객요청 처리</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+      <span class="badge badge-blue">파이프라인 2</span>
+      <span class="badge badge-green">분석 8</span>
+      <span class="badge badge-yellow">설계 11</span>
+      <span class="badge badge-blue">구현 7</span>
+      <span class="badge badge-green">리뷰 7</span>
+      <span class="badge badge-yellow">테스트 10</span>
+      <span class="badge badge-red">배포·운영 6</span>
+      <span style="font-size:.85rem; color:var(--text2); align-self:center;">= 합계 51개</span>
+    </div>
+
+    <div style="margin-top:24px; border-left:4px solid var(--cyan); padding:16px 22px; background:var(--bg2); border-radius:0 8px 8px 0; text-align:left;">
+      <p style="font-size:.95rem; line-height:2; color:var(--fg);">
+        실수가 반복되면 → <strong style="color:var(--cyan);">CLAUDE.md를 고치세요</strong><br>
+        단계가 누락되면 → <strong style="color:var(--cyan);">커맨드를 추가하세요</strong><br>
+        <strong style="color:var(--fg);">그게 여러분만의 하네스입니다</strong>
+      </p>
+    </div>
+  </div>
+
+  <!-- ━━ SLIDE 9 · 하네스 설계 원칙 ━━ -->
+  <div class="slide">
+    <h2>하네스 설계 원칙</h2>
+    <p style="color:var(--text2); margin-bottom:20px;">이 원칙들이 지켜질 때 하네스가 오래 동작합니다.</p>
+
+    <div style="display:flex; flex-direction:column; gap:14px;">
+      <div class="card" style="border-left: 4px solid var(--blue);">
+        <div style="display:flex; gap:16px; align-items:flex-start;">
+          <span style="font-size:1.4rem; min-width:32px;">✂️</span>
+          <div>
+            <p style="font-weight:700; font-size:1rem; color:var(--blue);">Surgical Changes — 수술적 변경</p>
+            <p style="font-size:.88rem; color:var(--text2); margin-top:4px;">요청받은 범위 밖의 코드는 건드리지 않습니다. 변경은 정교하고 최소한이어야 합니다.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="border-left: 4px solid var(--cyan);">
+        <div style="display:flex; gap:16px; align-items:flex-start;">
+          <span style="font-size:1.4rem; min-width:32px;">🔧</span>
+          <div>
+            <p style="font-weight:700; font-size:1rem; color:var(--cyan);">Harness Engineering — 환경 개선</p>
+            <p style="font-size:.88rem; color:var(--text2); margin-top:4px;">실수가 발생하면 사과 대신 <strong style="color:var(--text);">같은 실수가 반복되지 않도록 환경을 즉시 수정</strong>합니다. CLAUDE.md·스킬 파일 업데이트.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="border-left: 4px solid var(--yellow);">
+        <div style="display:flex; gap:16px; align-items:flex-start;">
+          <span style="font-size:1.4rem; min-width:32px;">🎯</span>
+          <div>
+            <p style="font-weight:700; font-size:1rem; color:var(--yellow);">Simplicity First — 단순함 우선</p>
+            <p style="font-size:.88rem; color:var(--text2); margin-top:4px;">불필요한 추상화와 과한 설계를 지양합니다. 현재 문제를 해결하는 가장 단순한 코드를 선택합니다.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="border-left: 4px solid var(--purple);">
+        <div style="display:flex; gap:16px; align-items:flex-start;">
+          <span style="font-size:1.4rem; min-width:32px;">🧠</span>
+          <div>
+            <p style="font-weight:700; font-size:1rem; color:var(--purple);">Think Before Coding — 먼저 계획</p>
+            <p style="font-size:.88rem; color:var(--text2); margin-top:4px;">코드를 작성하기 전 가설과 실행 계획을 수립하고 확인받습니다.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ━━ SLIDE 10 · 마무리 ━━ -->
+  <div class="slide slide-end">
+    <div style="max-width:720px;">
+      <p style="font-size:.85rem; color:var(--text2); letter-spacing:.18em; text-transform:uppercase; margin-bottom:20px;">3부 핵심 요약</p>
+      <h1 style="font-size:2.4rem; line-height:1.35; margin-bottom:28px;">
+        하네스는 <span style="color:var(--cyan)">구조</span>입니다<br>
+        <span style="font-size:1.6rem; color:var(--text2); font-weight:400;">AI를 올바른 방향으로 달리게 하는 레일</span>
+      </h1>
+
+      <div class="grid3" style="margin-bottom:28px; text-align:left;">
+        <div class="card" style="padding:14px 16px;">
+          <p style="font-size:.78rem; font-weight:700; color:var(--blue); margin-bottom:6px;">파이프라인</p>
+          <p style="font-size:.84rem; color:var(--text2);">단계마다 산출물이 쌓이고, 다음 단계가 그걸 읽는다</p>
+        </div>
+        <div class="card" style="padding:14px 16px;">
+          <p style="font-size:.78rem; font-weight:700; color:var(--cyan); margin-bottom:6px;">품질 게이트</p>
+          <p style="font-size:.84rem; color:var(--text2);">FAIL이면 refine 후 재점검. 문제를 다음 단계로 넘기지 않는다</p>
+        </div>
+        <div class="card" style="padding:14px 16px;">
+          <p style="font-size:.78rem; font-weight:700; color:var(--yellow); margin-bottom:6px;">롤백 맵</p>
+          <p style="font-size:.84rem; color:var(--text2);">어디서 실패해도 돌아갈 경로가 정해져 있다</p>
+        </div>
+      </div>
+
+      <div style="margin-bottom:28px; text-align:left; border-left:4px solid var(--cyan); padding:18px 24px; background:var(--bg2); border-radius:0 8px 8px 0;">
+        <p style="font-size:.95rem; line-height:2; color:var(--fg);">
+          "원석을 넣으면 보석이, 쓰레기를 넣으면 쓰레기가 나옵니다."<br>
+          "AI는 당신의 수준을 그대로 돌려줄 뿐입니다."<br>
+          <strong style="color:var(--cyan);">"도구를 탓하기 전에, 내가 무엇을 넣었는지 먼저 확인하세요."</strong>
+        </p>
+      </div>
+
+      <div style="border-top:1px solid var(--border); padding-top:24px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
+        <div class="badge badge-blue">1부: presentation-intro.html</div>
+        <div class="badge" style="background:#bc8cff30; color:var(--purple); border:1px solid #bc8cff60;">2부: presentation-intro2.html</div>
+        <div class="badge badge-green">원본 심화: presentation.html</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /deck -->
+
+<div id="nav">
+  <button class="nav-btn" id="btn-prev">‹</button>
+  <span id="counter">1 / 10</span>
+  <button class="nav-btn" id="btn-next">›</button>
+</div>
+<div id="progress-bar"></div>
+<div id="hint">← → Space · F 전체화면 · P 인쇄</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let cur = 0;
+
+  function go(n) {
+    slides[cur].classList.remove('active');
+    cur = Math.max(0, Math.min(total - 1, n));
+    slides[cur].classList.add('active');
+    document.getElementById('counter').textContent = `${cur + 1} / ${total}`;
+    document.getElementById('progress-bar').style.width = `${((cur + 1) / total) * 100}%`;
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => go(cur - 1));
+  document.getElementById('btn-next').addEventListener('click', () => go(cur + 1));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); go(cur + 1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp')                   { e.preventDefault(); go(cur - 1); }
+    if (e.key === 'Home') go(0);
+    if (e.key === 'End')  go(total - 1);
+    if (e.key === 'f' || e.key === 'F') document.documentElement.requestFullscreen?.();
+    if ((e.key === 'p' || e.key === 'P') && !e.metaKey && !e.ctrlKey) window.print();
+  });
+
+  let touchX = 0;
+  document.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; });
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 40) dx < 0 ? go(cur + 1) : go(cur - 1);
+  });
+</script>
+</body>
+</html>
