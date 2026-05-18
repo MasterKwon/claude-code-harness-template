@@ -18,6 +18,10 @@
           {
             "type": "command",
             "command": "bash .claude/hooks/post-edit.sh \"$CLAUDE_TOOL_INPUT_FILE_PATH\""
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/skill-structure-check.sh \"$CLAUDE_TOOL_INPUT_FILE_PATH\""
           }
         ]
       }
