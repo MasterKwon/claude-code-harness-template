@@ -2,6 +2,40 @@
 
 ---
 
+## v2.4.0 — 2026-05-18
+
+### 추가
+- **CONTEXT 누적 구조 도입** — 운영 시스템 도메인 노트(`docs/context/`) + 동적 Phase 흐름 (Knowledge Accretion)
+  - `/grill-task` 신설 — 작업 단위 인터뷰. CONTEXT 우선 참조 후 모르는 것만 인터뷰, 권장 Phase 흐름 contract 제안
+    - 산출물: `docs/00.input/grill-task-{YYYYMMDD}-{slug}.md`
+    - CONTEXT 충실도 판정(풍부/보통/희박)에 따라 Phase 흐름 자동 가감
+  - `/maintenance-init` Step 3.5 추가 — 도메인 1차 분류(메뉴 + 코드 모듈 후보 둘 다 제시) + `docs/context/INDEX.md` + 도메인별 빈 스켈레톤 자동 생성
+  - 도메인 노트 스키마 6섹션: 개요 · 코드 위치 · 외부 의존성 · 함정/주의사항 · 결정 이력 · 변경 패턴
+- **`/pipeline-maintenance` 동적 흐름화**
+  - Phase 1.5: 진입점을 `/grill-me`에서 `/grill-task`로 교체 (모든 변경 작업의 기본 진입점)
+  - Phase 1.6 신설 — grill-task 권장 흐름을 사용자가 확정 (이번 작업의 진행 contract)
+  - Phase 6.5 자동 강등 — impact-check High 영향도 발견 시 contract 에 ⏭ 표시됐던 Phase 자동 복원
+  - Phase 11 반자동 갱신 — Claude가 갱신 후보 추출 → 사용자 체크박스 선별 → 도메인 노트 append + INDEX 최근 갱신일 자동 업데이트
+- **안전망 Phase 7건** (절대 생략 불가) 명시 — 6.5 / 7 / 8 변경+회귀High / 8.5 / 9 / 10 / 11
+- **`/pipeline-full` 운영 전환 단계** — Phase 7 운영 배포 후 `/maintenance-init` 진입 경로 안내 추가
+- **`CLAUDE.md`** — 자연어 트리거(`grill-task`) + Knowledge Accretion 원칙(5번째 핵심 원칙) 추가
+- **교육자료 4부** (`docs/harness/presentation-intro4.html`) — 운영 단계 · Knowledge Accretion (9 슬라이드, 약 10분)
+  - 신입 vs 1년 차 학습 곡선 비유
+  - 사용 예시: `work-management` 도메인의 "재택근무 유형 추가"(첫 작업, CONTEXT 희박) vs "교대근무 유형 추가"(한 달 후, CONTEXT 풍부) 대조
+
+### 변경
+- 1~3부 마무리 슬라이드 배지에 4부 링크 추가
+- 4부 슬라이드 2: 부 번호 의존 제거 — "3부에서 본" → "지금의" 로 표현 변경 (단독 시청자도 이해 가능하도록)
+- `README.md` 발표자료 표에 4부 항목 추가 + 디렉토리 구조에 반영
+
+### 설계 결정
+- **CONTEXT 위치**: `docs/context/` (별도 최상위) — 0X.* 폴더는 1회성 작업 산출물, context는 누적 자산이라 격이 다름
+- **다중 파일 + INDEX**: 작업 도메인만 선택 로드 가능 → 토큰 절약. 충돌 위험 적음
+- **동적 권장 (Claude 제안 → 사용자 confirm)**: 사전 정의된 "트랙×Phase 매트릭스" 폐기 — 사람의 실제 학습 곡선과 일치
+- **갱신 시점은 배포 후**: 롤백 시 노트 오염 방지
+
+---
+
 ## v2.3.0 — 2026-05-18
 
 ### 추가

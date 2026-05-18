@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code 워크숍 4부 — 운영 단계: 노트가 쌓이는 시스템</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #0d1117;
+    --bg2:      #161b22;
+    --bg3:      #21262d;
+    --border:   #30363d;
+    --blue:     #58a6ff;
+    --cyan:     #39d353;
+    --purple:   #bc8cff;
+    --yellow:   #e3b341;
+    --red:      #f85149;
+    --text:     #e6edf3;
+    --text2:    #8b949e;
+    --accent:   #1f6feb;
+  }
+
+  html, body { height: 100%; overflow: hidden; background: var(--bg); font-family: 'Noto Sans KR', -apple-system, sans-serif; color: var(--text); }
+
+  .deck { width: 100vw; height: 100vh; position: relative; }
+  .slide { position: absolute; inset: 0; display: none; flex-direction: column; padding: 48px 72px 44px; opacity: 0; transition: opacity .25s; }
+  .slide.active { display: flex; opacity: 1; }
+
+  h1 { font-size: 2.8rem; font-weight: 700; line-height: 1.2; color: #fff; }
+  h2 { font-size: 1.8rem; font-weight: 700; color: var(--blue); margin-bottom: 24px; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
+  h3 { font-size: 1.1rem; font-weight: 600; color: var(--yellow); margin: 16px 0 8px; }
+  p  { line-height: 1.75; color: var(--text); font-size: .92rem; }
+  strong { color: var(--yellow); font-weight: 600; }
+  em { color: var(--cyan); font-style: normal; }
+
+  ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  ul li { display: flex; align-items: flex-start; gap: 10px; font-size: .9rem; line-height: 1.6; }
+  ul li::before { content: '▸'; color: var(--blue); flex-shrink: 0; margin-top: 2px; }
+
+  pre { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; font-family: 'JetBrains Mono', monospace; font-size: .76rem; line-height: 1.7; color: #cdd9e5; overflow-x: auto; white-space: pre; }
+  code { font-family: 'JetBrains Mono', monospace; font-size: .8rem; background: var(--bg3); color: var(--purple); padding: 2px 6px; border-radius: 4px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+  th { background: var(--bg3); color: var(--blue); font-weight: 600; text-align: left; padding: 8px 12px; border-bottom: 2px solid var(--accent); }
+  td { padding: 7px 12px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.5; font-size: .83rem; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #ffffff08; }
+  td:first-child { color: var(--yellow); font-weight: 500; }
+
+  blockquote { border-left: 4px solid var(--blue); padding: 14px 20px; background: #1f6feb18; border-radius: 0 8px 8px 0; font-size: .92rem; line-height: 1.75; color: var(--text2); }
+  blockquote strong { color: var(--cyan); font-style: normal; }
+
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: .74rem; font-weight: 600; }
+  .badge-blue   { background: #1f6feb30; color: var(--blue);   border: 1px solid #1f6feb60; }
+  .badge-green  { background: #39d35330; color: var(--cyan);   border: 1px solid #39d35360; }
+  .badge-yellow { background: #e3b34130; color: var(--yellow); border: 1px solid #e3b34160; }
+  .badge-red    { background: #f8514930; color: var(--red);    border: 1px solid #f8514960; }
+  .badge-purple { background: #bc8cff30; color: var(--purple); border: 1px solid #bc8cff60; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+
+  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; }
+  .card h3 { margin-top: 0; }
+
+  .flow { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .flow-box { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 5px 10px; font-size: .72rem; font-family: 'JetBrains Mono', monospace; color: #cdd9e5; white-space: nowrap; }
+  .flow-box.hi { border-color: var(--blue); color: var(--blue); background: #1f6feb18; }
+  .flow-box.ok { border-color: var(--cyan); color: var(--cyan); background: #39d35318; }
+  .flow-box.warn { border-color: var(--yellow); color: var(--yellow); background: #e3b34118; }
+  .flow-box.skip { border-color: var(--text2); color: var(--text2); background: transparent; text-decoration: line-through; opacity: .65; }
+  .flow-arrow { color: var(--blue); font-size: 1rem; }
+
+  .slide-title { justify-content: center; align-items: center; text-align: center;
+    background: radial-gradient(ellipse at 60% 40%, #39d35318 0%, transparent 70%),
+                radial-gradient(ellipse at 20% 80%, #1f6feb12 0%, transparent 60%); }
+  .slide-title .logo { font-size: .9rem; color: var(--text2); margin-bottom: 24px; letter-spacing: .1em; text-transform: uppercase; }
+  .slide-title h1 { font-size: 3rem; margin-bottom: 16px; }
+  .slide-title .subtitle { font-size: 1.2rem; color: var(--text2); margin-bottom: 40px; }
+  .slide-title .meta { font-size: .8rem; color: var(--text2); border-top: 1px solid var(--border); padding-top: 16px; }
+
+  .slide-end { justify-content: center; align-items: center; text-align: center; }
+
+  #nav { position: fixed; bottom: 24px; right: 32px; display: flex; align-items: center; gap: 14px; z-index: 100; }
+  #counter { font-size: .8rem; color: var(--text2); min-width: 48px; text-align: center; }
+  .nav-btn { background: var(--bg3); border: 1px solid var(--border); color: var(--text); width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: background .15s; }
+  .nav-btn:hover { background: var(--accent); border-color: var(--blue); }
+  #progress-bar { position: fixed; bottom: 0; left: 0; height: 3px; background: var(--cyan); transition: width .3s; }
+  #hint { position: fixed; bottom: 24px; left: 32px; font-size: .72rem; color: var(--text2); }
+
+  @media print {
+    .slide { display: flex !important; opacity: 1 !important; position: relative !important; page-break-after: always; height: 100vh; }
+    #nav, #progress-bar, #hint { display: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+  <!-- ━━ SLIDE 1 · 타이틀 ━━ -->
+  <div class="slide slide-title active">
+    <div class="logo">Claude Code 워크숍 4부 · 2026</div>
+    <h1>운영 단계 — <span style="color:var(--cyan)">노트가 쌓이는</span> 시스템</h1>
+    <div class="subtitle">Knowledge Accretion · 직원이 일하면서 똑똑해진다</div>
+    <div class="meta">권장 선수 학습: 워크숍 1~3부 &nbsp;|&nbsp; 대상: 운영 업무 병행 팀원 &nbsp;|&nbsp; 약 10분</div>
+  </div>
+
+  <!-- ━━ SLIDE 2 · 도입 ━━ -->
+  <div class="slide">
+    <h2>지금의 <code style="color:var(--blue); background:transparent; padding:0; font-size:1.4rem;">/pipeline-maintenance</code> — 좁힌 것 vs 못 좁힌 것</h2>
+    <p style="color:var(--text2); margin-bottom:16px;">지금의 <code>/pipeline-maintenance</code> 는 <strong style="color:var(--text);">변경 코드</strong>를 <em>GAP 범위</em>로 좁힙니다. 그런데 정작 <strong style="color:var(--text);">거치는 단계</strong>(분석·설계·리뷰·테스트)는 매 변경 작업마다 동일하게 풀 코스로 진행됩니다.</p>
+
+    <div class="grid2" style="gap:18px; margin-bottom:18px;">
+      <div class="card" style="border-left:4px solid var(--cyan);">
+        <h3 style="margin-top:0; color:var(--cyan);">이미 좁힌 것 — 코드 변경 범위</h3>
+        <ul style="font-size:.85rem;">
+          <li>GAP에 없는 코드는 건드리지 않음</li>
+          <li>영향 레이어(Screen/API/DB)만 설계·구현</li>
+          <li>전체 시스템 재작성이 아닌 변경 범위 한정</li>
+        </ul>
+        <p style="font-size:.8rem; color:var(--text2); margin-top:8px;">✓ 코드 차원의 surgical 변경은 이미 확보</p>
+      </div>
+      <div class="card" style="border-left:4px solid var(--yellow);">
+        <h3 style="margin-top:0;">아직 못 좁힌 것 — 거치는 단계 자체</h3>
+        <div class="flow" style="flex-direction:column; align-items:flex-start; gap:5px; margin-top:6px;">
+          <div class="flow-box warn">Phase 2 · analyze-asis</div>
+          <div class="flow-box warn">Phase 3 · requirements</div>
+          <div class="flow-box warn">Phase 4 · analyze-gap</div>
+          <div class="flow-box warn">Phase 5 · design (영향 레이어)</div>
+          <div class="flow-box warn">Phase 6 · build</div>
+          <div class="flow-box warn">Phase 6.5~11 · 검증·배포·이력</div>
+        </div>
+        <p style="font-size:.82rem; color:var(--text2); margin-top:10px;">한 줄 오타도, 익숙한 enum 추가도 — 분석부터 시작</p>
+      </div>
+      <div class="card" style="border-left:4px solid var(--red);">
+        <h3 style="margin-top:0; color:var(--red);">결과: 우회가 발생한다</h3>
+        <ul>
+          <li>"이건 그냥 고쳐" 로 파이프라인 밖에서 처리</li>
+          <li>변경 이력이 누락되고, 회귀 위험이 보이지 않는 곳에서 발생</li>
+          <li>파이프라인을 만들었는데 정작 안 쓰는 역설</li>
+        </ul>
+      </div>
+    </div>
+
+    <blockquote>
+      파이프라인이 현실과 안 맞으면 사용자가 우회합니다.<br>
+      <strong>문제는 사용자가 아니라 파이프라인입니다.</strong>
+    </blockquote>
+  </div>
+
+  <!-- ━━ SLIDE 3 · 신입 vs 1년 차 ━━ -->
+  <div class="slide">
+    <h2>신입 vs 1년 차 — 학습 곡선의 차이</h2>
+    <p style="color:var(--text2); margin-bottom:18px;">사람은 일하면서 점점 빨라집니다. 차이는 <strong style="color:var(--text);">노트가 쌓였기 때문</strong>입니다.</p>
+
+    <div class="grid2" style="gap:20px;">
+      <div class="card" style="border-top:3px solid var(--yellow);">
+        <h3 style="color:var(--yellow); margin-top:0;">입사 첫 주 (신입)</h3>
+        <ul>
+          <li>위키 보고 환경 세팅</li>
+          <li>"이건 어느 팀 일이에요?" 매번 질문</li>
+          <li>한 작업당 1~2일</li>
+          <li>주변 코드 다 들여다보고 변경 시작</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:3px solid var(--cyan);">
+        <h3 style="color:var(--cyan); margin-top:0;">1년 차 (익숙한 직원)</h3>
+        <ul>
+          <li>"근무유형 좀 봐줘" 한마디로 일 시작</li>
+          <li>해당 도메인의 함정·관례를 머릿속에 보유</li>
+          <li>한 작업당 1~2시간</li>
+          <li>안전한 부분은 빠르게, 위험한 부분만 신중히</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="margin-top:20px;">
+      <blockquote>
+        하네스의 운영 파이프라인도 사람처럼 학습해야 합니다.<br>
+        <strong>매 작업을 신입처럼 굴리는 대신, 노트가 쌓이게 만듭시다.</strong>
+      </blockquote>
+    </div>
+  </div>
+
+  <!-- ━━ SLIDE 4 · 직원 노트 = CONTEXT ━━ -->
+  <div class="slide">
+    <h2>빠졌던 것 — 직원의 머릿속 노트</h2>
+    <p style="color:var(--text2); margin-bottom:16px;">실제 회사에는 세 가지 지식 저장소가 있습니다. 우리 하네스에는 그중 하나가 비어 있었습니다.</p>
+
+    <table style="margin-bottom:16px;">
+      <thead><tr><th>실제 회사</th><th>우리 하네스</th><th>특성</th></tr></thead>
+      <tbody>
+        <tr><td>사내 위키</td><td><code>CLAUDE.md</code></td><td>정적 · 모두 공유 · 거의 변하지 않음</td></tr>
+        <tr><td>입사 첫 주 온보딩</td><td><code>/maintenance-init</code></td><td>1회성 · 기존 코드 역공학</td></tr>
+        <tr><td><strong style="color:var(--red);">직원 머릿속 / 노트</strong></td><td><strong style="color:var(--red);">없었음 ← 빠진 칸</strong></td><td>누적 · 작업할수록 풍부해짐</td></tr>
+      </tbody>
+    </table>
+
+    <div class="card" style="border-left:4px solid var(--cyan);">
+      <h3 style="margin-top:0; color:var(--cyan);">신설: <code style="color:var(--cyan); background:transparent; padding:0;">docs/context/</code> 도메인 노트</h3>
+      <pre style="margin-top:8px;">docs/context/
+  INDEX.md                  ← 도메인 목록 + 한 줄 요약
+  work-management.md        ← 근무 관리 도메인 노트 (6섹션)
+  payroll.md                ← 급여 도메인
+  ...</pre>
+      <p style="font-size:.84rem; color:var(--text2); margin-top:10px;">6 섹션: 개요 · 코드 위치 · 외부 의존성 · 함정/주의사항 · 결정 이력 · 변경 패턴</p>
+      <p style="font-size:.84rem; color:var(--text2);"><code>/maintenance-init</code> 한 번이면 메뉴·코드 모듈을 보고 <strong style="color:var(--text);">빈 스켈레톤이 자동 생성</strong>됩니다. 채우는 건 작업하면서.</p>
+    </div>
+  </div>
+
+  <!-- ━━ SLIDE 5 · 사용예시 ① 첫 작업 ━━ -->
+  <div class="slide">
+    <h2>예시 ① "재택근무 유형 추가" — 첫 작업</h2>
+    <p style="color:var(--text2); margin-bottom:14px;"><code>work-management.md</code> 가 비어 있는 상태. 신입 첫 주처럼 충실히 묻고 풀 코스로 진행합니다.</p>
+
+    <div class="grid2" style="gap:14px; margin-bottom:14px;">
+      <div class="card" style="border-left:4px solid var(--yellow);">
+        <h3 style="margin-top:0;">grill-task 진입</h3>
+        <pre style="margin-top:6px; font-size:.72rem;">$ /grill-task
+
+작업 요청: 재택근무 유형 추가
+INDEX 매칭: work-management
+CONTEXT 충실도: <span style="color:var(--yellow);">희박</span>
+  (결정 이력 0건 · 함정 0건)</pre>
+        <p style="font-size:.8rem; color:var(--text2); margin-top:8px;">노트가 비었으니 평소처럼 깊게 인터뷰</p>
+      </div>
+      <div class="card" style="border-left:4px solid var(--yellow);">
+        <h3 style="margin-top:0;">충실 인터뷰 (Step 3)</h3>
+        <ul style="font-size:.83rem;">
+          <li>"근무유형 모델 — enum / 마스터 테이블 / 정책 코드?"</li>
+          <li>"야간·휴일·연장근로 룰이 유형마다 다른가?"</li>
+          <li>"기존 근무 데이터 마이그레이션이 필요한가?"</li>
+          <li>"재택근무는 출퇴근 기록 방식이 다른가?"</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 style="color:var(--yellow);">권장 Phase 흐름 — 거의 풀 코스</h3>
+    <div class="flow" style="margin-bottom:12px;">
+      <div class="flow-box warn">2 asis</div><div class="flow-arrow">›</div>
+      <div class="flow-box warn">3 req</div><div class="flow-arrow">›</div>
+      <div class="flow-box warn">4 gap</div><div class="flow-arrow">›</div>
+      <div class="flow-box warn">5 design (DB·API·Screen)</div><div class="flow-arrow">›</div>
+      <div class="flow-box warn">5.5 review-design</div><div class="flow-arrow">›</div>
+      <div class="flow-box warn">6 build</div><div class="flow-arrow">›</div>
+      <div class="flow-box ok">6.5 impact ✅</div><div class="flow-arrow">›</div>
+      <div class="flow-box ok">7 review ✅</div><div class="flow-arrow">›</div>
+      <div class="flow-box ok">8 test (회귀 High 전체) ✅</div><div class="flow-arrow">›</div>
+      <div class="flow-box ok">8.5~11 ✅</div>
+    </div>
+
+    <div class="card" style="border-left:4px solid var(--red);">
+      <h3 style="margin-top:0; color:var(--red);">Phase 8 — 회귀 테스트가 결정타</h3>
+      <p style="font-size:.86rem;"><strong>연장근로 계산</strong>: 기존 근무유형들의 연장근로 시간이 새 enum 도입 후에도 동일하게 계산되는지 확인. High 항목 전부 통과해야 진행.</p>
+    </div>
+
+    <div style="margin-top:12px;">
+      <blockquote style="font-size:.88rem;">
+        <strong>Phase 11 — work-management.md 가 처음으로 채워지는 순간.</strong>
+        결정 이력 1줄, 함정 2건, 외부 의존성 1건이 노트에 추가됩니다.
+      </blockquote>
+    </div>
+  </div>
+
+  <!-- ━━ SLIDE 6 · 사용예시 ② 두 번째 작업 ━━ -->
+  <div class="slide">
+    <h2>예시 ② "교대근무 유형 추가" — 한 달 후</h2>
+    <p style="color:var(--text2); margin-bottom:14px;">같은 도메인, 같은 종류의 변경. 그러나 <code>work-management.md</code> 가 이미 채워져 있습니다.</p>
+
+    <div class="grid2" style="gap:14px; margin-bottom:14px;">
+      <div class="card" style="border-left:4px solid var(--cyan);">
+        <h3 style="margin-top:0; color:var(--cyan);">grill-task 진입 — 다른 풍경</h3>
+        <pre style="margin-top:6px; font-size:.72rem;">$ /grill-task
+
+작업 요청: 교대근무 유형 추가
+INDEX 매칭: work-management
+CONTEXT 충실도: <span style="color:var(--cyan);">풍부</span>
+  (결정 이력 5건 · 함정 4건)</pre>
+      </div>
+      <div class="card" style="border-left:4px solid var(--cyan);">
+        <h3 style="margin-top:0; color:var(--cyan);">"제가 알고 있는 사실"</h3>
+        <ul style="font-size:.82rem;">
+          <li>(개요) work-management 는 급여 시스템에 유형 코드를 직접 전달</li>
+          <li>(함정) 야간 수당은 22:00~06:00 기준, 일부 유형(교대제) 예외</li>
+          <li>(결정 이력 #1) 근무유형은 enum 대신 마스터 테이블 — CR-001</li>
+          <li>(함정) 연장근로 계산은 work_type_id 별 룰 매핑이 우선</li>
+          <li>(변경 패턴) 신규 유형 추가는 분기마다 1~2회 발생</li>
+        </ul>
+        <p style="font-size:.78rem; color:var(--text2); margin-top:8px;">→ "이 사실 중 더 이상 맞지 않는 게 있나요?" 사용자 확인</p>
+      </div>
+    </div>
+
+    <h3 style="color:var(--cyan);">권장 Phase 흐름 — 크게 짧아진다</h3>
+    <div class="flow" style="margin-bottom:12px;">
+      <div class="flow-box skip">2 asis</div><div class="flow-arrow">›</div>
+      <div class="flow-box skip">3 req</div><div class="flow-arrow">›</div>
+      <div class="flow-box warn">4 gap (축약)</div><div class="flow-arrow">›</div>
+      <div class="flow-box warn">5 design (DB·API)</div><div class="flow-arrow">›</div>
+      <div class="flow-box skip">5.5 review-design</div><div class="flow-arrow">›</div>
+      <div class="flow-box warn">6 build</div><div class="flow-arrow">›</div>
+      <div class="flow-box ok">6.5 impact ✅</div><div class="flow-arrow">›</div>
+      <div class="flow-box ok">7 review ✅</div><div class="flow-arrow">›</div>
+      <div class="flow-box ok">8 test (회귀 High) ✅</div><div class="flow-arrow">›</div>
+      <div class="flow-box ok">8.5~11 ✅</div>
+    </div>
+
+    <div class="grid2" style="gap:14px;">
+      <div class="card" style="border-top:3px solid var(--yellow);">
+        <p style="font-size:.78rem; color:var(--text2);">예시 ① 첫 작업</p>
+        <p style="font-size:1.4rem; font-weight:700; color:var(--yellow);">~1.5일</p>
+        <p style="font-size:.78rem; color:var(--text2);">분석·설계·리뷰·회귀 풀 코스</p>
+      </div>
+      <div class="card" style="border-top:3px solid var(--cyan);">
+        <p style="font-size:.78rem; color:var(--text2);">예시 ② 한 달 후</p>
+        <p style="font-size:1.4rem; font-weight:700; color:var(--cyan);">~반나절</p>
+        <p style="font-size:.78rem; color:var(--text2);">contract 가 단계를 가지치기</p>
+      </div>
+    </div>
+
+    <div style="margin-top:12px;">
+      <blockquote style="font-size:.88rem;">
+        같은 시스템 · 같은 도메인 · 같은 종류의 변경.<br>
+        <strong>한 달의 차이가 사이클 시간을 절반 이하로 줄입니다.</strong>
+      </blockquote>
+    </div>
+  </div>
+
+  <!-- ━━ SLIDE 7 · 안전망 + 자동 갱신 ━━ -->
+  <div class="slide">
+    <h2>안전망 + 자동 갱신 — 짧아져도 잡을 건 잡는다</h2>
+
+    <div class="grid2" style="gap:16px; margin-bottom:16px;">
+      <div class="card" style="border-left:4px solid var(--red);">
+        <h3 style="margin-top:0; color:var(--red);">안전망 7건 — 절대 생략 불가</h3>
+        <ul style="font-size:.83rem;">
+          <li>Phase 6.5 · impact-check</li>
+          <li>Phase 7 · review-all</li>
+          <li>Phase 8 · 변경 + 회귀 High 테스트</li>
+          <li>Phase 8.5 · deploy-dev</li>
+          <li>Phase 9 · UAT</li>
+          <li>Phase 10 · deploy-prd</li>
+          <li>Phase 11 · 변경이력 + CONTEXT 갱신</li>
+        </ul>
+        <p style="font-size:.8rem; color:var(--text2); margin-top:8px;">CONTEXT 가 아무리 풍부해도 이 7개는 진행됩니다.</p>
+      </div>
+      <div class="card" style="border-left:4px solid var(--blue);">
+        <h3 style="margin-top:0; color:var(--blue);">자동 강등 — 위험 신호 시 단계 복원</h3>
+        <table style="font-size:.78rem;">
+          <thead><tr><th>신호</th><th>복원 대상</th></tr></thead>
+          <tbody>
+            <tr><td>impact-check High 발견</td><td>생략됐던 review-design / 회귀 Med</td></tr>
+            <tr><td>계획 외 레이어 변경</td><td>해당 레이어 design 재실행</td></tr>
+            <tr><td>회귀 High 실패</td><td>흐름 중단 · 사용자 보고</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:.8rem; color:var(--text2); margin-top:8px;">"익숙하다고 위험까지 건너뛰진 않는다."</p>
+      </div>
+    </div>
+
+    <div class="card" style="border-left:4px solid var(--cyan);">
+      <h3 style="margin-top:0; color:var(--cyan);">Phase 11 · 반자동 갱신 — 퇴근 전 5분 노트 정리</h3>
+      <pre style="margin-top:8px; font-size:.74rem;">[CONTEXT 갱신 후보 — 작업 CR-014 교대근무 유형 추가]
+
+✓ work-management.md / 결정 이력
+  | 2026-06-15 | 교대근무 24h 룰은 일별 분할 저장 | 일급 계산 통일 | CR-014 |
+
+✓ work-management.md / 함정
+  "교대 근무자의 연장근로는 일별이 아닌 주별 한도 적용"
+
+□ payroll.md / 외부 의존성
+  "교대 수당 코드는 급여 시스템 마스터에 사전 등록 필요"
+
+→ 추가할 항목을 알려주세요 (예: 1,2 / all / none / 수정 후 추가)</pre>
+      <p style="font-size:.84rem; color:var(--text2); margin-top:10px;">Claude 가 후보를 모아 제시 → 사용자 체크박스로 선별 → 확정 항목만 노트에 append.</p>
+    </div>
+  </div>
+
+  <!-- ━━ SLIDE 8 · 운영 진입 ━━ -->
+  <div class="slide">
+    <h2>운영 진입 — 첫 단추 하나만</h2>
+    <p style="color:var(--text2); margin-bottom:18px;">기존 운영 시스템에 우리 하네스를 도입하거나, 신규 개발이 운영 단계로 넘어갈 때 — <strong style="color:var(--text);">단 한 번만 실행하면 됩니다.</strong></p>
+
+    <div class="card" style="border-left:4px solid var(--blue); margin-bottom:16px;">
+      <pre style="margin:0;">$ /maintenance-init
+
+[Step 0~3] 기술 스택 · DB · API · 화면 역공학
+[Step 3.5] 도메인 1차 분류
+  메뉴 기반 후보:    work-management, payroll, attendance, admin
+  코드 모듈 기반:    work-management, payroll, attendance, user, common
+  → 선택: 1) 메뉴 기반  2) 코드 모듈  3) 직접 지정
+
+✓ docs/context/INDEX.md 생성 (도메인 4개)
+✓ docs/context/work-management.md (빈 스켈레톤)
+✓ docs/context/payroll.md (빈 스켈레톤)
+✓ docs/context/attendance.md (빈 스켈레톤)
+✓ docs/context/admin.md (빈 스켈레톤)
+
+다음 단계: /pipeline-maintenance 로 첫 변경 작업 시작</pre>
+    </div>
+
+    <div class="grid3" style="gap:12px;">
+      <div class="card" style="padding:14px 16px;">
+        <p style="font-size:.78rem; font-weight:700; color:var(--blue);">한 번만</p>
+        <p style="font-size:.82rem; color:var(--text2); margin-top:4px;">maintenance-init 은 프로젝트 진입 시 단 1회 실행</p>
+      </div>
+      <div class="card" style="padding:14px 16px;">
+        <p style="font-size:.78rem; font-weight:700; color:var(--cyan);">이후 모든 변경</p>
+        <p style="font-size:.82rem; color:var(--text2); margin-top:4px;">pipeline-maintenance 로 진행 · grill-task 가 자동 진입점</p>
+      </div>
+      <div class="card" style="padding:14px 16px;">
+        <p style="font-size:.78rem; font-weight:700; color:var(--yellow);">노트는 자동 누적</p>
+        <p style="font-size:.82rem; color:var(--text2); margin-top:4px;">Phase 11 마다 도메인 노트가 채워짐 · 시스템이 점점 똑똑해짐</p>
+      </div>
+    </div>
+
+    <div style="margin-top:18px;">
+      <blockquote>
+        <strong>여러분이 따로 할 일은 없습니다.</strong><br>
+        작업을 하다 보면 노트가 알아서 채워지고, 다음 작업이 알아서 짧아집니다.
+      </blockquote>
+    </div>
+  </div>
+
+  <!-- ━━ SLIDE 9 · 마무리 ━━ -->
+  <div class="slide slide-end">
+    <div style="max-width:780px;">
+      <p style="font-size:.85rem; color:var(--text2); letter-spacing:.18em; text-transform:uppercase; margin-bottom:20px;">4부 핵심 요약</p>
+      <h1 style="font-size:2.4rem; line-height:1.35; margin-bottom:28px;">
+        하네스도 <span style="color:var(--cyan)">학습</span>합니다<br>
+        <span style="font-size:1.6rem; color:var(--text2); font-weight:400;">매 작업이 다음 작업을 짧게 만든다</span>
+      </h1>
+
+      <div class="grid3" style="margin-bottom:28px; text-align:left;">
+        <div class="card" style="padding:14px 16px;">
+          <p style="font-size:.78rem; font-weight:700; color:var(--blue); margin-bottom:6px;">CONTEXT</p>
+          <p style="font-size:.82rem; color:var(--text2);">도메인별 노트가 시스템의 머릿속을 만든다</p>
+        </div>
+        <div class="card" style="padding:14px 16px;">
+          <p style="font-size:.78rem; font-weight:700; color:var(--cyan); margin-bottom:6px;">grill-task</p>
+          <p style="font-size:.82rem; color:var(--text2);">아는 사실은 패스, 모르는 것만 묻는다 → contract 제안</p>
+        </div>
+        <div class="card" style="padding:14px 16px;">
+          <p style="font-size:.78rem; font-weight:700; color:var(--yellow); margin-bottom:6px;">안전망 + 누적</p>
+          <p style="font-size:.82rem; color:var(--text2);">짧아져도 7건은 잡고, 끝엔 새로 알게 된 걸 노트에 남긴다</p>
+        </div>
+      </div>
+
+      <div style="margin-bottom:28px; text-align:left; border-left:4px solid var(--cyan); padding:18px 24px; background:var(--bg2); border-radius:0 8px 8px 0;">
+        <p style="font-size:.95rem; line-height:2; color:var(--text);">
+          "신입 사원은 매번 같은 질문을 합니다."<br>
+          "1년 차는 한마디만 듣고도 일을 시작합니다."<br>
+          <strong style="color:var(--cyan);">"우리 하네스도 이제 1년 차가 될 차례입니다."</strong>
+        </p>
+      </div>
+
+      <div style="border-top:1px solid var(--border); padding-top:24px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
+        <div class="badge badge-blue">1부: presentation-intro.html</div>
+        <div class="badge badge-purple">2부: presentation-intro2.html</div>
+        <div class="badge badge-yellow">3부: presentation-intro3.html</div>
+        <div class="badge badge-green">4부 (현재)</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /deck -->
+
+<div id="nav">
+  <button class="nav-btn" id="btn-prev">‹</button>
+  <span id="counter">1 / 9</span>
+  <button class="nav-btn" id="btn-next">›</button>
+</div>
+<div id="progress-bar"></div>
+<div id="hint">← → Space · F 전체화면 · P 인쇄</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let cur = 0;
+
+  function go(n) {
+    slides[cur].classList.remove('active');
+    cur = Math.max(0, Math.min(total - 1, n));
+    slides[cur].classList.add('active');
+    document.getElementById('counter').textContent = `${cur + 1} / ${total}`;
+    document.getElementById('progress-bar').style.width = `${((cur + 1) / total) * 100}%`;
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => go(cur - 1));
+  document.getElementById('btn-next').addEventListener('click', () => go(cur + 1));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); go(cur + 1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp')                   { e.preventDefault(); go(cur - 1); }
+    if (e.key === 'Home') go(0);
+    if (e.key === 'End')  go(total - 1);
+    if (e.key === 'f' || e.key === 'F') document.documentElement.requestFullscreen?.();
+    if ((e.key === 'p' || e.key === 'P') && !e.metaKey && !e.ctrlKey) window.print();
+  });
+
+  let touchX = 0;
+  document.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; });
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 40) dx < 0 ? go(cur + 1) : go(cur - 1);
+  });
+</script>
+</body>
+</html>
