@@ -174,9 +174,9 @@ GAP 결과 기반        GAP 결과 기반          회귀 테스트 포함   de
 | 분석 | 8 | analyze-requirements, asis, gap, **grill-me** |
 | 설계 | 11 | design-screen, db, api, tc, **design-prompt-gen** |
 | 구현 | 7 | build-db, build-api, build-screen |
-| 리뷰 | 6 | review-all, review-design, impact-check |
+| 리뷰 | 7 | review-all, review-design, impact-check |
 | 테스트 | 10 | test-db, api, screen, e2e, **test-ui-chrome** |
-| 배포·운영 | 7 | deploy-dev, deploy-prd, customer-request |
+| 배포·운영 | 6 | deploy-dev, deploy-prd, customer-request |
 | **합계** | **51** | |
 
 ### refine-* 패턴
