@@ -222,6 +222,20 @@ git push
 **→ 전체 파이프라인 완료.**
 
 ---
+
+### 운영 전환 — Knowledge Accretion 시작
+
+> 운영 배포 이후 이 시스템은 신규 개발이 아닌 **유지보수 단계**로 들어갑니다.
+> 첫 변경 작업 전에 `/maintenance-init` 을 **한 번** 실행하여 CONTEXT 누적 구조를 활성화하세요.
+
+```
+Read `.claude/skills/maintenance-init.md` and follow all instructions.
+```
+
+`maintenance-init` 은 코드를 역공학하여 분석/설계 문서를 재구성하고 `docs/context/` 도메인 노트 스켈레톤을 생성합니다.
+이후 모든 변경은 `/pipeline-maintenance` 로 진행되며, 각 작업 끝에 CONTEXT 가 자동 누적됩니다.
+
+---
 각 Phase 사이에 사용자 확인을 받는 것은 필수입니다.
 
 ## 롤백 맵 — 문제 발생 시 어디로 돌아갈지

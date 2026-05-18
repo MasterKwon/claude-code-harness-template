@@ -35,7 +35,8 @@ Next.js + MSA 구조 학습 프로젝트. 바이브코딩으로 React/Next.js를
 | 의도 (예시 표현) | 실행 스킬 |
 |----------------|----------|
 | 스킬 구조 점검 / 스킬 포맷 확인 / 스킬 감사 | `skill-formatter` |
-| 요구사항 인터뷰 / 뭘 만들지 정리 / 모호한 거 짚어줘 | `grill-me` |
+| 요구사항 인터뷰 / 뭘 만들지 정리 / 모호한 거 짚어줘 (큰 주제) | `grill-me` |
+| 이 작업 시작 전 정리 / 작업 인터뷰 / 도메인 노트 확인 (단일 작업) | `grill-task` |
 | 분석 결과 리뷰 / 요구사항 검토 | `review-analyze` |
 | 설계 리뷰 / 설계 검토 | `review-design` |
 | 코드 리뷰 / 전체 리뷰 | `review-all` |
@@ -69,6 +70,11 @@ Next.js + MSA 구조 학습 프로젝트. 바이브코딩으로 React/Next.js를
 
 ### Think Before Coding
 코드를 작성하기 전, 반드시 가설과 실행 계획을 먼저 수립하고 확인받아라.
+
+### Knowledge Accretion (지식 축적)
+운영 시스템은 한 번에 다 학습하지 않는다. 작업이 누적될수록 시스템 이해도가 깊어지도록 한다.
+`docs/context/` 의 도메인 노트가 그 저장소이며, `/maintenance-init` 이 초기 분류를, `/grill-task` 가 작업 진입 시 참조를, `/pipeline-maintenance` Phase 11 이 반자동 갱신을 담당한다.
+노트가 두꺼울수록 단계가 짧아진다 — 사람의 학습 곡선과 동일한 원리.
 
 ## 도구 및 컨텍스트 관리 (Token Diet)
 

@@ -89,6 +89,84 @@ UI: (React / Vue / 서버사이드 렌더링 / ...)
 
 ---
 
+## Step 3.5 — 도메인 1차 분류 및 CONTEXT 스켈레톤 생성
+
+작업이 누적되며 도메인별로 시스템 지식이 쌓일 수 있도록 `docs/context/` 를 초기화합니다.
+이 디렉토리는 이후 `/grill-task` 가 작업 진입 시 우선 참조하고, `pipeline-maintenance` Phase 11 에서 갱신됩니다.
+
+### 도메인 후보를 두 축으로 추출
+
+**메뉴 기반 후보** (Step 3 결과 활용):
+- 화면 메뉴 트리의 최상위 그룹
+- 라우팅 경로 prefix (`/order/*`, `/payment/*` ...)
+
+**코드 모듈 기반 후보** (Step 1, 2 결과 활용):
+- 컨트롤러/라우터 묶음 (`src/services/order/`, `controllers/payment/`)
+- ORM 모델 그룹 (`Order`, `OrderItem` → order)
+
+두 후보군을 **모두** 사용자에게 제시합니다 (한쪽이 명백히 맞으면 그쪽만 제시해도 됨):
+
+```
+[도메인 후보 — 메뉴 기반]
+  order, payment, inventory, admin, auth
+
+[도메인 후보 — 코드 모듈 기반]
+  order, payment, inventory, user, auth, common
+
+→ 다음 중 선택:
+   1) 메뉴 기반 그대로 사용
+   2) 코드 모듈 기반 그대로 사용
+   3) 직접 지정 (병합/제외/이름 변경)
+```
+
+도메인명 규칙: 영문 소문자 단수형, 하이픈 허용 (`order`, `user-profile`).
+
+### 확정 도메인으로 디렉토리·파일 생성
+
+`docs/context/INDEX.md` 생성:
+
+```markdown
+# CONTEXT INDEX
+
+> 운영 시스템 도메인 노트 목록. 작업이 누적되며 채워집니다.
+> 초기 생성: YYYY-MM-DD (maintenance-init)
+
+| 도메인 | 파일 | 한 줄 요약 | 최근 갱신 |
+|--------|------|-----------|----------|
+| order | order.md | (작업 누적되며 채움) | YYYY-MM-DD |
+| payment | payment.md | ... | YYYY-MM-DD |
+```
+
+각 도메인별 빈 스켈레톤 `docs/context/{domain}.md` 생성:
+
+```markdown
+> ⚠️ maintenance-init 자동 생성. 작업하면서 채워집니다.
+
+# {도메인명}
+
+## 개요
+(한 줄~두 줄. 책임 경계)
+
+## 코드 위치
+(주요 파일/모듈 경로 매핑)
+
+## 외부 의존성
+(다른 도메인 / 외부 시스템)
+
+## 함정/주의사항
+(코드만 봐서는 안 보이는 것)
+
+## 결정 이력
+| 날짜 | 결정 | 사유 | 관련 작업 |
+
+## 변경 패턴 (관찰된 빈도)
+(이 도메인에서 자주 받는 변경 유형)
+```
+
+> 1차 도입은 스켈레톤만 생성합니다. 실제 내용은 작업을 누적하면서 `grill-task` + `pipeline-maintenance` Phase 11 갱신을 통해 채워집니다.
+
+---
+
 ## Step 4 — AS-IS 분석 → `docs/01.analyze/reviewed/asis.md`
 
 코드베이스 전반을 분석하여 현황을 기록합니다:
@@ -125,9 +203,16 @@ UI: (React / Vue / 서버사이드 렌더링 / ...)
   ✓ docs/02.design/reviewed/api.md
   ✓ docs/02.design/reviewed/screen.md
 
-⚠️  모든 문서는 코드 역공학 기반입니다.
+생성된 CONTEXT 스켈레톤:
+  ✓ docs/context/INDEX.md (도메인 N개)
+  ✓ docs/context/{domain}.md × N (빈 스켈레톤)
+
+⚠️  역공학 문서는 코드 기준입니다.
     실제 비즈니스 요구사항과 다를 수 있으니 검토 후 수정하세요.
     [확인 필요] 태그가 붙은 항목을 우선 확인하세요.
+
+⚠️  CONTEXT 노트는 비어 있습니다.
+    이후 작업을 진행하면서 grill-task + Phase 11 갱신을 통해 채워집니다.
 
 다음 단계: /pipeline-maintenance 로 유지보수 업무를 시작하세요.
 ```

@@ -56,19 +56,44 @@ GAP 결과 기반            GAP 결과 기반             review-all
 → 진행하시겠습니까? (Y/N)
 ```
 
-### Phase 1.5 — 집중 인터뷰 (Grill Me) [선택]
+### Phase 1.5 — 작업 단위 집중 인터뷰 (Grill Task)
 
-> 변경 내용이 모호하거나 의사결정이 여러 갈래로 갈리는 경우에만 실행합니다.
-> 단순 버그수정·텍스트 변경 등 분기 없는 변경은 건너뜁니다.
+> 모든 변경 작업의 **기본 진입점**입니다.
+> CONTEXT 가 풍부한 도메인의 사소한 변경(텍스트 수정·enum 추가 등)은
+> `grill-task` Step 2 에서 "물어볼 게 없음" 판정 후 즉시 종료되므로 비용이 사실상 없습니다.
 
-[best] Read `.claude/skills/grill-me.md` and follow all instructions.
-산출물: `docs/00.input/grill-result.md`
+전제: `docs/context/INDEX.md` 존재. 없으면 `/maintenance-init` 을 먼저 실행하세요.
 
-`analyze-requirements` 단계에서 이 파일을 추가 입력으로 활용합니다.
+[best] Read `.claude/skills/grill-task.md` and follow all instructions.
+산출물: `docs/00.input/grill-task-{YYYYMMDD}-{slug}.md`
+
+> 변경 주제가 매우 크거나 여러 작업을 묶어야 하는 경우, `/grill-me` 를 별도로 사용해 큰 주제 인터뷰를 진행한 뒤 다시 `grill-task` 로 진입할 수 있습니다.
+
+---
+
+### Phase 1.6 — 권장 Phase 흐름 합의
+
+`grill-task` Step 4 에서 제안한 **권장 Phase 흐름**을 사용자가 확정합니다.
+확정된 흐름은 이번 작업의 **진행 contract** 가 되며, 이후 모든 Phase 는 contract 의 처리 표시(✅ 진행 / ⏭ 생략 / 축약)를 따릅니다.
+
+**안전망 Phase (절대 생략 불가)**:
+- Phase 6.5 impact-check
+- Phase 7 review-all
+- Phase 8 변경 기능 + 회귀 High
+- Phase 8.5 deploy-dev
+- Phase 9 UAT
+- Phase 10 deploy-prd
+- Phase 11 변경이력 + CONTEXT 갱신
+
+**생략/축약 가능 Phase**: 2, 3, 4, 5, 5.5, 8 회귀 Med/Low
+
+**자동 강등 트리거**: Phase 6.5 impact-check 에서 High 영향도 발견 시, contract 에 ⏭ 표시됐던 Phase 가 자동 복원됩니다 (Phase 6.5 참조).
 
 ---
 
 ## Phase 2 — 현황 파악 (AS-IS)
+
+> Phase 1.6 contract 가 ⏭ 또는 축약으로 표시한 경우 이 Phase 는 건너뛰거나 줄여서 진행합니다.
 
 > 기존 코드를 먼저 파악하지 않으면 변경 범위를 특정할 수 없습니다.
 > **기술 스택은 사용자에게 묻지 않습니다.** `analyze-asis.md`의 Step 0에서 파일을 읽어 자동 감지합니다.
@@ -211,9 +236,10 @@ git push
 
 ---
 
-## Phase 6.5 — 변경 영향도 검사
+## Phase 6.5 — 변경 영향도 검사 (안전망)
 
-Phase 6 구현 완료 직후 실행합니다.
+Phase 6 구현 완료 직후 실행합니다. **Phase 1.6 contract 와 무관하게 항상 진행됩니다.**
+
 [best] Read `.claude/skills/impact-check.md` and follow all instructions.
 산출물: `docs/03.build/impact-check.md`
 
@@ -223,6 +249,19 @@ Phase 6 구현 완료 직후 실행합니다.
 **계획 외 변경 발견 시**: 작업 중단 후 사용자에게 보고. 의도된 변경이면 GAP에 추가, 아니면 롤백.
 **High 영향도 항목 발견 시**: 사용자에게 보고하고 확인 후 Phase 7로 진행.
 **Medium 이하만 있으면**: 즉시 Phase 7로 진행.
+
+### 자동 강등 (Contract 복원)
+
+Phase 1.6 에서 contract 가 일부 Phase 를 ⏭ 생략 또는 축약으로 표시했더라도,
+다음 신호가 발생하면 해당 Phase 가 **자동 복원**됩니다:
+
+| 신호 | 자동 복원 대상 |
+|------|--------------|
+| impact-check High 영향도 발견 | 생략됐던 Phase 5.5 review-design, 회귀 테스트 Medium 항목 |
+| 계획 외 레이어 변경 발견 | 해당 레이어 design 단계 재실행 |
+| 회귀 테스트 High 실패 | 흐름 중단 + 사용자 보고 (Phase 8 에서 처리) |
+
+복원 발생 시 사용자에게 "원래 contract 대비 N개 Phase 가 복원됨" 보고 후 진행합니다.
 
 ---
 
@@ -335,7 +374,11 @@ git push
 
 ---
 
-## Phase 11 — 변경 이력 기록
+## Phase 11 — 변경 이력 기록 + CONTEXT 갱신 (안전망)
+
+운영 배포 완료 후, 두 가지 학습 자산을 갱신합니다. 이 Phase 가 생략되면 시스템이 학습을 멈추므로 절대 건너뛰지 않습니다.
+
+### Step 1. 변경 이력 기록
 
 `docs/change-requests.md` 에 이력을 추가합니다 (파일 없으면 신규 생성):
 
@@ -345,10 +388,53 @@ git push
 **요청자**: (고객명 / 팀명)
 **내용**: (변경 내용 요약)
 **영향 범위**: (impact-check 결과 요약)
+**관련 도메인**: (grill-task 에서 매칭된 도메인)
 **처리 결과**: 완료
 ```
 
+### Step 2. CONTEXT 반자동 갱신
+
+다음 입력에서 **갱신 후보**를 추출합니다:
+- `docs/00.input/grill-task-{YYYYMMDD}-{slug}.md` — 합의된 결정, 사용자가 수정한 "아는 사실"
+- `docs/01.analyze/reviewed/gap.md` — 새로 확정된 변경 범위
+- `docs/03.build/impact-check.md` — 발견된 결합도/의존성 사실
+- 작업 중 발견된 함정·결정 사항
+
+각 후보를 어느 도메인 노트(`docs/context/{domain}.md`)의 어느 섹션에 넣을지 매핑하고, 한~세 줄로 간결하게 다듬어 사용자에게 제시합니다:
+
+```
+[CONTEXT 갱신 후보 — 작업: CR-NNN {제목}]
+
+✓ order.md / 함정
+  "환불 사유는 PG 가 강제하는 enum 이므로 PG 등록을 선행해야 함"
+
+✓ order.md / 결정 이력
+  | 2026-05-18 | enum 값을 DB enum 대신 string + Zod 검증 | DB enum 변경 마이그 비용 큼 | CR-029 |
+
+□ payment.md / 외부 의존성
+  "PG_REFUND_REASON_MAX_LEN=200"
+  → payment 가 직접 쓰지 않으므로 order.md 로 이동 권장
+
+→ 추가할 항목을 알려주세요 (예: 1,2 / all / none / 수정 후 추가)
+```
+
+확정 항목만 해당 도메인 노트에 append 하고, `docs/context/INDEX.md` 의 "최근 갱신" 컬럼을 오늘 날짜로 업데이트합니다.
+
+**원칙**:
+- 코드/스키마에서 자명한 정보는 추가하지 않음 (코드가 권위 출처)
+- 다음 작업에 도움이 될 정보만 적음
+- 중복 위험이 있으면 사용자에게 어느 항목을 남길지 확인
+
+### Step 3. 커밋
+
+```bash
+git add docs/change-requests.md docs/context/
+git commit -m "maint: 변경 이력 + CONTEXT 갱신 (CR-NNN)"
+git push
+```
+
 **→ 다음 변경 요청이 오면 Phase 1부터 다시 시작합니다.**
+이번에 추가된 CONTEXT 가 다음 `grill-task` Step 2 에서 "이미 아는 사실" 로 활용됩니다.
 
 ---
 
