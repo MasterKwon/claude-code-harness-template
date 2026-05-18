@@ -40,6 +40,11 @@ git checkout -b develop
     ├── 00.input/                    ← 요구사항 원본 넣는 곳
     ├── 01.analyze/ ~ 06.deploy/     ← 파이프라인 산출물 (자동 생성)
     └── harness/                     ← 이 가이드
+        ├── presentation-intro.html   ← 발표자료 1부 (체험형 실습)
+        ├── presentation-intro2.html  ← 발표자료 2부 (스킬 만들기)
+        ├── presentation-intro3.html  ← 발표자료 3부 (심화)
+        ├── onboarding.md
+        └── CHANGELOG.md
 ```
 
 핵심: **`CLAUDE.md`와 `stacks/` 활성화 설정만 수정하면** 하네스 전체가 동작합니다.
@@ -125,7 +130,7 @@ git checkout -b develop
 
 ---
 
-## 커맨드 전체 목록 (48개)
+## 커맨드 전체 목록 (52개)
 
 ### 파이프라인 (2)
 | 커맨드 | 설명 |
@@ -133,9 +138,10 @@ git checkout -b develop
 | `/pipeline-full` | 신규 프로젝트 전체 SDLC |
 | `/pipeline-maintenance` | 오류수정 / 기능개선 / 내부 개선 |
 
-### 분석 (7)
+### 분석 (8)
 | 커맨드 | 설명 |
 |--------|------|
+| `/grill-me` | 요구사항 인터뷰 (모호한 요구사항 구체화) |
 | `/analyze-requirements` | 요구사항 분석 |
 | `/analyze-asis` | AS-IS 현황 분석 |
 | `/analyze-gap` | GAP 분석 (변경 범위 확정) |
@@ -144,7 +150,7 @@ git checkout -b develop
 | `/refine-analyze-asis` | AS-IS 분석 보완 |
 | `/refine-analyze-gap` | GAP 분석 보완 |
 
-### 설계 (10)
+### 설계 (11)
 | 커맨드 | 설명 |
 |--------|------|
 | `/design-screen` | 화면 설계 |
@@ -153,6 +159,7 @@ git checkout -b develop
 | `/design-integration` | 서비스 통합 설계 (MSA) |
 | `/design-process` | 프로세스 설계 |
 | `/design-tc` | UAT 체크리스트 설계 |
+| `/design-prompt-gen` | Claude Design용 화면 프롬프트 생성 |
 | `/design-all` | 설계 3종 연속 실행 |
 | `/refine-design-screen` | 화면 설계 보완 |
 | `/refine-design-db` | DB 설계 보완 |
@@ -169,7 +176,7 @@ git checkout -b develop
 | `/refine-build-api` | API 구현 보완 |
 | `/refine-build-screen` | 화면 구현 보완 |
 
-### 리뷰 (6)
+### 리뷰 (7)
 | 커맨드 | 설명 |
 |--------|------|
 | `/review-all` | 전체 코드 리뷰 |
@@ -178,21 +185,23 @@ git checkout -b develop
 | `/impact-check` | 변경 영향도 검사 |
 | `/refine-review-all` | 코드 리뷰 보완 |
 | `/refine-review-analyze` | 분석 리뷰 보완 |
+| `/refine-impact-check` | 영향도 검사 보완 |
 
-### 테스트 (9)
+### 테스트 (10)
 | 커맨드 | 설명 |
 |--------|------|
 | `/test-db` | DB 테스트 |
 | `/test-api` | API 테스트 |
 | `/test-screen` | 화면 테스트 |
 | `/test-e2e` | E2E 테스트 |
+| `/test-ui-chrome` | Chrome UI 테스트 지시문 생성 |
 | `/test-all` | 테스트 4종 연속 실행 |
 | `/refine-test-db` | DB 테스트 보완 |
 | `/refine-test-api` | API 테스트 보완 |
 | `/refine-test-screen` | 화면 테스트 보완 |
 | `/refine-test-e2e` | E2E 테스트 보완 |
 
-### 배포·운영 (7)
+### 배포·운영 (6)
 | 커맨드 | 설명 |
 |--------|------|
 | `/project-setup` | 신규 프로젝트 기술스택 선택 및 초기화 |
@@ -201,7 +210,11 @@ git checkout -b develop
 | `/refine-deploy-prd` | 배포 체크리스트 보완 |
 | `/customer-request` | 고객 변경 요청 분류 및 처리 |
 | `/maintenance-init` | 유지보수 모드 초기화 (설계 문서 동기화) |
-| `/refine-impact-check` | 영향도 검사 보완 |
+
+### 유틸 (1)
+| 커맨드 | 설명 |
+|--------|------|
+| `/skill-formatter` | 스킬 파일 구조 감사 보고서 생성 |
 
 ---
 
