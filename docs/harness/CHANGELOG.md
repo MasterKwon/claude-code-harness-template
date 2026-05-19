@@ -2,6 +2,40 @@
 
 ---
 
+## v2.4.3 — 2026-05-19
+
+### 수정 — 분석 단계 `reviewed/` 의미 통일 + 자동 무효화 안전망
+
+교육 실습 중 발견: `reviewed/` 에 자동 품질 게이트만 통과한 파일이 들어가, 리뷰 미통과 상태에서 다음 단계가 읽는 안전망 누락.
+
+**원칙 재정의**: `reviewed/` = **`review-analyze` PASS 한 파일만** (자동 품질 게이트는 별도 단계). 폴더에 파일이 있다 = 리뷰 통과 100% 보장.
+
+- **`analyze-*` 스킬 사전 동작(자동 무효화) 추가** — 실행 시작 시 `reviewed/` 의 해당 파일과 의존 파일을 즉시 삭제 (이전 PASS 무효화)
+  - `analyze-requirements`: `reviewed/requirements.md`, `reviewed/gap.md` 삭제
+  - `analyze-asis`: `reviewed/asis.md`, `reviewed/gap.md` 삭제
+  - `analyze-gap`: `reviewed/gap.md` 삭제
+- **입력 경로 변경 (원본 위치로)**
+  - `analyze-gap` 입력: `reviewed/{req, asis}.md` → `docs/01.analyze/{req, asis}.md`
+  - `review-analyze` 입력: `reviewed/*.md` → `docs/01.analyze/*.md`
+- **`review-analyze` PASS 시 자동 동작 추가** — 세 파일을 `reviewed/` 로 일괄 복사 (안전망 핵심)
+- **파이프라인에서 reviewed/ 복사 트리거 제거**
+  - `analyze-all.md` Step 4 신설 — review-analyze 필수 호출
+  - `pipeline-full.md` Phase 1 — review-analyze 필수 Step 명시
+  - `pipeline-maintenance.md` Phase 2/3/4 — reviewed/ 복사 제거 + Phase 4.5 (review-analyze) 신설
+
+### 안전망 효과
+
+- 다음 단계(design-*) 는 `reviewed/` 만 읽으면 자동 안전 보장
+- `analyze-*` 재실행 시 자동 무효화로 stale 위험 없음
+- `reviewed/` 비어 있으면 다음 단계 진입 불가 → 사용자가 깜빡할 수 없는 구조
+
+### 알려진 미보완 (다음 단계 보완 예정)
+
+- 설계 단계: `design-*` → `reviewed/` 복사 단계 (review-design PASS 후)
+- 테스트 단계: review-* 가 없는 단계의 `reviewed/` 처리 — v2.4.2 에서 추가한 자동 복사 단계 재검토 필요
+
+---
+
 ## v2.4.2 — 2026-05-19
 
 ### 수정 — 파이프라인 경로 일관성 보완

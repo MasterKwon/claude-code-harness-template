@@ -106,9 +106,9 @@ GAP 결과 기반            GAP 결과 기반             review-all
 - [ ] 기존 데이터 흐름 파악 완료
 - [ ] 현재 이슈 또는 제약사항 파악 완료
 
-**모두 통과하면**: `docs/01.analyze/asis.md`를 `docs/01.analyze/reviewed/asis.md`로 복사 후 커밋:
+**모두 통과하면**: Phase 3 로 진행 (`reviewed/` 복사는 Phase 4.5 review-analyze PASS 시점). 커밋:
 ```bash
-git add docs/01.analyze/asis.md docs/01.analyze/reviewed/asis.md
+git add docs/01.analyze/asis.md
 git commit -m "maint: analyze-asis 완료"
 git push
 ```
@@ -129,9 +129,9 @@ Read `.claude/skills/analyze-requirements.md` and follow all instructions.
 - [ ] Must/Should/Could 우선순위 부여
 - [ ] [질문 필요] 항목 없거나 명시적 보류 처리
 
-**모두 통과하면**: `docs/01.analyze/requirements.md`를 `docs/01.analyze/reviewed/requirements.md`로 복사 후 커밋:
+**모두 통과하면**: Phase 4 로 진행 (`reviewed/` 복사는 Phase 4.5 review-analyze PASS 시점). 커밋:
 ```bash
-git add docs/01.analyze/requirements.md docs/01.analyze/reviewed/requirements.md
+git add docs/01.analyze/requirements.md
 git commit -m "maint: analyze-requirements 완료"
 git push
 ```
@@ -140,7 +140,7 @@ git push
 
 ## Phase 4 — GAP 분석 (작업 범위 확정) ← 핵심
 
-`docs/01.analyze/reviewed/asis.md`, `docs/01.analyze/reviewed/requirements.md` 확인 후 진행.
+`docs/01.analyze/asis.md`, `docs/01.analyze/requirements.md` (**원본 위치**) 확인 후 진행.
 [best] Read `.claude/skills/analyze-gap.md` and follow all instructions.
 산출물: `docs/01.analyze/gap.md`
 
@@ -153,15 +153,35 @@ git push
 - [ ] 각 항목에 영향도(High/Medium/Low) 부여
 - [ ] 권장 작업 순서 존재
 
-**모두 통과하면**: `docs/01.analyze/gap.md`를 `docs/01.analyze/reviewed/gap.md`로 복사.
+**모두 통과하면**: Phase 4.5 로 진행 (`reviewed/` 복사는 review-analyze PASS 시점).
 
 **→ GAP 분석 완료 후 반드시 사용자 확인을 받고 다음 Phase로 진행하세요.**
 사용자가 범위를 조정할 수 있는 마지막 지점입니다.
 
 사용자 확인 후 커밋:
 ```bash
-git add docs/01.analyze/gap.md docs/01.analyze/reviewed/gap.md
+git add docs/01.analyze/gap.md
 git commit -m "maint: analyze-gap 완료 — 작업 범위 확정"
+git push
+```
+
+---
+
+## Phase 4.5 — 분석 종합 리뷰 (필수 · 안전망)
+
+세 분석 산출물을 종합 검토하여 다음 Phase 진입 여부를 확정합니다.
+**이 Phase 를 건너뛰면 `docs/01.analyze/reviewed/` 가 비어 있어 Phase 5 (설계) 가 진입을 거부합니다.**
+
+[best] Read `.claude/skills/review-analyze.md` and follow all instructions.
+산출물: `docs/01.analyze/analyze-review-report.md`
+
+- **PASS 시 자동 동작**: 세 파일이 `docs/01.analyze/reviewed/` 로 일괄 복사됨 (review-analyze.md 안에 명시) → Phase 5 진입 가능
+- **FAIL 시**: 문제 문서별 라우팅 (`/refine-analyze-requirements` / `/refine-analyze-asis` / `/refine-analyze-gap`) 후 Phase 4.5 재실행
+
+사용자 확인 후 커밋:
+```bash
+git add docs/01.analyze/
+git commit -m "maint: analyze-review-report PASS — reviewed/ 갱신"
 git push
 ```
 

@@ -12,9 +12,11 @@
   - 신규 개발 시: `docs/00.input/grill-result.md` (있으면)
   - 운영 변경 시: `docs/00.input/grill-task-{YYYYMMDD}-{slug}.md` (가장 최근 파일)
   - 사용자가 넣어둔 원본 문서 (`.md`, `.pdf`, `.xlsx` 등)도 포함
-**[B] 요구사항 분석**: `docs/01.analyze/reviewed/requirements.md`
-**[C] AS-IS 현황**: `docs/01.analyze/reviewed/asis.md`
-**[D] GAP 분석**: `docs/01.analyze/reviewed/gap.md`
+**[B] 요구사항 분석**: `docs/01.analyze/requirements.md` (**원본 위치** — 아직 `reviewed/` 에 없음)
+**[C] AS-IS 현황**: `docs/01.analyze/asis.md` (원본 위치)
+**[D] GAP 분석**: `docs/01.analyze/gap.md` (원본 위치)
+
+> 이 스킬이 PASS 판정을 내리면 세 파일을 `reviewed/` 로 자동 복사합니다 (아래 "산출물 자동 생성 파이프라인" 참조). PASS 전까지는 `reviewed/` 가 비어 있어 다음 단계(design-*)가 진입할 수 없습니다 — 안전망.
 
 ---
 
@@ -111,8 +113,25 @@
 
 (2~3줄 요약)
 
-## 산출물 자동 생성 파이프라인
-종합 결과가 `PASS`로 판정된 경우, 사용자에게 묻지 말고 즉시 `.claude/skills/deliverable-analyze.md` 스킬을 연계 실행하여 고객용 요약 산출물(Markdown 및 PDF) 생성을 완전히 마친 후 최종 결과를 보고하세요.
+## PASS 시 자동 동작 (사용자에게 묻지 말고 즉시 실행)
+
+종합 결과가 `PASS` 로 판정된 경우 다음을 순서대로 즉시 수행하세요.
+
+### 1. 원본을 `reviewed/` 로 복사 (안전망 핵심)
+
+```bash
+mkdir -p docs/01.analyze/reviewed
+cp docs/01.analyze/requirements.md docs/01.analyze/reviewed/
+cp docs/01.analyze/asis.md docs/01.analyze/reviewed/
+cp docs/01.analyze/gap.md docs/01.analyze/reviewed/
+```
+
+이 시점부터 다음 단계(`design-*`)가 `reviewed/` 를 읽을 수 있게 됩니다.
+PASS 가 아니면 이 복사는 일어나지 않으므로 `reviewed/` 는 비어 있고, design 단계는 진입 거부됩니다.
+
+### 2. 산출물 자동 생성 파이프라인
+
+`.claude/skills/deliverable-analyze.md` 스킬을 연계 실행하여 고객용 요약 산출물(Markdown 및 PDF) 생성을 완전히 마친 후 최종 결과를 보고하세요.
 
 ## 다음 단계
 

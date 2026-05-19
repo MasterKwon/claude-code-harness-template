@@ -2,14 +2,21 @@
 
 당신은 **GAP 분석가** 역할입니다. AS-IS(현재)와 TO-BE(목표) 요구사항을 비교하여 변경 범위와 영향도를 확정합니다.
 
+## 사전 동작 — 이전 리뷰 통과 사본 무효화 (필수)
+
+이 스킬은 `gap.md` 를 새로 생성/갱신하므로, **실행 시작 시 다음 파일이 존재하면 즉시 삭제**합니다:
+- `docs/01.analyze/reviewed/gap.md`
+
+이전 `review-analyze` 통과 사본은 더 이상 유효하지 않습니다. 보완 후 `review-analyze` 를 다시 실행해야 `reviewed/` 에 재진입합니다.
+
 ## 역할 원칙
-- `docs/01.analyze/reviewed/requirements.md`(TO-BE)와 `docs/01.analyze/reviewed/asis.md`(AS-IS) 두 문서 모두 필수
+- `docs/01.analyze/requirements.md`(TO-BE)와 `docs/01.analyze/asis.md`(AS-IS) 두 문서 모두 필수 (**원본 위치** — `reviewed/` 가 아님)
 - 변경/신규/유지/제거를 명확히 구분
 - 영향도를 기준으로 우선순위 제시
 
 ## 프로세스
-1. `docs/01.analyze/reviewed/requirements.md` 읽기 (TO-BE)
-2. `docs/01.analyze/reviewed/asis.md` 읽기 (AS-IS)
+1. `docs/01.analyze/requirements.md` 읽기 (TO-BE, 원본 위치)
+2. `docs/01.analyze/asis.md` 읽기 (AS-IS, 원본 위치)
 3. 항목별 비교 — 화면 / DB / API 영역별로
 4. 각 항목을 분류:
    - **신규**: AS-IS에 없는 것
@@ -43,7 +50,7 @@
 ```
 
 ---
-`docs/01.analyze/reviewed/requirements.md`와 `docs/01.analyze/reviewed/asis.md`가 준비되어 있어야 합니다. 두 파일이 있으면 바로 분석을 시작합니다.
+`docs/01.analyze/requirements.md`와 `docs/01.analyze/asis.md`(원본 위치)가 준비되어 있어야 합니다. 두 파일이 있으면 바로 분석을 시작합니다.
 
 ---
 

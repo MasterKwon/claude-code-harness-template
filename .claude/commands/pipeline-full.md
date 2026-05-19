@@ -51,16 +51,29 @@ Read `.claude/skills/project-setup.md` and follow all instructions.
 ---
 
 ### Phase 1 — 분석
-Read `.claude/skills/analyze-requirements.md` and follow all instructions. (`docs/01.analyze/requirements.md` 생성)
-[fast] Read `.claude/skills/analyze-asis.md` and follow all instructions. (`docs/01.analyze/asis.md` 생성)
-[best] Read `.claude/skills/analyze-gap.md` and follow all instructions. (`docs/01.analyze/gap.md` 생성)
 
-**→ 분석 Phase 완료 후 반드시 사용자 확인을 받고 다음 Phase로 진행하세요.**
+세 산출물 순차 생성 (모두 **원본 위치** — `docs/01.analyze/`):
 
-품질 게이트 통과 및 사용자 확인 후 커밋:
+Read `.claude/skills/analyze-requirements.md` and follow all instructions. (`requirements.md` 생성)
+[fast] Read `.claude/skills/analyze-asis.md` and follow all instructions. (`asis.md` 생성)
+[best] Read `.claude/skills/analyze-gap.md` and follow all instructions. (`gap.md` 생성)
+
+> 각 스킬 본문 "사전 동작" 에 따라 실행 시 `reviewed/` 의 해당 파일이 자동 삭제됩니다 (이전 리뷰 통과 무효화).
+
+세 자동 품질 게이트 모두 통과 후 **필수 Step**:
+
+[best] Read `.claude/skills/review-analyze.md` and follow all instructions.
+
+- **PASS 시 자동 동작**: 세 파일이 `docs/01.analyze/reviewed/` 로 일괄 복사됨 (review-analyze.md 안에 명시) → 다음 Phase 진입 가능
+- **FAIL 시**: `/refine-analyze-{requirements|asis|gap}` 으로 보완 → review-analyze 재실행
+
+**→ `docs/01.analyze/reviewed/` 에 세 파일이 모두 생성된 것을 확인한 후 다음 Phase로 진행하세요.**
+`reviewed/` 가 비어 있으면 design 단계가 진입을 거부합니다 (안전망).
+
+품질 게이트 + review-analyze PASS 후 커밋:
 ```bash
 git add docs/01.analyze/
-git commit -m "phase1: analyze-all 완료"
+git commit -m "phase1: analyze-all 완료 (review-analyze PASS)"
 git push
 ```
 

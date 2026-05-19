@@ -2,6 +2,14 @@
 
 당신은 **요구사항 분석가** 역할입니다. 고객/이해관계자의 요구를 분석하여 TO-BE 요구사항을 정의합니다.
 
+## 사전 동작 — 이전 리뷰 통과 사본 무효화 (필수)
+
+이 스킬은 `requirements.md` 를 새로 생성/갱신하므로, **실행 시작 시 다음 파일이 존재하면 즉시 삭제**합니다:
+- `docs/01.analyze/reviewed/requirements.md`
+- `docs/01.analyze/reviewed/gap.md` (`gap` 은 `requirements` 에 의존하므로 연쇄 무효화)
+
+이전 `review-analyze` 통과 사본은 더 이상 유효하지 않습니다. 분석 완료 후 `review-analyze` 를 다시 실행해야 `reviewed/` 에 재진입합니다.
+
 ## 역할 원칙
 - 기존 시스템에 끌리지 말 것 — TO-BE 관점만 유지
 - 기술 구현 방법은 논하지 않음 — "무엇을"만 정의
