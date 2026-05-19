@@ -206,9 +206,23 @@ git push
 [best] Read `.claude/skills/review-design.md` and follow all instructions.
 산출물: `docs/02.design/design-review-report.md`
 
-- PASS → `docs/02.design/cross-check.md` 자동 생성 후 Phase 6으로 진행
+- PASS → `docs/02.design/cross-check.md` 자동 생성 후 Phase 5.7로 진행
 - FAIL (설계 문제만) → 해당 설계 스킬 Patch 모드 실행 후 재리뷰
 - FAIL (분석 보완 사항 있음) → `/refine-analyze-requirements` → 영향 설계 재실행 → 재리뷰
+
+---
+
+### Phase 5.7 — UAT 체크리스트 갱신 (Screen 변경 시)
+
+GAP 에 Screen 신규/변경 항목이 있으면 실행합니다. 없으면 기존 체크리스트를 재사용합니다.
+
+```
+GAP에 Screen 신규/변경 항목 있음 → Read `.claude/skills/design-tc.md` and follow all instructions.
+                                   산출물: `docs/02.design/tc/uat-checklist.md` (신규 작성 또는 변경 항목 병합)
+없음                              → 기존 `docs/02.design/tc/uat-checklist.md` 재사용 (별도 작업 없음)
+```
+
+> Phase 8.5 deploy-dev 완료 후 이 체크리스트를 QA 담당자에게 전달합니다.
 
 ---
 
@@ -326,8 +340,10 @@ GAP에 Screen 신규/변경 항목 있음 → [balanced] Read `.claude/skills/te
 
 **→ 테스트 완료 후 사용자 확인을 받고 다음 Phase로 진행하세요.**
 
-사용자 확인 후 커밋:
+사용자 확인 후, 후속 단계(cross-check-test, deploy-prd)가 참조할 수 있도록 보고서를 `reviewed/` 로 복사하고 커밋:
 ```bash
+mkdir -p docs/05.test/reviewed
+cp docs/05.test/report-*.md docs/05.test/reviewed/
 git add docs/05.test/
 git commit -m "maint: test-all 통과 (변경 기능 + 회귀)"
 git push

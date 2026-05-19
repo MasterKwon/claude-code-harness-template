@@ -172,8 +172,10 @@ Read `.claude/skills/test-e2e.md` and follow all instructions. (`docs/05.test/re
 
 **→ 테스트 Phase 완료 후 반드시 사용자 확인을 받고 다음 Phase로 진행하세요.**
 
-테스트 통과 후 커밋:
+테스트 통과 후, 후속 단계(cross-check-test, deploy-prd)가 참조할 수 있도록 보고서를 `reviewed/` 로 복사하고 커밋:
 ```bash
+mkdir -p docs/05.test/reviewed
+cp docs/05.test/report-*.md docs/05.test/reviewed/
 git add docs/05.test/
 git commit -m "phase5: test-all 통과"
 git push

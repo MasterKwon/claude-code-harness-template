@@ -8,7 +8,10 @@
 
 ## 검토 대상
 
-**[A] 원본 요구사항**: `docs/00.input/web-desktop-project.md`
+**[A] 원본 요구사항**: `docs/00.input/` 디렉토리의 입력 자료
+  - 신규 개발 시: `docs/00.input/grill-result.md` (있으면)
+  - 운영 변경 시: `docs/00.input/grill-task-{YYYYMMDD}-{slug}.md` (가장 최근 파일)
+  - 사용자가 넣어둔 원본 문서 (`.md`, `.pdf`, `.xlsx` 등)도 포함
 **[B] 요구사항 분석**: `docs/01.analyze/reviewed/requirements.md`
 **[C] AS-IS 현황**: `docs/01.analyze/reviewed/asis.md`
 **[D] GAP 분석**: `docs/01.analyze/reviewed/gap.md`

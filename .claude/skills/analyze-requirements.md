@@ -11,6 +11,8 @@
 
 `docs/00.input/` 폴더의 파일을 읽기 전에 아래 순서로 전처리합니다.
 
+> **grill 산출물 자동 활용**: `docs/00.input/grill-result.md` (큰 주제 인터뷰) 또는 `docs/00.input/grill-task-*.md` (작업 단위 인터뷰)가 있으면 **이미 합의된 결정 사항**으로 분석에 자동 반영하고 사용자에게 재확인하지 않습니다.
+
 ### Step 0 — 파일 추출
 ```bash
 python docs/00.input/extract.py

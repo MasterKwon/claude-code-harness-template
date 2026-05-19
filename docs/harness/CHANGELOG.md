@@ -2,6 +2,26 @@
 
 ---
 
+## v2.4.2 — 2026-05-19
+
+### 수정 — 파이프라인 경로 일관성 보완
+
+교육 실습 중 발견된 스킬·커맨드 간 산출물 경로 불일치 4건 보완.
+
+- **테스트 보고서 reviewed/ 복사 단계 명시** (High)
+  - `pipeline-full.md` Phase 5, `pipeline-maintenance.md` Phase 8: 테스트 완료 후 `docs/05.test/report-*.md` → `docs/05.test/reviewed/report-*.md` 복사 단계 추가
+  - 이전엔 복사 단계 미명시 상태로 `cross-check-test`와 `deploy-prd`가 `reviewed/` 경로를 가정하고 있어 실행 불가 가능성 존재
+- **`review-analyze.md` 입력 경로 확장** (High, 사용자 실습 중 발견)
+  - 기존: `docs/00.input/grill-result.md` 단일 인용
+  - 변경: 신규 개발(`grill-result.md`)·운영 변경(`grill-task-*.md`)·사용자 원본 자료 모두 처리 가능하도록 명시
+- **`analyze-requirements.md` grill 산출물 자동 활용 명시** (Medium)
+  - Step 0 입력 전처리 안내에 grill-result/grill-task 자동 반영 한 줄 추가
+- **`pipeline-maintenance.md` Phase 5.7 신설 — UAT 체크리스트 갱신** (Medium)
+  - Screen 신규/변경 항목이 있으면 `design-tc` 호출, 없으면 기존 `uat-checklist.md` 재사용
+  - 이전엔 `design-tc` 호출 위치가 maintenance에 누락되어 deploy-dev 단계의 QA 전달 항목이 불명확
+
+---
+
 ## v2.4.1 — 2026-05-18
 
 ### 추가
