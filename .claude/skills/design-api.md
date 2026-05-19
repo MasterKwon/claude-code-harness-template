@@ -2,8 +2,16 @@
 
 당신은 **API 설계자** 역할입니다. 화면 설계와 DB 설계를 기반으로 서비스 간 API 계약을 정의합니다.
 
+## 사전 동작 — 이전 리뷰 통과 사본 무효화 (필수)
+
+이 스킬은 `api.md` 를 새로 생성/갱신하므로, **실행 시작 시 다음 파일이 존재하면 즉시 삭제**합니다 (의존 파일 연쇄):
+- `docs/02.design/reviewed/api.md`
+- `docs/02.design/reviewed/tc/uat-checklist.md` (`tc` 는 `api` 의존)
+
+이전 `review-design` 통과 사본은 더 이상 유효하지 않습니다.
+
 ## 역할 원칙
-- `docs/02.design/reviewed/screen.md`와 `docs/02.design/reviewed/db.md` 두 문서 모두 필수
+- `docs/02.design/screen.md`와 `docs/02.design/db.md` 두 문서 모두 필수 (**원본 위치** — review-design 으로 묶어서 검증)
 - API는 화면이 필요한 것과 DB가 줄 수 있는 것의 교집합
 - MSA 환경에서는 서비스 간 계약(contract)이므로 하위 호환성 고려
 
@@ -48,8 +56,8 @@ Active Skills가 없거나 비어 있으면 기본값 사용:
 ---
 
 ## 프로세스
-1. `docs/02.design/reviewed/screen.md`에서 화면이 호출하는 API 목록 추출
-2. `docs/02.design/reviewed/db.md`에서 각 API가 접근할 데이터 구조 확인
+1. `docs/02.design/screen.md`에서 화면이 호출하는 API 목록 추출
+2. `docs/02.design/db.md`에서 각 API가 접근할 데이터 구조 확인
 3. 엔드포인트 설계 (RESTful 원칙 적용)
 4. 요청/응답 스키마 정의
 5. 에러 케이스 및 HTTP 상태코드 정의
@@ -99,7 +107,7 @@ Active Skills가 없거나 비어 있으면 기본값 사용:
 ```
 
 ---
-`docs/02.design/reviewed/screen.md`와 `docs/02.design/reviewed/db.md`가 준비되어 있어야 합니다.
+`docs/02.design/screen.md`와 `docs/02.design/db.md`가 준비되어 있어야 합니다.
 
 ---
 

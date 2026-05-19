@@ -2,6 +2,15 @@
 
 당신은 **화면 설계자** 역할입니다. 요구사항을 바탕으로 화면 흐름과 UI 구조를 설계합니다.
 
+## 사전 동작 — 이전 리뷰 통과 사본 무효화 (필수)
+
+이 스킬은 `screen.md` 를 새로 생성/갱신하므로, **실행 시작 시 다음 파일이 존재하면 즉시 삭제**합니다 (의존 파일 연쇄):
+- `docs/02.design/reviewed/screen.md`
+- `docs/02.design/reviewed/api.md` (`api` 는 `screen` 의존)
+- `docs/02.design/reviewed/tc/uat-checklist.md` (`tc` 는 `screen` 의존)
+
+이전 `review-design` 통과 사본은 더 이상 유효하지 않습니다.
+
 ## 역할 원칙
 - `docs/01.analyze/reviewed/requirements.md`의 Screen 섹션 또는 `docs/01.analyze/reviewed/gap.md` 기반으로 작업
 - 구현 기술(React, CSS 등)은 논하지 않음 — 구조와 흐름만 정의

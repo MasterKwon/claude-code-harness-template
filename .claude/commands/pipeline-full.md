@@ -91,26 +91,38 @@ git push
 ---
 
 ### Phase 2 — 설계
-Read `.claude/skills/design-screen.md` and follow all instructions. (`docs/02.design/screen.md` 생성)
-Read `.claude/skills/design-db.md` and follow all instructions. (`docs/02.design/db.md` 생성)
-Read `.claude/skills/design-api.md` and follow all instructions. (`docs/02.design/api.md` 생성)
 
-**→ 설계 Phase 완료 후 반드시 사용자 확인을 받고 다음 Phase로 진행하세요.**
+다섯 산출물 순차 생성 (모두 **원본 위치** — `docs/02.design/`):
 
-품질 게이트 통과 및 사용자 확인 후 커밋:
-```bash
-git add docs/02.design/
-git commit -m "phase2: design-all 완료"
-git push
-```
+Read `.claude/skills/design-process.md` and follow all instructions. (`process.md` 생성)
+Read `.claude/skills/design-screen.md` and follow all instructions. (`screen.md` 생성)
+Read `.claude/skills/design-db.md` and follow all instructions. (`db.md` 생성)
+Read `.claude/skills/design-api.md` and follow all instructions. (`api.md` 생성)
+Read `.claude/skills/design-integration.md` and follow all instructions. (`integration.md` 생성)
 
-### Phase 2.5 — 설계 리뷰
+> 각 스킬 본문 "사전 동작" 에 따라 실행 시 `reviewed/` 의 해당 파일과 의존 파일이 자동 삭제됩니다 (이전 리뷰 통과 무효화).
+
+다섯 자동 품질 게이트 모두 통과 후 **필수 Step**:
+
 [best] Read `.claude/skills/review-design.md` and follow all instructions.
 산출물: `docs/02.design/design-review-report.md`
 
-- PASS → `docs/02.design/cross-check.md` 자동 생성 (타 LLM 교차검증 브리핑) → Phase 2.7로 진행
-- FAIL (설계 문제만) → 해당 설계 스킬 Patch 모드 실행 (`/design-api`, `/design-screen`, `/design-db`) 후 재리뷰
-- FAIL (분석 보완 사항 있음) → `/refine-analyze-requirements` → 영향 설계 재실행 → 재리뷰
+- **PASS 시 자동 동작** (review-design.md 안에 명시):
+  1. 다섯 파일을 `docs/02.design/reviewed/` 로 일괄 복사 → 다음 Phase 진입 가능
+  2. `docs/02.design/cross-check.md` 자동 생성 (타 LLM 교차검증 브리핑)
+  3. `docs/02.design/deliverable.md` 자동 생성 (고객용 보고서)
+- **FAIL** (설계 문제만) → `/refine-design-{process|screen|db|api|integration}` 보완 후 review-design 재실행
+- **FAIL** (분석 보완 사항 있음) → `/refine-analyze-requirements` → 영향 설계 재실행 → review-design 재실행
+
+**→ `docs/02.design/reviewed/` 에 다섯 파일이 모두 생성된 것을 확인한 후 Phase 2.7 로 진행하세요.**
+`reviewed/` 가 비어 있으면 design-tc, build-* 가 진입을 거부합니다 (안전망).
+
+품질 게이트 + review-design PASS 후 커밋:
+```bash
+git add docs/02.design/
+git commit -m "phase2: design-all 완료 (review-design PASS)"
+git push
+```
 
 > **교차검증 권장**: `docs/02.design/cross-check.md`를 타 LLM에 붙여넣고 개발 시작 전 설계를 검증하세요.
 

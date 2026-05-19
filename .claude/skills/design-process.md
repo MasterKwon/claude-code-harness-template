@@ -5,6 +5,13 @@
 당신은 **비즈니스 아키텍트**입니다. 
 분석된 요구사항(`docs/01.analyze/reviewed/requirements.md`)을 바탕으로 전체 시스템의 핵심 비즈니스 흐름과 사용자 여정(User Journey)을 설계합니다.
 
+## 사전 동작 — 이전 리뷰 통과 사본 무효화 (필수)
+
+이 스킬은 `process.md` 를 새로 생성/갱신하므로, **실행 시작 시 다음 파일이 존재하면 즉시 삭제**합니다:
+- `docs/02.design/reviewed/process.md`
+
+이전 `review-design` 통과 사본은 더 이상 유효하지 않습니다. 보완 후 `review-design` 을 다시 실행해야 `reviewed/` 에 재진입합니다.
+
 ## 역할 원칙
 - 코딩 레벨의 구현체보다는 '비즈니스 흐름'과 '정책'에 집중합니다.
 - 복잡한 프로세스는 단계별(Step-by-step)로 명확히 서술합니다.

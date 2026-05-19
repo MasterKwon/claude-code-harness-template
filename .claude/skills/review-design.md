@@ -11,22 +11,24 @@
 | 파일 | 필수 여부 | 없을 때 |
 |------|---------|--------|
 | `docs/01.analyze/reviewed/requirements.md` | 필수 | 리뷰 중단 |
-| `docs/02.design/reviewed/screen.md` | 필수 | 리뷰 중단 |
-| `docs/02.design/reviewed/api.md` | 필수 | 리뷰 중단 |
-| `docs/02.design/reviewed/db.md` | 필수 | 리뷰 중단 |
-| `docs/02.design/reviewed/process.md` | 선택 | REQ→PRC, PRC→SCR 축 Skip (N/A 처리) |
-| `docs/02.design/reviewed/integration.md` | 선택 | INT 축 → 아래 INT N/A 기준 참조 |
+| `docs/02.design/screen.md` | 필수 | 리뷰 중단 |
+| `docs/02.design/api.md` | 필수 | 리뷰 중단 |
+| `docs/02.design/db.md` | 필수 | 리뷰 중단 |
+| `docs/02.design/process.md` | 선택 | REQ→PRC, PRC→SCR 축 Skip (N/A 처리) |
+| `docs/02.design/integration.md` | 선택 | INT 축 → 아래 INT N/A 기준 참조 |
 | `docs/01.analyze/reviewed/asis.md` | 선택 | ASIS→설계 축 Skip (N/A 처리) |
+
+> 분석 산출물(requirements, asis)은 review-analyze PASS 된 `reviewed/` 위치에서 읽고, 설계 산출물(screen, api, db, process, integration)은 **원본 위치**에서 읽습니다 (이 스킬이 PASS 시점에 `reviewed/` 로 자동 복사).
 
 ## 검토 대상
 
 **[REQ]** 분석 결과: `docs/01.analyze/reviewed/requirements.md`
 **[ASIS]** AS-IS 현황: `docs/01.analyze/reviewed/asis.md` *(있는 경우)*
-**[PRC]** 프로세스 설계: `docs/02.design/reviewed/process.md` *(있는 경우)*
-**[SCR]** 화면 설계: `docs/02.design/reviewed/screen.md`
-**[API]** API 설계:  `docs/02.design/reviewed/api.md`
-**[DB]**  DB 설계:   `docs/02.design/reviewed/db.md`
-**[INT]** 외부 연계: `docs/02.design/reviewed/integration.md` *(있는 경우)*
+**[PRC]** 프로세스 설계: `docs/02.design/process.md` *(있는 경우, 원본 위치)*
+**[SCR]** 화면 설계: `docs/02.design/screen.md` (원본 위치)
+**[API]** API 설계:  `docs/02.design/api.md` (원본 위치)
+**[DB]**  DB 설계:   `docs/02.design/db.md` (원본 위치)
+**[INT]** 외부 연계: `docs/02.design/integration.md` *(있는 경우, 원본 위치)*
 
 ## 검토 항목
 
@@ -94,8 +96,22 @@
 ## 종합 의견
 (2~3줄 요약)
 
-## 산출물 자동 생성 파이프라인
-종합 결과가 `PASS`로 판정된 경우, 사용자에게 묻지 말고 즉시 아래 두 스킬을 순서대로 연계 실행합니다.
+## PASS 시 자동 동작 (사용자에게 묻지 말고 즉시 실행)
+
+종합 결과가 `PASS` 로 판정된 경우 다음을 순서대로 즉시 수행하세요.
+
+### 1. 원본을 `reviewed/` 로 복사 (안전망 핵심)
+
+- `mkdir -p docs/02.design/reviewed`
+- `cp docs/02.design/screen.md docs/02.design/reviewed/`
+- `cp docs/02.design/api.md docs/02.design/reviewed/`
+- `cp docs/02.design/db.md docs/02.design/reviewed/`
+- `process.md` / `integration.md` 가 존재하면 함께 복사
+
+이 시점부터 design-tc, build-* 가 `reviewed/` 를 읽을 수 있습니다.
+PASS 가 아니면 이 복사는 일어나지 않으므로 `reviewed/` 는 갱신되지 않고, design-tc / build-* 는 진입을 거부합니다.
+
+### 2. 후속 스킬 연계 실행
 
 1. `.claude/skills/deliverable-design.md` — 고객용 요약 산출물(Markdown 및 PDF) 생성
 2. `.claude/skills/cross-check-design.md` — 타 LLM 교차검증 브리핑(`docs/02.design/cross-check.md`) 생성

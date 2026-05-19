@@ -2,6 +2,43 @@
 
 ---
 
+## v2.4.4 — 2026-05-19
+
+### 수정 — 설계 단계 `reviewed/` 의미 통일 + 자동 무효화 안전망
+
+분석 단계(v2.4.3)와 동일한 패턴을 설계 단계에 적용. `reviewed/` = **`review-design` PASS 한 파일만**.
+
+- **`design-*` 스킬 사전 동작(자동 무효화) 추가** — 실행 시 `reviewed/` 의 해당 파일 + 의존 파일 자동 삭제
+  - `design-process`: `reviewed/process.md`
+  - `design-screen`: `reviewed/{screen, api, tc/uat-checklist}.md` (api·tc 가 screen 의존)
+  - `design-db`: `reviewed/{db, api, tc/uat-checklist}.md` (api·tc 가 db 의존)
+  - `design-api`: `reviewed/{api, tc/uat-checklist}.md` (tc 가 api 의존)
+  - `design-integration`: `reviewed/integration.md`
+  - `design-tc`: `reviewed/tc/uat-checklist.md`
+- **입력 경로 변경 (원본 위치로)**
+  - `design-api` 입력: `reviewed/{screen, db}.md` → `docs/02.design/{screen, db}.md`
+  - `review-design` 입력: `reviewed/*.md` → `docs/02.design/*.md` (단 analyze 산출물은 `reviewed/` 유지)
+- **`review-design` PASS 시 자동 동작 확장**
+  - 기존: deliverable-design + cross-check-design 자동 연쇄
+  - 추가: 다섯 설계 파일(`process, screen, db, api, integration`)을 `reviewed/` 로 일괄 복사 **선행**
+- **파이프라인 흐름 갱신**
+  - `design-all.md` Step 6 신설 — review-design 필수 호출
+  - `pipeline-full.md` Phase 2 / 2.5 통합 — design 5개 + review-design 묶음 호출
+  - `pipeline-maintenance.md` Phase 5 / 5.5 갱신 — 영향 받은 design만 + PASS 시 reviewed/ 복사 명시
+
+### 안전망 효과 (분석과 동일)
+
+- `docs/02.design/reviewed/` 에 파일이 있다 = `review-design` PASS 했다 (100% 보장)
+- design-tc, build-* 는 `reviewed/` 만 읽으면 자동 안전 보장
+- `design-*` 재실행 시 자동 무효화로 stale 위험 제거 (의존 파일 연쇄 포함)
+
+### 알려진 미보완 (다음 단계 보완 예정)
+
+- 구현/리뷰 단계: review-all PASS 기준 `docs/04.review/reviewed/` 흐름은 이미 부분 구현 — 검증 후 통일
+- 테스트 단계: review-* 가 없는 단계의 `reviewed/` 처리 — v2.4.2 에서 추가한 자동 복사 재검토 필요
+
+---
+
 ## v2.4.3 — 2026-05-19
 
 ### 수정 — 분석 단계 `reviewed/` 의미 통일 + 자동 무효화 안전망

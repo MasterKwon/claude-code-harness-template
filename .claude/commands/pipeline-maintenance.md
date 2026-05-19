@@ -210,8 +210,9 @@ GAP에 API 신규/변경 항목 있음     → Read `.claude/skills/design-api.m
 해당 레이어 GAP 항목 없음         → 해당 설계 단계 건너뜀
 ```
 
-> 기존 설계 문서(`docs/02.design/reviewed/`)가 있다면 덮어쓰지 말고,
+> 기존 설계 문서(`docs/02.design/`, **원본 위치**)가 있다면 덮어쓰지 말고,
 > 변경/추가 내용만 해당 문서에 **병합**합니다.
+> 각 design-* 사전 동작에 따라 `reviewed/` 의 해당 파일과 의존 파일은 자동 삭제되어 다음 단계 진입이 차단됩니다 (Phase 5.5 review-design PASS 시 다시 채워짐).
 
 **→ 설계 완료 후 사용자 확인을 받고 다음 Phase로 진행하세요.**
 
@@ -222,13 +223,19 @@ git commit -m "maint: design 완료 (영향 범위만)"
 git push
 ```
 
-### Phase 5.5 — 설계 리뷰
+### Phase 5.5 — 설계 리뷰 (필수 · 안전망)
+
+영향 받은 design 산출물을 종합 검토하여 다음 Phase 진입 여부를 확정합니다.
+**이 Phase 를 건너뛰면 `docs/02.design/reviewed/` 가 비어 있어 design-tc / build-* 가 진입을 거부합니다.**
+
 [best] Read `.claude/skills/review-design.md` and follow all instructions.
 산출물: `docs/02.design/design-review-report.md`
 
-- PASS → `docs/02.design/cross-check.md` 자동 생성 후 Phase 5.7로 진행
-- FAIL (설계 문제만) → 해당 설계 스킬 Patch 모드 실행 후 재리뷰
-- FAIL (분석 보완 사항 있음) → `/refine-analyze-requirements` → 영향 설계 재실행 → 재리뷰
+- **PASS 시 자동 동작** (review-design.md 안에 명시):
+  1. 변경된 design 산출물을 `docs/02.design/reviewed/` 로 일괄 복사
+  2. `docs/02.design/cross-check.md` 자동 생성 → Phase 5.7 진행
+- **FAIL** (설계 문제만) → 해당 설계 스킬 Patch 모드 실행 후 재리뷰
+- **FAIL** (분석 보완 사항 있음) → `/refine-analyze-requirements` → 영향 설계 재실행 → 재리뷰
 
 ---
 
