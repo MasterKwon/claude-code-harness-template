@@ -51,6 +51,29 @@ Read `.claude/skills/build-screen.md` and follow all instructions.
 - [ ] 로딩/에러 상태 처리
 
 **미흡 항목 있으면**: 해당 항목만 보완 후 재검증.
-**모두 통과하면**: `docs/03.build/reviewed/checklist.md`에 화면 구현 완료 기록.
+**모두 통과하면**: `docs/03.build/reviewed/checklist.md`에 화면 구현 완료 기록 후 Step 4로 진행.
 
-구현 단계 완료. 사용자에게 결과를 보고하고 다음 단계(`/test-all`) 진행 여부를 확인합니다.
+---
+
+## Step 4 — 변경 영향도 검사
+
+[best] Read `.claude/skills/impact-check.md` and follow all instructions.
+산출물: `docs/03.build/impact-check.md`
+
+> impact-check 의 사전 동작에 따라 실행 시 `docs/04.review/reviewed/report.md` 가 자동 삭제됩니다 (영향도 재분석 → 리뷰 재실행).
+
+---
+
+## Step 5 — 코드 리뷰 (필수)
+
+다음 단계(`/test-all`) 진입 안전망. **이 Step 을 건너뛰면 `docs/04.review/reviewed/report.md` 가 비어 있어 test 단계가 진입을 거부합니다.**
+
+[best] Read `.claude/skills/review-all.md` and follow all instructions.
+산출물: `docs/04.review/report.md`
+
+- **PASS 시 자동 동작** (review-all.md 안에 명시): `docs/04.review/reviewed/report.md` 로 복사 → `/test-all` 진입 가능
+- **FAIL 시**: 문제 항목별 `/refine-build-{db|api|screen}` 로 보완 후 Step 4 부터 재실행 (build-* 사전 동작이 reviewed/ 자동 무효화)
+
+---
+
+구현 단계 완료. `docs/04.review/reviewed/report.md` 가 생성된 것을 확인한 후 `/test-all` 로 진행하세요.

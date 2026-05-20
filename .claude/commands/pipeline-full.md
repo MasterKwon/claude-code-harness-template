@@ -144,6 +144,8 @@ Read `.claude/skills/build-db.md` and follow all instructions.
 Read `.claude/skills/build-api.md` and follow all instructions.
 Read `.claude/skills/build-screen.md` and follow all instructions.
 
+> 각 build-* 사전 동작에 따라 실행 시 `docs/03.build/impact-check.md` 와 `docs/04.review/reviewed/report.md` 가 자동 삭제됩니다 (코드 변경 → 영향도/리뷰 재실행 필요).
+
 **→ 구현 Phase 완료 후 반드시 사용자 확인을 받고 다음 Phase로 진행하세요.**
 
 품질 게이트 통과 및 사용자 확인 후 커밋:
@@ -165,15 +167,18 @@ git push
 
 ---
 
-### Phase 4 — 리뷰
+### Phase 4 — 리뷰 (필수 · 안전망)
+
+다음 Phase(`/test-all`) 진입 안전망. **이 Phase 를 건너뛰면 `docs/04.review/reviewed/report.md` 가 비어 있어 test 단계가 진입을 거부합니다.**
+
 [best] Read `.claude/skills/review-all.md` and follow all instructions. (`docs/04.review/report.md` 생성)
 
 > `docs/03.build/impact-check.md`의 High/Medium 항목을 중점 검토합니다.
 
-- High 심각도 문제 발견 시: 해당 구현 단계로 롤백 후 재실행
-- 모두 통과 시: `docs/04.review/reviewed/report.md`로 복사 후 다음 Phase 진행
+- **PASS 시 자동 동작** (review-all.md 안에 명시): `docs/04.review/reviewed/report.md` 로 복사 → 다음 Phase 진입 가능
+- **FAIL 시** (High 심각도): `/refine-build-{db|api|screen}` 으로 보완 후 Phase 3 부터 재실행 (build-* 사전 동작이 reviewed/ 자동 무효화)
 
-**→ 리뷰 통과 확인 후 다음 Phase로 진행하세요.**
+**→ `docs/04.review/reviewed/report.md` 가 생성된 것을 확인한 후 다음 Phase 로 진행하세요.**
 
 리뷰 통과 후 커밋:
 ```bash

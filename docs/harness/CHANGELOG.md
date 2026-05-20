@@ -2,6 +2,35 @@
 
 ---
 
+## v2.4.5 — 2026-05-20
+
+### 수정 — 구현 단계 안전망 강화 (분석/설계 단계 패턴 적용)
+
+구현 단계는 코드가 src/ 에 들어가므로 `docs/03.build/reviewed/` 가 아닌 **`docs/04.review/reviewed/report.md`** 가 안전망 역할.
+
+- **`build-*` 3개 사전 동작 추가** — 실행 시 다음 파일 자동 삭제 (코드 변경 → 영향도/리뷰 재실행 필요)
+  - `docs/03.build/impact-check.md`
+  - `docs/04.review/reviewed/report.md`
+- **`impact-check` 사전 동작 추가** — 실행 시 `docs/04.review/reviewed/report.md` 자동 삭제 (영향도 재분석 → 리뷰 재실행)
+- **`review-all`** — 기존에 이미 PASS 시 `reviewed/report.md` 복사 명시됨 (그대로 유지, 안전망 역할 강화 안내만 추가)
+- **파이프라인 흐름 갱신**
+  - `build-all.md` Step 4 (impact-check), Step 5 (review-all 필수) 신설
+  - `pipeline-full.md` Phase 3 (사전 동작 안내), Phase 4 (안전망 명시) 보강
+  - `pipeline-maintenance.md` Phase 6 (사전 동작 안내), Phase 7 (안전망 명시) 보강
+
+### 안전망 효과
+
+- `docs/04.review/reviewed/report.md` 에 파일 있다 ⟺ `review-all` PASS (코드가 리뷰 통과한 상태 100% 보장)
+- `build-*` 재실행 시 자동 무효화 → 다음 test 단계가 stale 코드로 진입하는 위험 제거
+- impact-check 도 재실행 시 review 다시 받아야 함
+
+### 알려진 미보완 (다음 단계 보완 예정)
+
+- 테스트 단계: review-* 가 없는 단계의 `reviewed/` 처리 — v2.4.2 에서 추가한 자동 복사 재검토 필요
+- `docs/03.build/reviewed/checklist.md` (build-all 진행 기록): 자체 추적용. reviewed/ 패턴과 무관하나 명명 일관성 문제 (다음 정리 시점 검토)
+
+---
+
 ## v2.4.4 — 2026-05-19
 
 ### 수정 — 설계 단계 `reviewed/` 의미 통일 + 자동 무효화 안전망

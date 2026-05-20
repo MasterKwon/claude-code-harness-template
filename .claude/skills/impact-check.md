@@ -6,6 +6,15 @@
 
 ---
 
+## 사전 동작 — 이전 리뷰 통과 사본 무효화 (필수)
+
+이 스킬은 `impact-check.md` 를 새로 생성/갱신하므로, **실행 시작 시 다음 파일이 존재하면 즉시 삭제**합니다:
+- `docs/04.review/reviewed/report.md` (영향도 재분석 → 리뷰 재실행 필요)
+
+이전 `review-all` 통과 사본은 더 이상 유효하지 않습니다.
+
+---
+
 ## 입력
 
 - `docs/01.analyze/reviewed/gap.md` — 계획된 변경 범위
