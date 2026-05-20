@@ -78,6 +78,45 @@
 - 단계가 analyze 가 아니면 해당 단계의 현재 산출물도 함께 읽기 (예: design 단계면 `docs/02.design/*.md`)
 - 이미 알려진 사실은 사용자에게 묻지 않습니다.
 
+### Step 0.5 — 환경 리마인드 및 확정 (analyze 첫 호출 시에만)
+
+**적용 조건**: 단계가 `analyze` 이고 `docs/00.input/grill-result.md` 가 없을 때만 실행. 이미 파일이 있거나 design/build/test 단계 호출이면 이 Step 은 **건너뜁니다** (환경은 이미 굳어진 것으로 간주).
+
+**목적**: 인터뷰 시작 전 프로젝트 환경(기술 스택)을 한 번 리마인드하여 잘못된 전제 위에서 질문 트리를 쌓는 것을 방지합니다.
+
+**절차**:
+1. `CLAUDE.md` 의 `## Tech Stack` 섹션을 읽어 사용자에게 표로 요약 출력합니다.
+2. 다음 형식으로 묻습니다:
+
+```
+시작 전 현재 프로젝트 환경을 확인합니다:
+
+  - Frontend: Next.js (App Router), TypeScript, Tailwind CSS
+  - UI: shadcn/ui
+  - Architecture: MSA
+  - Database: PostgreSQL
+  - ORM: Prisma
+  - Auth: JWT
+  - API Style: REST
+  - State: TanStack Query
+  - Service Comm: REST
+  - Deploy: Docker
+
+이 환경으로 인터뷰를 진행할까요?
+  A. 그대로 진행 ★
+  B. 환경 변경 후 진행 → grill-me 를 종료하고 /project-setup 재실행 안내
+```
+
+3. **A 선택 시** → Step 1 로 진행
+4. **B 선택 시** → 인터뷰를 시작하지 않고 다음 메시지 출력 후 종료:
+   ```
+   환경 변경이 필요합니다. 다음 절차를 권장합니다:
+     1) /project-setup 을 다시 실행하여 변경할 항목만 부분 인터뷰(C 모드)로 갱신
+     2) CLAUDE.md 의 Tech Stack / Active Skills 가 갱신되면 다시 /grill-me 호출
+   ```
+
+> **참고**: `CLAUDE.md` 가 없거나 `## Tech Stack` 섹션이 비어있으면 "프로젝트 환경이 아직 설정되지 않았습니다. `/project-setup` 을 먼저 실행하세요." 로 안내 후 종료합니다.
+
 ### Step 1 — 인터뷰 주제 확인
 
 사용자에게 묻습니다:

@@ -423,7 +423,7 @@ uname -s     # OS 확인 (Linux/Darwin/Windows_NT)
    - `.env.example`을 `.env`로 복사 후 실제 값 입력
    - Prisma 선택 시: `schema.prisma` 작성 후 `npx prisma migrate dev`
    - Docker 선택 시: `docker-compose up -d`로 인프라 기동
-4. **다음 단계**: Phase 1 — `/analyze-requirements` 실행
+4. **다음 단계**: `/grill-me` 실행 — 무엇을 만들지 요구사항 인터뷰부터 시작
 
 ---
 프로젝트 루트 디렉터리에서 실행합니다. Node.js 18 이상 필요.
