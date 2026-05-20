@@ -11,6 +11,11 @@
 
 이전 `review-design` 통과 사본은 더 이상 유효하지 않습니다.
 
+## 사전 동작 — grill-decisions 반영 (선택)
+
+`docs/02.design/grill-decisions.md` 가 존재하면 먼저 읽고, 누적된 인터뷰 결정 사항을 본 작업에 반영합니다.
+설계 중 `/grill-me` 호출로 추가된 의사결정을 누락 없이 반영하기 위함입니다.
+
 ## 역할 원칙
 - `docs/01.analyze/reviewed/requirements.md`의 Screen 섹션 또는 `docs/01.analyze/reviewed/gap.md` 기반으로 작업
 - 구현 기술(React, CSS 등)은 논하지 않음 — 구조와 흐름만 정의

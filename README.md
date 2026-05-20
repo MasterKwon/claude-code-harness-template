@@ -57,7 +57,13 @@ Claude Code에서 실행:
 
 ## 기술 스택 선택 항목
 
-`/project-setup` 실행 시 아래 항목을 선택합니다. ★ 는 추천 기본값입니다.
+`/project-setup` 실행 시 **인터뷰 형식**으로 아래 항목을 선택합니다 (v2.4.16+). ★ 는 추천 기본값입니다.
+
+진행 모드:
+- **빠른 시작** — 모든 항목을 권장 기본값으로 한 번에 확정
+- **인터뷰** — 항목별 권장 답안 + 동의 확인 (한 번에 하나씩)
+- **부분 인터뷰** — 변경할 항목만 골라서 인터뷰, 나머지는 기본값
+
 
 | 항목 | 선택지 |
 |------|--------|
@@ -85,7 +91,7 @@ Claude Code에서 실행:
 | Phase | 명령 | 산출물 |
 |-------|------|--------|
 | 0 | `/project-setup` | 프로젝트 초기화, CLAUDE.md |
-| 0.5 | `/grill-me` *(선택)* | `grill-result.md` — 요구사항 모호성 사전 제거 |
+| 0.5 | `/grill-me` *(선택, 자유 호출)* | `grill-result.md` (분석) / 단계별 `grill-decisions.md` (설계/구현/테스트) — 후속 스킬이 자동 반영 |
 | 1 | `/analyze-all` | `requirements.md`, `asis.md`, `gap.md` |
 | 1.7 | `/design-prompt-gen` *(선택)* | `design-prompts.md` — Claude Design 입력용 프롬프트 |
 | 2 | `/design-all` + `/review-design` | `screen.md`, `db.md`, `api.md`, `uat-checklist.md` |

@@ -10,6 +10,11 @@
 
 이전 `review-all` 통과 사본은 더 이상 유효하지 않습니다.
 
+## 사전 동작 — grill-decisions 반영 (선택)
+
+`docs/03.build/grill-decisions.md` 가 존재하면 먼저 읽고, 누적된 인터뷰 결정 사항을 본 작업에 반영합니다.
+구현 중 `/grill-me` 호출로 추가된 의사결정을 누락 없이 반영하기 위함입니다.
+
 ## 역할 원칙
 - `docs/02.design/reviewed/screen.md` 기반으로 작업
 - 설계서에 없는 기능은 임의로 추가하지 않음

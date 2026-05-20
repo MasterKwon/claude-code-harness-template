@@ -11,67 +11,75 @@ npm -v
 
 ---
 
-## Step 1 — 선택 수집
+## Step 1 — 선택 인터뷰 (grill-me 스타일)
 
-아래 항목을 **한 번에** 사용자에게 질문합니다. ★는 추천 기본값입니다.
+아래 10개 항목을 **인터뷰 형식**으로 한 번에 하나씩 묻습니다. ★는 권장 답안입니다.
+
+### Step 1.0 — 진행 모드 선택 (첫 질문)
+
+먼저 사용자에게 한 줄 묻습니다:
 
 ```
-[1] 프로젝트 구조
-    A. MSA — gateway + 독립 서비스 ★
-    B. 모노리스 — 단일 Next.js 앱
-
-[2] 데이터베이스
-    A. PostgreSQL ★
-    B. MySQL
-    C. MongoDB
-    D. SQLite (소규모/개발용)
-
-[3] ORM / 데이터 접근
-    A. Prisma — 타입 안전, 마이그레이션 자동 ★
-    B. TypeORM — 데코레이터 기반 (Java 스타일)
-    C. Mongoose — MongoDB 전용
-    D. Raw SQL — pg / mysql2 직접
-    ※ MongoDB 선택 시 → C만 가능 / SQLite 선택 시 → A 추천
-
-[4] 인증/인가
-    A. JWT — 직접 구현 ★
-    B. NextAuth.js — OAuth/소셜 로그인 포함
-    C. 없음
-
-[5] API 스타일
-    A. REST API ★
-    B. tRPC — 타입 안전 RPC (풀스택 TypeScript)
-    C. GraphQL
-
-[6] 프론트엔드 상태 관리
-    A. TanStack Query — 서버 상태 중심 ★
-    B. Zustand + TanStack Query — 클라이언트/서버 상태 분리
-    C. Redux Toolkit — 대규모 상태 관리
-    D. Context API — 소규모/간단한 경우
-
-[7] 서비스 간 통신  (MSA 선택 시만)
-    A. REST API만 ★
-    B. REST + Redis — 캐시/이벤트
-    C. REST + RabbitMQ — 메시지 큐
-
-[8] 파일 업로드
-    A. AWS S3
-    B. 로컬 저장소
-    C. 없음 ★
-
-[9] 배포 방식
-    A. Docker + docker-compose ★
-    B. Vercel (프론트) + 별도 서버
-    C. PM2 (프로세스 매니저)
-
-[10] UI 컴포넌트 라이브러리
-    A. shadcn/ui + Tailwind CSS — 코드 직접 소유, AI 친화적 ★
-    B. Material UI (MUI) — Google Material Design
-    C. Ant Design — 엔터프라이즈 테이블/폼 특화
-    D. Tailwind CSS only — 라이브러리 없이 직접 작성
+설정을 어떻게 진행할까요?
+  A. 빠른 시작 — 모든 항목 권장 기본값(★)으로 진행 ★
+  B. 인터뷰 — 항목별로 하나씩 선택
+  C. 부분 인터뷰 — 일부 항목만 골라 변경, 나머지는 기본값
 ```
 
-사용자 응답을 받은 후 Step 2부터 실행합니다.
+- **A 선택 시** → 아래 10개 항목 전부 권장 답안으로 확정 → Step 1.99 (요약 확인) 로 점프
+- **B 선택 시** → Step 1.1 부터 항목 인터뷰 진행
+- **C 선택 시** → "어떤 항목을 변경하고 싶습니까? (번호 예: 2, 4, 10)" 추가 질문 후, 지정된 항목만 인터뷰. 나머지는 기본값.
+
+### Step 1.1 ~ 1.10 — 항목별 인터뷰
+
+각 항목은 다음 형식으로 묻습니다:
+
+```
+[N/10] {항목명}
+  A. {옵션 1} ★ — {짧은 이유}
+  B. {옵션 2} — {짧은 이유}
+  ...
+  권장: A. {이유 한 줄}. 동의하십니까? (다른 옵션 원하면 글자 입력)
+```
+
+**의존 분기 자동 처리**:
+- [1]에서 **B. 모노리스** 선택 → [7] 서비스 간 통신 항목 자동 건너뛰기 (해당 없음)
+- [2]에서 **C. MongoDB** 선택 → [3] ORM 은 자동으로 **C. Mongoose** 확정 (다른 선택 무의미)
+- [2]에서 **D. SQLite** 선택 → [3] ORM 권장 답안을 **A. Prisma** 로 (TypeORM/Raw SQL 도 가능하지만 마이그레이션 자동을 위해)
+
+#### 항목 목록
+
+| # | 항목명 | 옵션 (★ = 기본값) |
+|---|--------|-----------------|
+| 1 | 프로젝트 구조 | A. MSA ★ · B. 모노리스 |
+| 2 | 데이터베이스 | A. PostgreSQL ★ · B. MySQL · C. MongoDB · D. SQLite |
+| 3 | ORM / 데이터 접근 | A. Prisma ★ · B. TypeORM · C. Mongoose · D. Raw SQL |
+| 4 | 인증/인가 | A. JWT ★ · B. NextAuth.js · C. 없음 |
+| 5 | API 스타일 | A. REST ★ · B. tRPC · C. GraphQL |
+| 6 | 상태 관리 | A. TanStack Query ★ · B. Zustand + TanStack · C. Redux Toolkit · D. Context API |
+| 7 | 서비스 간 통신 (MSA 시만) | A. REST만 ★ · B. REST + Redis · C. REST + RabbitMQ |
+| 8 | 파일 업로드 | A. AWS S3 · B. 로컬 · C. 없음 ★ |
+| 9 | 배포 방식 | A. Docker + compose ★ · B. Vercel + 별도 서버 · C. PM2 |
+| 10 | UI 컴포넌트 | A. shadcn/ui + Tailwind ★ · B. MUI · C. Ant Design · D. Tailwind only |
+
+### Step 1.99 — 전체 선택 요약 및 확인
+
+A/B/C 어떤 모드든 인터뷰 후에는 **전체 선택을 한 번에 요약하고 사용자 확인**을 받습니다:
+
+```
+선택 요약:
+  [1] 구조: MSA
+  [2] DB: PostgreSQL
+  [3] ORM: Prisma
+  [4] 인증: JWT
+  ...
+
+이 조합으로 진행할까요? (수정하려면 항목 번호 알려주세요)
+```
+
+사용자 확정 후 Step 2부터 실행합니다.
+
+> **저장**: 선택 결과는 별도 파일로 저장하지 않습니다. 최종 결과는 `CLAUDE.md` 의 `## Tech Stack` 과 `## Active Skills` 섹션에 기록됩니다 (Step 5).
 
 ---
 

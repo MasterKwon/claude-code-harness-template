@@ -55,7 +55,7 @@
 | # | Phase | 단계 | 호출 명령 | 입력 | 출력 | 필수 | 모델 | 안전망 / 무효화 |
 |---|------|------|----------|------|------|------|------|---------|
 | 0 | 0 | 프로젝트 초기화 | `/project-setup` | 사용자 선택 (9가지 스택) | `CLAUDE.md` · `package.json` · 환경설정 | 🔵 필수 (1회) | balanced | — |
-| 1 | 0.5 | 집중 인터뷰 | `/grill-me` | 사용자 머릿속 요구사항 | `docs/00.input/grill-result.md` | ⚪ 선택 (권장) | best | — |
+| 1 | 0.5 | 집중 인터뷰 | `/grill-me` | 사용자 머릿속 요구사항 | `docs/00.input/grill-result.md` (분석 단계 호출 시) — **단계 인지형: 설계/구현/테스트 단계에서 호출 시 해당 단계 `grill-decisions.md` 에 누적** | ⚪ 선택 (권장) | best | 후속 스킬이 사전 동작에서 자동 읽음 |
 | 2 | 1.1 | 요구사항 분석 | `/analyze-requirements` | `docs/00.input/` 자료 (grill 결과 포함) | `docs/01.analyze/requirements.md` (원본) | 🔵 필수 | balanced | 재실행 시 `reviewed/{req, gap}.md` 자동 삭제 |
 | 3 | 1.2 | AS-IS 분석 | `/analyze-asis` | 기존 코드베이스 | `docs/01.analyze/asis.md` (원본) | ⚪ 조건부 | fast | **신규 개발 시 사실상 N/A** (기존 시스템 없음). 재실행 시 `reviewed/{asis, gap}.md` 자동 삭제 |
 | 4 | 1.3 | GAP 분석 | `/analyze-gap` | `docs/01.analyze/{req, asis}.md` | `docs/01.analyze/gap.md` (원본) | ⚪ 조건부 | best | **신규 개발 시 사실상 N/A** (AS-IS 없음 → GAP = requirements 전체). 재실행 시 `reviewed/gap.md` 자동 삭제 |
@@ -186,6 +186,29 @@
 | 설계 | `review-design` | `docs/02.design/reviewed/` |
 | 구현 | `review-all` | `docs/04.review/reviewed/` |
 | 테스트 | `cross-check-test` | `docs/05.test/reviewed/` |
+
+---
+
+## `/grill-me` 단계 인지형 자유 호출 (v2.4.16+)
+
+`/grill-me` 는 분석 단계 시작 전뿐 아니라 **설계/구현/테스트 진행 중에도 자유롭게 호출 가능**합니다. 호출 시점의 단계에 맞는 위치에 누적 저장되며, 후속 스킬이 사전 동작에서 자동으로 읽어 반영합니다.
+
+| 호출 단계 | 저장 위치 | 반영하는 후속 스킬 |
+|----------|----------|------------------|
+| analyze | `docs/00.input/grill-result.md` | `analyze-requirements` |
+| design  | `docs/02.design/grill-decisions.md` | `design-db`, `design-api`, `design-screen`, `design-tc`, `design-integration`, `design-process` |
+| build   | `docs/03.build/grill-decisions.md` | `build-db`, `build-api`, `build-screen` |
+| test    | `docs/05.test/grill-decisions.md` | `test-db`, `test-api`, `test-screen`, `test-e2e` |
+
+**저장 방식**: 같은 단계에서 여러 번 호출하면 파일 하단에 `## 인터뷰 {N} — YYYY-MM-DD HH:MM — {주제}` 헤더로 새 블록이 추가됩니다 (덮어쓰기 X).
+
+**사용 예시 (설계 단계)**:
+```
+1) /design-api 진행 중 페이지네이션 방식이 모호 → /grill-me 호출
+2) grill-me 가 "설계 단계" 자동 인식 후 사용자 확인
+3) 인터뷰 결과 → docs/02.design/grill-decisions.md 에 추가
+4) /design-api 재실행 → 사전 동작에서 grill-decisions.md 자동 읽기 → 결정 반영
+```
 
 **원본 산출물 변경 시 → `reviewed/` 의 해당 파일과 의존 파일이 자동 무효화 (스킬 사전 동작)**. 따라서 다음 단계 진입을 위해 리뷰를 다시 받아야 합니다.
 

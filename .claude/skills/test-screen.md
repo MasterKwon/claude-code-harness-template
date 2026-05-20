@@ -10,6 +10,11 @@
 
 이전 `cross-check-test` PASS 사본은 더 이상 유효하지 않습니다.
 
+## 사전 동작 — grill-decisions 반영 (선택)
+
+`docs/05.test/grill-decisions.md` 가 존재하면 먼저 읽고, 누적된 인터뷰 결정 사항을 본 작업에 반영합니다.
+테스트 중 `/grill-me` 호출로 추가된 의사결정(테스트 우선순위·범위 조정 등)을 누락 없이 반영하기 위함입니다.
+
 ## 역할 원칙
 - `docs/02.design/reviewed/screen.md` 기준으로 구현 결과를 검증
 - 설계서 대비 누락/오차 항목을 명확히 기록

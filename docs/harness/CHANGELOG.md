@@ -2,6 +2,50 @@
 
 ---
 
+## v2.4.16 — 2026-05-20
+
+### 변경 — `project-setup` 인터뷰 형식 도입
+
+기존: 10개 항목을 한 번에 텍스트 블록으로 출력 → 사용자가 한 번에 답하는 구조.
+
+변경: **grill-me 스타일 인터뷰**로 개편.
+
+- **Step 1.0 진행 모드 선택**: A. 빠른 시작 (전부 기본값) / B. 인터뷰 / C. 부분 인터뷰
+- **항목별 권장 답안 + 동의 확인** 형식 (한 번에 하나씩)
+- **의존 분기 자동 처리**: 모노리스 선택 시 [7] 자동 건너뛰기, MongoDB 선택 시 [3]은 Mongoose로 자동 확정 등
+- **Step 1.99 전체 요약 확인**: 모든 선택을 한 번에 보여주고 진행 동의 받기
+
+선택 결과는 별도 파일로 저장하지 않습니다 — 최종 결과는 `CLAUDE.md` 의 `## Tech Stack` 과 `## Active Skills` 섹션에 기록됩니다.
+
+### 추가 — `grill-me` 단계 인지형 자유 호출 지원
+
+`grill-me`를 분석 단계 시작 전 1회만 쓰는 게 아니라, **설계·구현·테스트 단계 진행 중에도 자유롭게 호출**할 수 있도록 구조 개편.
+
+**핵심 변경**:
+- **단계 인지**: Step 0 에서 현재 어느 단계에서 호출되었는지 자동 추정 (최근 산출물 위치 기준) + 사용자 1회 확인
+- **단계별 저장 위치 분기**:
+  | 단계 | 저장 경로 |
+  |------|----------|
+  | analyze | `docs/00.input/grill-result.md` (기존 유지) |
+  | design  | `docs/02.design/grill-decisions.md` |
+  | build   | `docs/03.build/grill-decisions.md` |
+  | test    | `docs/05.test/grill-decisions.md` |
+- **append 누적**: 동일 단계에서 여러 번 호출하면 파일 하단에 `## 인터뷰 {N} — YYYY-MM-DD HH:MM — {주제}` 헤더로 새 블록 추가 (덮어쓰기 X)
+
+**후속 스킬 사전 동작에 grill-decisions 반영 추가**:
+- `design-*` (db/api/screen/tc/integration/process) → `docs/02.design/grill-decisions.md` 읽기
+- `build-*` (db/api/screen) → `docs/03.build/grill-decisions.md` 읽기
+- `test-*` (db/api/screen/e2e) → `docs/05.test/grill-decisions.md` 읽기
+- `analyze-requirements` 는 이미 `docs/00.input/grill-result.md` 자동 활용 중 (변경 없음)
+
+### 배경
+
+기존 구조 문제: `grill-me` 산출물이 `docs/00.input/` 에만 저장되어 분석 외 스킬은 참조하지 못했음. 설계·구현 중 의사결정이 필요해도 인터뷰 결과가 후속 스킬에 자동 반영되는 경로가 없었음.
+
+해결: 호출 시점의 단계에 맞는 위치에 저장 → 해당 단계 스킬이 사전 동작에서 자동 읽기 → 누락 없이 반영.
+
+---
+
 ## v2.4.15 — 2026-05-20
 
 ### 추가 — 1부 SLIDE 8.5 신설 (안전망 자동 체험)

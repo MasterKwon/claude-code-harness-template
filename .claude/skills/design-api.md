@@ -10,6 +10,11 @@
 
 이전 `review-design` 통과 사본은 더 이상 유효하지 않습니다.
 
+## 사전 동작 — grill-decisions 반영 (선택)
+
+`docs/02.design/grill-decisions.md` 가 존재하면 먼저 읽고, 누적된 인터뷰 결정 사항을 본 작업에 반영합니다.
+설계 중 `/grill-me` 호출로 추가된 의사결정을 누락 없이 반영하기 위함입니다.
+
 ## 역할 원칙
 - `docs/02.design/screen.md`와 `docs/02.design/db.md` 두 문서 모두 필수 (**원본 위치** — review-design 으로 묶어서 검증)
 - API는 화면이 필요한 것과 DB가 줄 수 있는 것의 교집합

@@ -301,7 +301,7 @@
   <thead><tr><th>#</th><th>Phase</th><th>단계</th><th>호출 명령</th><th>입력</th><th>출력</th><th>필수</th><th>모델</th><th>안전망 / 무효화</th></tr></thead>
   <tbody>
     <tr class="g-prep"><td class="num">0</td><td class="phase">0</td><td>프로젝트 초기화</td><td class="cmd"><code>/project-setup</code></td><td>사용자 선택 (9가지 스택)</td><td><code>CLAUDE.md</code> · 환경설정</td><td class="required"><span class="badge-req">🔵 필수 (1회)</span></td><td class="model">balanced</td><td>—</td></tr>
-    <tr class="g-prep"><td class="num">1</td><td class="phase">0.5</td><td>집중 인터뷰 (Grill Me)</td><td class="cmd"><code>/grill-me</code></td><td>사용자 머릿속 요구사항</td><td><code>docs/00.input/grill-result.md</code></td><td class="required"><span class="badge-opt">⚪ 선택 (권장)</span></td><td class="model">best</td><td>—</td></tr>
+    <tr class="g-prep"><td class="num">1</td><td class="phase">0.5</td><td>집중 인터뷰 (Grill Me)</td><td class="cmd"><code>/grill-me</code></td><td>사용자 머릿속 요구사항</td><td><code>docs/00.input/grill-result.md</code> <strong style="color:var(--cyan);">(단계 인지형 — design/build/test 단계 호출 시 해당 단계의 <code>grill-decisions.md</code> 에 누적)</strong></td><td class="required"><span class="badge-opt">⚪ 선택 (권장)</span></td><td class="model">best</td><td>후속 스킬이 사전 동작에서 자동 읽음</td></tr>
     <tr class="g-analyze"><td class="num">2</td><td class="phase">1.1</td><td>요구사항 분석</td><td class="cmd"><code>/analyze-requirements</code></td><td><code>docs/00.input/</code> 자료</td><td><code>docs/01.analyze/requirements.md</code></td><td class="required"><span class="badge-req">🔵 필수</span></td><td class="model">balanced</td><td>재실행 시 <code>reviewed/{req, gap}.md</code> 자동 삭제</td></tr>
     <tr class="g-analyze"><td class="num">3</td><td class="phase">1.2</td><td>AS-IS 분석</td><td class="cmd"><code>/analyze-asis</code></td><td>기존 코드베이스</td><td><code>docs/01.analyze/asis.md</code></td><td class="required"><span class="badge-opt">⚪ 조건부</span></td><td class="model">fast</td><td><strong style="color:var(--yellow);">신규 시 사실상 N/A</strong>. 재실행 시 <code>reviewed/{asis, gap}.md</code> 자동 삭제</td></tr>
     <tr class="g-analyze"><td class="num">4</td><td class="phase">1.3</td><td>GAP 분석</td><td class="cmd"><code>/analyze-gap</code></td><td><code>docs/01.analyze/{req, asis}.md</code></td><td><code>docs/01.analyze/gap.md</code></td><td class="required"><span class="badge-opt">⚪ 조건부</span></td><td class="model">best</td><td><strong style="color:var(--yellow);">신규 시 사실상 N/A</strong>. 재실행 시 <code>reviewed/gap.md</code> 자동 삭제</td></tr>
@@ -539,7 +539,23 @@
   <strong>원본 산출물 변경 시</strong> → <code>reviewed/</code> 의 해당 파일과 의존 파일이 자동 무효화 (스킬 사전 동작). 따라서 다음 단계 진입을 위해 리뷰를 다시 받아야 합니다.
 </blockquote>
 
-<div class="meta">마지막 갱신: 2026-05-20 (CHANGELOG v2.4.10 참조)</div>
+<h2 style="margin-top:48px;"><code>/grill-me</code> 단계 인지형 자유 호출 (v2.4.16+)</h2>
+
+<p><code>/grill-me</code> 는 분석 단계 시작 전뿐 아니라 <strong>설계/구현/테스트 진행 중에도 자유롭게 호출 가능</strong>합니다. 호출 시점의 단계에 맞는 위치에 누적 저장되며, 후속 스킬이 사전 동작에서 자동으로 읽어 반영합니다.</p>
+
+<table>
+  <thead><tr><th>호출 단계</th><th>저장 위치</th><th>반영하는 후속 스킬</th></tr></thead>
+  <tbody>
+    <tr><td>analyze</td><td><code>docs/00.input/grill-result.md</code></td><td><code>analyze-requirements</code></td></tr>
+    <tr><td>design</td><td><code>docs/02.design/grill-decisions.md</code></td><td><code>design-db</code>, <code>design-api</code>, <code>design-screen</code>, <code>design-tc</code>, <code>design-integration</code>, <code>design-process</code></td></tr>
+    <tr><td>build</td><td><code>docs/03.build/grill-decisions.md</code></td><td><code>build-db</code>, <code>build-api</code>, <code>build-screen</code></td></tr>
+    <tr><td>test</td><td><code>docs/05.test/grill-decisions.md</code></td><td><code>test-db</code>, <code>test-api</code>, <code>test-screen</code>, <code>test-e2e</code></td></tr>
+  </tbody>
+</table>
+
+<p><strong>저장 방식</strong>: 같은 단계에서 여러 번 호출하면 파일 하단에 <code>## 인터뷰 {N} — YYYY-MM-DD HH:MM — {주제}</code> 헤더로 새 블록이 추가됩니다 (덮어쓰기 X).</p>
+
+<div class="meta">마지막 갱신: 2026-05-20 (CHANGELOG v2.4.16 참조)</div>
 
 <script>
   // 탭 전환
