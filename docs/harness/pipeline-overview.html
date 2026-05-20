@@ -22,6 +22,7 @@
     --text:     #e6edf3;
     --text2:    #8b949e;
     --accent:   #1f6feb;
+    --enforce:  #ff9d44;
   }
 
   html, body { background: var(--bg); font-family: 'Noto Sans KR', -apple-system, sans-serif; color: var(--text); line-height: 1.6; }
@@ -101,6 +102,11 @@
   .flow-step.safety .sub { color: #c8e6c9; }
   .flow-arrow { color: var(--text2); font-size: 1.5rem; line-height: 1.2; padding: 2px 0; }
 
+  /* 코드 강제 (⚙️) 셀 — JS가 자동으로 .enforced 클래스 추가 */
+  td.enforced { background: #ff9d4416 !important; box-shadow: inset 3px 0 0 var(--enforce); position: relative; }
+  td.enforced::first-letter { font-size: 1.1em; }
+  .badge-enforce { background: #ff9d4430; color: var(--enforce); border: 1px solid #ff9d4480; padding: 4px 10px; border-radius: 6px; font-weight: 700; }
+
   @media print {
     body { background: white; color: black; padding: 16px; }
     table { background: white; }
@@ -120,7 +126,7 @@
   <span><span class="dot safety"></span><span class="badge-safety">🟢 안전망</span> — 절대 생략 불가</span>
   <span><span class="dot req"></span><span class="badge-req">🔵 필수</span> — 일반적으로 거쳐야 함</span>
   <span><span class="dot opt"></span><span class="badge-opt">⚪ 선택 / 조건부</span> — 상황에 따라</span>
-  <span>⚙️ <span style="color: var(--cyan);">코드 강제</span> — PreToolUse 훅이 진입 조건 미충족 시 차단</span>
+  <span class="badge-enforce">⚙️ 코드 강제</span> <span style="color: var(--text2); font-size: .82rem;">— PreToolUse 훅이 진입 조건 미충족 시 차단</span>
   <span style="margin-left:auto; color:var(--text2);">모델: <code>fast</code> haiku · <code>balanced</code> sonnet · <code>best</code> opus</span>
 </div>
 
@@ -337,6 +343,7 @@
 <div class="meta">마지막 갱신: 2026-05-20 (CHANGELOG v2.4.10 참조)</div>
 
 <script>
+  // 탭 전환
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -345,6 +352,13 @@
       document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+  });
+
+  // 코드 강제 (⚙️) 셀 자동 강조 — 표 안 td 의 텍스트가 ⚙️ 로 시작하면 .enforced 클래스 추가
+  document.querySelectorAll('table td').forEach(td => {
+    if (td.textContent.trimStart().startsWith('⚙️')) {
+      td.classList.add('enforced');
+    }
   });
 </script>
 
