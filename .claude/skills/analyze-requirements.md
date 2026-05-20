@@ -20,6 +20,8 @@
 `docs/00.input/` 폴더의 파일을 읽기 전에 아래 순서로 전처리합니다.
 
 > **grill 산출물 자동 활용**: `docs/00.input/grill-result.md` (큰 주제 인터뷰) 또는 `docs/00.input/grill-task-*.md` (작업 단위 인터뷰)가 있으면 **이미 합의된 결정 사항**으로 분석에 자동 반영하고 사용자에게 재확인하지 않습니다.
+>
+> **보류 항목 자동 미러링 (가시성용)**: grill 산출물의 `### 보류된 결정` 표 중 **상태=open** 인 행을 `requirements.md` 의 `## 미확인 사항 [질문 필요]` 섹션에 표 형태로 미러링합니다 (결정 시점 컬럼 포함). **정본은 grill-result.md** 이며 상태 갱신은 항상 거기서 합니다 (이중 관리 금지). review-analyze 는 `결정시점=analyze` 인 open 만 차단하므로, design/build/operations 시점 항목은 표에 남아있어도 분석 진행을 막지 않습니다.
 
 ### Step 0 — 파일 추출
 ```bash

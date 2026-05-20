@@ -10,14 +10,18 @@
 ## 프로세스
 
 1. `docs/02.design/reviewed/api.md`, `db.md`, `screen.md` 읽기 — 설계 기준 파악
-2. 프로젝트 코드 위치 탐색:
+2. **보류 결정 확인 (결정 시점 기반 누적)**: 정본 파일들의 `### 보류된 결정` 표에서 **결정시점=`analyze` 또는 `design` 또는 `build`** 이면서 **상태=`open`** 인 행이 있으면 모두 **High** 로 보고서 "문제 목록" 에 등재.
+   - 정본 위치: `docs/00.input/grill-result.md`, `docs/02.design/grill-decisions.md`, `docs/03.build/grill-decisions.md` (있는 것만)
+   - `결정시점=operations` 인 행은 본 검사 대상이 아님 (운영 단계 결정 → 통과)
+   - `docs/03.build/pending-decisions.md` 는 가시성용 미러링이므로 정본을 신뢰합니다 (불일치 시 정본 우선)
+3. 프로젝트 코드 위치 탐색:
    - 프로젝트 루트의 `package.json` 확인
    - MSA 구조라면 `.claude/skills/stacks/arch/msa.md` 의 폴더 구조 참조
    - 서비스 디렉터리(gateway, services/*) 존재 여부 확인
-3. 구현된 코드 전체 검토 (DB → API → Screen 순)
-3. 아래 체크리스트 항목별 검토 및 결과 기록
-4. 문제 발견 시 즉시 수정 요청 (보류 없음)
-5. 보고서 작성
+4. 구현된 코드 전체 검토 (DB → API → Screen 순)
+5. 아래 체크리스트 항목별 검토 및 결과 기록
+6. 문제 발견 시 즉시 수정 요청 (보류 없음)
+7. 보고서 작성
 
 ## 검토 체크리스트
 

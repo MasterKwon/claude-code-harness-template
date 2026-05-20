@@ -15,6 +15,8 @@
 `docs/03.build/grill-decisions.md` 가 존재하면 먼저 읽고, 누적된 인터뷰 결정 사항을 본 작업에 반영합니다.
 구현 중 `/grill-me` 호출로 추가된 의사결정을 누락 없이 반영하기 위함입니다.
 
+> **보류 항목 자동 미러링**: `grill-decisions.md` (정본) 의 `### 보류된 결정` 중 **결정시점=`build`, 상태=open** 인 행만 `docs/03.build/pending-decisions.md` 에 미러링합니다 (가시성용, 코드에는 반영 금지). 다른 결정 시점이거나 closed 면 표시 제외. 상태 갱신은 항상 정본 grill-decisions.md 에서만 합니다. 후속 `review-all` 이 정본을 기준으로 검사합니다.
+
 ## 역할 원칙
 - `docs/02.design/reviewed/screen.md` 기반으로 작업
 - 설계서에 없는 기능은 임의로 추가하지 않음

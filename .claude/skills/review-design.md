@@ -62,6 +62,16 @@
 - [ ] asis.md의 기존 데이터 구조(DB, API)가 설계와 충돌하지 않음
 - [ ] asis.md에서 식별된 개선 항목이 requirements.md의 GAP과 연결됨
 
+### 7. 미확인 사항 (보류 결정) 검토 — 결정 시점 기반 누적 검사
+
+**정본**: `docs/00.input/grill-result.md` + `docs/02.design/grill-decisions.md` (있는 경우)
+
+- [ ] 두 파일의 `### 보류된 결정` 표에서 **결정시점=`analyze` 또는 `design`** 이면서 **상태=`open`** 인 행이 0건
+- 행이 1개라도 있으면 **High** 로 표기 (build 진입 차단)
+- `결정시점=build` 또는 `operations` 인 행은 본 단계 검사 대상이 아니므로 통과
+
+> 설계 산출물(`process.md`, `screen.md`, `db.md`, `api.md`, `integration.md`)의 `## 미확인 사항 [질문 필요]` 섹션은 정본을 미러링한 가시성 자료이며, 본 검사는 grill 산출물(정본)을 기준으로 수행합니다. 정본/미러링 간 불일치가 있으면 정본을 신뢰합니다.
+
 ## 출력 형식
 
 아래 형식을 **그대로** 사용하여 `docs/02.design/design-review-report.md`에 저장하세요.
@@ -92,6 +102,7 @@
 | API ↔ DB  | ✅ PASS | 예: 12개 엔드포인트 응답 필드 → DB 컬럼 매핑 완료 |
 | 전체 ↔ INT | ✅ PASS | 예: Claude/OpenAI 2종 연계 → integration.md 규격 확인 |
 | ASIS → 설계 | ✅ PASS | 예: asis.md 제약 3개 → 설계 반영 2개, 명시적 제외 1개 |
+| 미확인 사항 | ✅ PASS / ⚠️ FAIL | 예: grill 산출물 정본 결정시점=analyze\|design + open 0건 (build/operations 시점은 무관) |
 
 ## 종합 의견
 (2~3줄 요약)

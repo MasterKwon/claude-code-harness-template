@@ -16,6 +16,8 @@
 `docs/02.design/grill-decisions.md` 가 존재하면 먼저 읽고, 누적된 인터뷰 결정 사항을 본 작업에 반영합니다.
 설계 중 `/grill-me` 호출로 추가된 의사결정을 누락 없이 반영하기 위함입니다.
 
+> **보류 항목 자동 미러링**: `grill-decisions.md` (정본) 의 `### 보류된 결정` 중 **결정시점=`design`, 상태=open** 인 행만 본 산출물 마지막의 `## 미확인 사항 [질문 필요]` 섹션에 미러링합니다 (이미 있으면 행 추가). 다른 결정 시점이거나 closed 면 표시 제외. 상태 갱신은 항상 정본 grill-decisions.md 에서만 합니다.
+
 ## 역할 원칙
 - `docs/01.analyze/reviewed/requirements.md` 의 Screen 섹션을 **필수**로 기반 삼고, `docs/01.analyze/reviewed/gap.md` 는 **있을 때만** 변경 범위 참조용으로 추가 활용 (신규 프로젝트는 gap.md 가 없으므로 requirements.md 단독)
 - 구현 기술(React, CSS 등)은 논하지 않음 — 구조와 흐름만 정의
