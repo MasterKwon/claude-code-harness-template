@@ -107,6 +107,66 @@
   td.enforced::first-letter { font-size: 1.1em; }
   .badge-enforce { background: #ff9d4430; color: var(--enforce); border: 1px solid #ff9d4480; padding: 4px 10px; border-radius: 6px; font-weight: 700; }
 
+  /* 그룹 묶음 흐름도 — A안 */
+  .flow-group {
+    width: 100%; max-width: 720px;
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 20px;
+    transition: transform .15s;
+  }
+  .flow-group:hover { transform: scale(1.01); }
+  .flow-group .group-label {
+    font-size: .72rem; font-weight: 700; letter-spacing: .1em;
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+  .flow-group .steps { display: flex; flex-wrap: wrap; gap: 6px; }
+  .flow-group .step-chip {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 5px; padding: 4px 10px;
+    font-size: .76rem; font-family: 'JetBrains Mono', monospace;
+    color: var(--text);
+  }
+  .flow-group.prep    { border-color: var(--text2); background: #8b949e10; }
+  .flow-group.prep    .group-label { color: var(--text2); }
+  .flow-group.analyze { border-color: var(--blue); background: #1f6feb14; }
+  .flow-group.analyze .group-label { color: var(--blue); }
+  .flow-group.design  { border-color: var(--cyan); background: #39d35314; }
+  .flow-group.design  .group-label { color: var(--cyan); }
+  .flow-group.build   { border-color: var(--yellow); background: #e3b34114; }
+  .flow-group.build   .group-label { color: var(--yellow); }
+  .flow-group.test    { border-color: var(--purple); background: #bc8cff14; }
+  .flow-group.test    .group-label { color: var(--purple); }
+  .flow-group.deploy  { border-color: var(--red); background: #f8514914; }
+  .flow-group.deploy  .group-label { color: var(--red); }
+  .flow-group.context { border-color: #ff7b72; background: #ff7b7214; }
+  .flow-group.context .group-label { color: #ff7b72; }
+
+  /* 안전망 박스 — 더 크고 강렬 */
+  .flow-safety {
+    width: 100%; max-width: 720px;
+    background: linear-gradient(135deg, #39d35325, #ff9d4420);
+    border: 3px solid var(--cyan);
+    border-radius: 12px; padding: 16px 24px;
+    box-shadow: 0 0 0 4px #39d35322, 0 0 24px #39d35333;
+    text-align: center; position: relative;
+    transition: transform .15s;
+  }
+  .flow-safety:hover { transform: scale(1.02); box-shadow: 0 0 0 4px #39d35344, 0 0 32px #39d35355; }
+  .flow-safety::before {
+    content: "🟢⚙️  안전망  (코드 강제)";
+    position: absolute; top: -11px; left: 18px;
+    background: var(--bg); padding: 0 10px;
+    font-size: .68rem; color: var(--cyan);
+    font-weight: 700; letter-spacing: .1em;
+  }
+  .flow-safety .safety-name {
+    font-size: 1.1rem; font-weight: 700; color: var(--cyan);
+  }
+  .flow-safety .safety-desc {
+    font-size: .78rem; color: #c8e6c9; margin-top: 6px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
   @media print {
     body { background: white; color: black; padding: 16px; }
     table { background: white; }
@@ -142,35 +202,98 @@
 <p>각 큰 단계(분석/설계/구현/테스트) 사이마다 <strong style="color:var(--cyan);">리뷰 스킬이 안전망</strong>으로 들어갑니다. PASS 한 시점의 사본만 <code>reviewed/</code> 로 들어가고, 다음 단계는 <code>reviewed/</code> 만 읽으면 안전이 자동 보장됩니다.</p>
 
 <div class="flow-diagram">
-  <div class="flow-step prep">Phase 0 ~ 0.5 — 준비<div class="sub">project-setup · grill-me</div></div>
+  <div class="flow-group prep">
+    <div class="group-label">Phase 0 ~ 0.5 · 준비</div>
+    <div class="steps">
+      <span class="step-chip">project-setup</span>
+      <span class="step-chip">grill-me</span>
+    </div>
+  </div>
   <div class="flow-arrow">↓</div>
-  <div class="flow-step analyze">Phase 1.1 ~ 1.7 — 분석<div class="sub">requirements · asis · gap · design-prompts</div></div>
+
+  <div class="flow-group analyze">
+    <div class="group-label">Phase 1.1 ~ 1.7 · 분석</div>
+    <div class="steps">
+      <span class="step-chip">analyze-requirements</span>
+      <span class="step-chip">analyze-asis</span>
+      <span class="step-chip">analyze-gap</span>
+      <span class="step-chip">design-prompt-gen</span>
+    </div>
+  </div>
   <div class="flow-arrow">↓</div>
-  <div class="flow-step safety">🟢 review-analyze<div class="sub">PASS 시 reviewed/ 일괄 복사</div></div>
+
+  <div class="flow-safety">
+    <div class="safety-name">review-analyze</div>
+    <div class="safety-desc">PASS 시 reviewed/ 일괄 복사 · 다음 단계 진입 조건</div>
+  </div>
   <div class="flow-arrow">↓</div>
-  <div class="flow-step design">Phase 2.1 ~ 2.5 — 설계<div class="sub">process · screen · db · api · integration</div></div>
+
+  <div class="flow-group design">
+    <div class="group-label">Phase 2.1 ~ 2.5 · 설계</div>
+    <div class="steps">
+      <span class="step-chip">design-process</span>
+      <span class="step-chip">design-screen</span>
+      <span class="step-chip">design-db</span>
+      <span class="step-chip">design-api</span>
+      <span class="step-chip">design-integration</span>
+    </div>
+  </div>
   <div class="flow-arrow">↓</div>
-  <div class="flow-step safety">🟢 review-design<div class="sub">PASS 시 reviewed/ 복사 + cross-check + deliverable 자동 연쇄</div></div>
+
+  <div class="flow-safety">
+    <div class="safety-name">review-design</div>
+    <div class="safety-desc">PASS 시 reviewed/ 복사 + cross-check + deliverable 자동 연쇄</div>
+  </div>
   <div class="flow-arrow">↓</div>
-  <div class="flow-step design">Phase 2.7 — UAT 체크리스트<div class="sub">design-tc</div></div>
+
+  <div class="flow-group design">
+    <div class="group-label">Phase 2.7 · UAT 체크리스트</div>
+    <div class="steps"><span class="step-chip">design-tc</span></div>
+  </div>
   <div class="flow-arrow">↓</div>
-  <div class="flow-step build">Phase 3.1 ~ 3.3 — 구현<div class="sub">build-db · build-api · build-screen</div></div>
+
+  <div class="flow-group build">
+    <div class="group-label">Phase 3.1 ~ 3.3 · 구현</div>
+    <div class="steps">
+      <span class="step-chip">build-db</span>
+      <span class="step-chip">build-api</span>
+      <span class="step-chip">build-screen</span>
+    </div>
+  </div>
   <div class="flow-arrow">↓</div>
-  <div class="flow-step safety">🟢 impact-check<div class="sub">변경 영향도 검사 (Phase 3.5)</div></div>
+
+  <div class="flow-safety">
+    <div class="safety-name">impact-check · review-all</div>
+    <div class="safety-desc">변경 영향도 검사 → 코드 리뷰 → PASS 시 docs/04.review/reviewed/report.md 복사</div>
+  </div>
   <div class="flow-arrow">↓</div>
-  <div class="flow-step safety">🟢 review-all<div class="sub">PASS 시 docs/04.review/reviewed/report.md 복사 (Phase 4)</div></div>
+
+  <div class="flow-group test">
+    <div class="group-label">Phase 5.1 ~ 5.5 · AI 테스트</div>
+    <div class="steps">
+      <span class="step-chip">test-db</span>
+      <span class="step-chip">test-api</span>
+      <span class="step-chip">test-screen</span>
+      <span class="step-chip">test-e2e</span>
+      <span class="step-chip">test-ui-chrome (선택)</span>
+    </div>
+  </div>
   <div class="flow-arrow">↓</div>
-  <div class="flow-step test">Phase 5.1 ~ 5.4 — AI 테스트<div class="sub">test-db · test-api · test-screen · test-e2e</div></div>
+
+  <div class="flow-safety">
+    <div class="safety-name">cross-check-test</div>
+    <div class="safety-desc">4개 보고서 reviewed/ 일괄 복사 · 배포 진입 조건</div>
+  </div>
   <div class="flow-arrow">↓</div>
-  <div class="flow-step test">Phase 5.5 — Chrome UI 지시문 (선택)<div class="sub">test-ui-chrome</div></div>
-  <div class="flow-arrow">↓</div>
-  <div class="flow-step safety">🟢 cross-check-test<div class="sub">4개 보고서 reviewed/ 일괄 복사 (Phase 5.6)</div></div>
-  <div class="flow-arrow">↓</div>
-  <div class="flow-step safety">🟢 Phase 5.7 — Dev 배포<div class="sub">deploy-dev</div></div>
-  <div class="flow-arrow">↓</div>
-  <div class="flow-step safety">🟢 Phase 6 — UAT (사람)<div class="sub">QA 담당자 수동 수행 → uat-result.md</div></div>
-  <div class="flow-arrow">↓</div>
-  <div class="flow-step safety">🟢 Phase 7 — 운영 배포<div class="sub">deploy-prd</div></div>
+
+  <div class="flow-group deploy">
+    <div class="group-label">Phase 5.7 ~ 7 · 배포</div>
+    <div class="steps">
+      <span class="step-chip">deploy-dev</span>
+      <span class="step-chip">UAT (사람)</span>
+      <span class="step-chip">deploy-prd</span>
+    </div>
+  </div>
 </div>
 
 <h2>전체 흐름</h2>
@@ -233,41 +356,117 @@
 <h2>단계 전환 안전망 흐름도</h2>
 
 <div class="flow-diagram">
-  <div class="flow-step prep">사전 1회 — <code style="color:var(--text2); background:transparent;">/maintenance-init</code><div class="sub">역공학 + reviewed/ + CONTEXT 스켈레톤</div></div>
+  <div class="flow-group prep">
+    <div class="group-label">사전 1회 · 운영 시스템 초기화</div>
+    <div class="steps">
+      <span class="step-chip">maintenance-init</span>
+      <span style="font-size:.74rem; color:var(--text2);">(역공학 + reviewed/ + CONTEXT 스켈레톤)</span>
+    </div>
+  </div>
   <div class="flow-arrow">↓</div>
-  <div class="flow-step prep">Phase 1 — 변경 정의<div class="sub">유형 / 요청자 / 변경 내용</div></div>
+
+  <div class="flow-group analyze">
+    <div class="group-label">Phase 1 ~ 1.6 · 변경 정의 & 인터뷰</div>
+    <div class="steps">
+      <span class="step-chip">Phase 1 변경 정의</span>
+      <span class="step-chip">grill-task</span>
+      <span class="step-chip">Phase 1.6 contract</span>
+    </div>
+  </div>
   <div class="flow-arrow">↓</div>
-  <div class="flow-step analyze">Phase 1.5 — grill-task<div class="sub">CONTEXT 도메인 노트 참조 + 모르는 것만 인터뷰</div></div>
+
+  <div class="flow-group analyze">
+    <div class="group-label">Phase 2 ~ 4 · 분석 (GAP 범위, contract 따라 축약 가능)</div>
+    <div class="steps">
+      <span class="step-chip">analyze-asis</span>
+      <span class="step-chip">analyze-requirements</span>
+      <span class="step-chip">analyze-gap</span>
+    </div>
+  </div>
   <div class="flow-arrow">↓</div>
-  <div class="flow-step analyze">Phase 1.6 — 권장 흐름 합의 (contract)<div class="sub">이번 작업의 진행 계약 — 안전망 외 ⏭ 가능</div></div>
+
+  <div class="flow-safety">
+    <div class="safety-name">Phase 4.5 · review-analyze</div>
+    <div class="safety-desc">PASS 시 reviewed/ 일괄 복사 · 다음 단계 진입 조건</div>
+  </div>
   <div class="flow-arrow">↓</div>
-  <div class="flow-step analyze">Phase 2 ~ 4 — 분석 (GAP 범위)<div class="sub">asis · requirements · gap</div></div>
+
+  <div class="flow-group design">
+    <div class="group-label">Phase 5 · 영향 범위 설계 (GAP 있는 레이어만)</div>
+    <div class="steps">
+      <span class="step-chip">design-screen</span>
+      <span class="step-chip">design-db</span>
+      <span class="step-chip">design-api</span>
+      <span style="font-size:.74rem; color:var(--text2);">(GAP 외 레이어 ⏭)</span>
+    </div>
+  </div>
   <div class="flow-arrow">↓</div>
-  <div class="flow-step safety">🟢 Phase 4.5 — review-analyze<div class="sub">PASS 시 reviewed/ 일괄 복사</div></div>
+
+  <div class="flow-safety">
+    <div class="safety-name">Phase 5.5 · review-design</div>
+    <div class="safety-desc">PASS 시 reviewed/ 복사 + cross-check + deliverable 자동 연쇄</div>
+  </div>
   <div class="flow-arrow">↓</div>
-  <div class="flow-step design">Phase 5 — 영향 범위 설계<div class="sub">GAP 있는 레이어만 (design-screen/db/api)</div></div>
+
+  <div class="flow-group design">
+    <div class="group-label">Phase 5.7 · UAT 체크리스트 (Screen 변경 시)</div>
+    <div class="steps"><span class="step-chip">design-tc</span></div>
+  </div>
   <div class="flow-arrow">↓</div>
-  <div class="flow-step safety">🟢 Phase 5.5 — review-design<div class="sub">PASS 시 reviewed/ 복사</div></div>
+
+  <div class="flow-group build">
+    <div class="group-label">Phase 6 · 영향 범위 구현 (GAP 있는 레이어만, GAP 외 코드 X)</div>
+    <div class="steps">
+      <span class="step-chip">build-db</span>
+      <span class="step-chip">build-api</span>
+      <span class="step-chip">build-screen</span>
+    </div>
+  </div>
   <div class="flow-arrow">↓</div>
-  <div class="flow-step design">Phase 5.7 — UAT 체크리스트 (Screen 변경 시)<div class="sub">design-tc</div></div>
+
+  <div class="flow-safety">
+    <div class="safety-name">Phase 6.5 · impact-check · Phase 7 · review-all</div>
+    <div class="safety-desc">변경 영향도 + 자동 강등 (High 시 ⏭ Phase 복원) → 코드 리뷰 PASS</div>
+  </div>
   <div class="flow-arrow">↓</div>
-  <div class="flow-step build">Phase 6 — 영향 범위 구현<div class="sub">GAP 있는 레이어만 / GAP 외 코드 건드리지 않음</div></div>
+
+  <div class="flow-group test">
+    <div class="group-label">Phase 8 · AI 테스트 (변경 + 회귀)</div>
+    <div class="steps">
+      <span class="step-chip">test-db</span>
+      <span class="step-chip">test-api</span>
+      <span class="step-chip">test-screen</span>
+      <span class="step-chip">test-e2e</span>
+      <span class="step-chip">test-ui-chrome (선택)</span>
+      <span style="font-size:.74rem; color:var(--red);">(High 회귀 실패 시 차단)</span>
+    </div>
+  </div>
   <div class="flow-arrow">↓</div>
-  <div class="flow-step safety">🟢 Phase 6.5 — impact-check<div class="sub">자동 강등: High 발견 시 ⏭ Phase 자동 복원</div></div>
+
+  <div class="flow-safety">
+    <div class="safety-name">cross-check-test</div>
+    <div class="safety-desc">4개 보고서 reviewed/ 일괄 복사 · 배포 진입 조건</div>
+  </div>
   <div class="flow-arrow">↓</div>
-  <div class="flow-step safety">🟢 Phase 7 — review-all<div class="sub">PASS 시 reviewed/report.md 복사</div></div>
+
+  <div class="flow-group deploy">
+    <div class="group-label">Phase 8.5 ~ 10 · 배포</div>
+    <div class="steps">
+      <span class="step-chip">deploy-dev</span>
+      <span class="step-chip">UAT (사람)</span>
+      <span class="step-chip">deploy-prd</span>
+    </div>
+  </div>
   <div class="flow-arrow">↓</div>
-  <div class="flow-step test">Phase 8 — AI 테스트<div class="sub">변경 기능 + 회귀 (High 실패 시 차단)</div></div>
-  <div class="flow-arrow">↓</div>
-  <div class="flow-step safety">🟢 cross-check-test<div class="sub">4개 보고서 reviewed/ 일괄 복사</div></div>
-  <div class="flow-arrow">↓</div>
-  <div class="flow-step safety">🟢 Phase 8.5 — Dev 배포<div class="sub">deploy-dev</div></div>
-  <div class="flow-arrow">↓</div>
-  <div class="flow-step safety">🟢 Phase 9 — UAT (사람)<div class="sub">QA 수행 → uat-result.md</div></div>
-  <div class="flow-arrow">↓</div>
-  <div class="flow-step safety">🟢 Phase 10 — 운영 배포<div class="sub">deploy-prd</div></div>
-  <div class="flow-arrow">↓</div>
-  <div class="flow-step context">🟢 Phase 11 — 변경 이력 + CONTEXT 갱신<div class="sub">change-requests.md + docs/context/{domain}.md 누적 (반자동)</div></div>
+
+  <div class="flow-group context">
+    <div class="group-label">Phase 11 · CONTEXT 누적 (운영 단계 고유)</div>
+    <div class="steps">
+      <span class="step-chip">변경 이력 기록</span>
+      <span class="step-chip">CONTEXT 반자동 갱신</span>
+      <span style="font-size:.74rem; color:#ff7b72;">(다음 작업의 grill-task 가 활용)</span>
+    </div>
+  </div>
 </div>
 
 <h2>전체 흐름</h2>
