@@ -91,9 +91,46 @@
 <div class="legend">
   <span><span class="dot safety"></span><span class="badge-safety">🟢 안전망</span> — 절대 생략 불가</span>
   <span><span class="dot req"></span><span class="badge-req">🔵 필수</span> — 일반적으로 거쳐야 함</span>
-  <span><span class="dot opt"></span><span class="badge-opt">⚪ 선택</span> — 상황에 따라</span>
+  <span><span class="dot opt"></span><span class="badge-opt">⚪ 선택 / 조건부</span> — 상황에 따라</span>
   <span style="margin-left:auto; color:var(--text2);">모델: <code>fast</code> haiku · <code>balanced</code> sonnet · <code>best</code> opus</span>
 </div>
+
+<h2>단계 전환 안전망 흐름도</h2>
+<p>각 큰 단계(분석/설계/구현/테스트) 사이마다 <strong style="color:var(--cyan);">리뷰 스킬이 안전망</strong>으로 들어갑니다. PASS 한 시점의 사본만 <code>reviewed/</code> 로 들어가고, 다음 단계는 <code>reviewed/</code> 만 읽으면 안전이 자동 보장됩니다.</p>
+
+<div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 20px 24px; margin: 16px 0 24px; font-family: 'JetBrains Mono', monospace; font-size: .82rem; line-height: 2.1; color: var(--text);">
+  <span style="color: var(--text2);">[Phase 0~0.5]</span> &nbsp;준비<br>
+  <span style="color: var(--blue); padding-left: 80px;">↓</span><br>
+  <span style="color: var(--blue);">[Phase 1.1~1.7]</span> &nbsp;분석 (requirements / asis / gap)<br>
+  <span style="color: var(--blue); padding-left: 80px;">↓</span><br>
+  <span style="color: var(--cyan); padding-left: 50px; font-weight: 600;">🟢 review-analyze</span> &nbsp;<span style="color: var(--text2);">← PASS 시 reviewed/ 복사</span><br>
+  <span style="color: var(--cyan); padding-left: 80px;">↓</span><br>
+  <span style="color: var(--cyan);">[Phase 2.1~2.5]</span> &nbsp;설계 (process / screen / db / api / integration)<br>
+  <span style="color: var(--cyan); padding-left: 80px;">↓</span><br>
+  <span style="color: var(--cyan); padding-left: 50px; font-weight: 600;">🟢 review-design</span> &nbsp;<span style="color: var(--text2);">← PASS 시 reviewed/ 복사 + cross-check + deliverable 자동 연쇄</span><br>
+  <span style="color: var(--cyan); padding-left: 80px;">↓</span><br>
+  <span style="color: var(--cyan);">[Phase 2.7]</span> &nbsp;UAT 체크리스트 (design-tc)<br>
+  <span style="color: var(--yellow); padding-left: 80px;">↓</span><br>
+  <span style="color: var(--yellow);">[Phase 3.1~3.3]</span> &nbsp;구현 (build-db / build-api / build-screen)<br>
+  <span style="color: var(--yellow); padding-left: 80px;">↓</span><br>
+  <span style="color: var(--cyan); padding-left: 50px; font-weight: 600;">🟢 impact-check</span> &nbsp;<span style="color: var(--text2);">← 변경 영향도 검사</span><br>
+  <span style="color: #d29922; padding-left: 80px;">↓</span><br>
+  <span style="color: var(--cyan); padding-left: 50px; font-weight: 600;">🟢 review-all</span> &nbsp;<span style="color: var(--text2);">← PASS 시 docs/04.review/reviewed/report.md 복사</span><br>
+  <span style="color: var(--purple); padding-left: 80px;">↓</span><br>
+  <span style="color: var(--purple);">[Phase 5.1~5.4]</span> &nbsp;AI 테스트 (db / api / screen / e2e)<br>
+  <span style="color: var(--purple); padding-left: 80px;">↓</span><br>
+  <span style="color: var(--purple);">[Phase 5.5]</span> &nbsp;Chrome UI 지시문 <span style="color: var(--text2);">(선택)</span><br>
+  <span style="color: var(--purple); padding-left: 80px;">↓</span><br>
+  <span style="color: var(--cyan); padding-left: 50px; font-weight: 600;">🟢 cross-check-test</span> &nbsp;<span style="color: var(--text2);">← 4개 보고서 reviewed/ 일괄 복사</span><br>
+  <span style="color: var(--red); padding-left: 80px;">↓</span><br>
+  <span style="color: var(--red);">[Phase 5.7]</span> &nbsp;<span style="color: var(--cyan); font-weight: 600;">🟢 Dev 배포</span><br>
+  <span style="color: var(--red); padding-left: 80px;">↓</span><br>
+  <span style="color: var(--red);">[Phase 6]</span> &nbsp;<span style="color: var(--cyan); font-weight: 600;">🟢 UAT (사람)</span><br>
+  <span style="color: var(--red); padding-left: 80px;">↓</span><br>
+  <span style="color: var(--red);">[Phase 7]</span> &nbsp;<span style="color: var(--cyan); font-weight: 600;">🟢 운영 배포</span>
+</div>
+
+<blockquote>안전망이 깨지면 다음 단계가 진입을 거부합니다 (<code>reviewed/</code> 가 비어 있어 입력이 없음). 원본 산출물 변경 시 <code>reviewed/</code> 의 의존 파일이 자동 삭제되므로 리뷰를 다시 받아야 합니다.</blockquote>
 
 <h2>전체 흐름</h2>
 
@@ -148,9 +185,9 @@
       <td class="cmd"><code>/analyze-asis</code></td>
       <td>기존 코드베이스 (CLAUDE.md, src/)</td>
       <td><code>docs/01.analyze/asis.md</code> (원본)</td>
-      <td class="required"><span class="badge-req">🔵 필수</span></td>
+      <td class="required"><span class="badge-opt">⚪ 조건부</span></td>
       <td class="model">fast</td>
-      <td>재실행 시 <code>reviewed/{asis, gap}.md</code> 자동 삭제</td>
+      <td><strong style="color:var(--yellow);">신규 개발 시 사실상 N/A</strong> (기존 시스템 없음). 운영 시스템 도입·마이그레이션 시에만 의미. 재실행 시 <code>reviewed/{asis, gap}.md</code> 자동 삭제</td>
     </tr>
     <tr class="g-analyze">
       <td class="num">4</td><td class="phase">1.3</td>
@@ -158,9 +195,9 @@
       <td class="cmd"><code>/analyze-gap</code></td>
       <td><code>docs/01.analyze/{requirements, asis}.md</code> (원본)</td>
       <td><code>docs/01.analyze/gap.md</code> (원본)</td>
-      <td class="required"><span class="badge-req">🔵 필수</span></td>
+      <td class="required"><span class="badge-opt">⚪ 조건부</span></td>
       <td class="model">best</td>
-      <td>재실행 시 <code>reviewed/gap.md</code> 자동 삭제</td>
+      <td><strong style="color:var(--yellow);">신규 개발 시 사실상 N/A</strong> (AS-IS 없음 → GAP = requirements 전체). 재실행 시 <code>reviewed/gap.md</code> 자동 삭제</td>
     </tr>
     <tr class="g-analyze">
       <td class="num">5</td><td class="phase">1.4</td>

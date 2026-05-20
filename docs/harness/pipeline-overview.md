@@ -7,9 +7,50 @@
 
 ## 범례
 
-- **필수 여부**: 🟢 안전망 (절대 생략 불가) · 🔵 필수 · ⚪ 선택
+- **필수 여부**: 🟢 안전망 (절대 생략 불가) · 🔵 필수 · ⚪ 선택/조건부
 - **모델**: `fast` = haiku · `balanced` = sonnet · `best` = opus
 - **안전망 / 무효화** 컬럼: 재실행 시 `reviewed/` 의 어떤 파일이 자동 삭제되는가 + 다음 단계 진입 조건
+
+---
+
+## 단계 전환 안전망 흐름도
+
+각 큰 단계(분석/설계/구현/테스트) 사이마다 **리뷰 스킬이 안전망**으로 들어갑니다. PASS 한 시점의 사본만 `reviewed/` 로 들어가고, 다음 단계는 `reviewed/` 만 읽으면 안전이 자동 보장됩니다.
+
+```
+[Phase 0~0.5]  준비
+                  ↓
+[Phase 1.1~1.7] 분석 (requirements / asis / gap)
+                  ↓
+              🟢 review-analyze  ← PASS 시 reviewed/ 복사
+                  ↓
+[Phase 2.1~2.5] 설계 (process / screen / db / api / integration)
+                  ↓
+              🟢 review-design  ← PASS 시 reviewed/ 복사 + cross-check + deliverable 자동 연쇄
+                  ↓
+[Phase 2.7]    UAT 체크리스트 (design-tc)
+                  ↓
+[Phase 3.1~3.3] 구현 (build-db / build-api / build-screen)
+                  ↓
+              🟢 impact-check  ← 변경 영향도 검사
+                  ↓
+              🟢 review-all  ← PASS 시 docs/04.review/reviewed/report.md 복사
+                  ↓
+[Phase 5.1~5.4] AI 테스트 (db / api / screen / e2e)
+                  ↓
+[Phase 5.5]    Chrome UI 지시문 (선택)
+                  ↓
+              🟢 cross-check-test  ← 4개 보고서 reviewed/ 일괄 복사
+                  ↓
+[Phase 5.7]    🟢 Dev 배포
+                  ↓
+[Phase 6]      🟢 UAT (사람)
+                  ↓
+[Phase 7]      🟢 운영 배포
+```
+
+> 안전망이 깨지면 다음 단계가 진입을 거부합니다 (reviewed/ 가 비어 있어 입력이 없음).
+> 원본 산출물 변경 시 reviewed/ 의 의존 파일이 자동 삭제되므로 리뷰를 다시 받아야 합니다.
 
 ---
 
@@ -20,8 +61,8 @@
 | 0 | 0 | 프로젝트 초기화 | `/project-setup` | 사용자 선택 (9가지 스택) | `CLAUDE.md` · `package.json` · 환경설정 | 🔵 필수 (1회) | balanced | — |
 | 1 | 0.5 | 집중 인터뷰 | `/grill-me` | 사용자 머릿속 요구사항 | `docs/00.input/grill-result.md` | ⚪ 선택 (권장) | best | — |
 | 2 | 1.1 | 요구사항 분석 | `/analyze-requirements` | `docs/00.input/` 입력 자료 (grill 결과 포함) | `docs/01.analyze/requirements.md` (원본) | 🔵 필수 | balanced | 재실행 시 `reviewed/{req, gap}.md` 자동 삭제 |
-| 3 | 1.2 | AS-IS 분석 | `/analyze-asis` | 기존 코드베이스 (CLAUDE.md, src/) | `docs/01.analyze/asis.md` (원본) | 🔵 필수 | fast | 재실행 시 `reviewed/{asis, gap}.md` 자동 삭제 |
-| 4 | 1.3 | GAP 분석 | `/analyze-gap` | `docs/01.analyze/{requirements, asis}.md` (원본) | `docs/01.analyze/gap.md` (원본) | 🔵 필수 | best | 재실행 시 `reviewed/gap.md` 자동 삭제 |
+| 3 | 1.2 | AS-IS 분석 | `/analyze-asis` | 기존 코드베이스 (CLAUDE.md, src/) | `docs/01.analyze/asis.md` (원본) | ⚪ 조건부 | fast | **신규 개발 시 사실상 N/A** (기존 시스템 없음). 운영 시스템 도입·마이그레이션 시에만 의미. 재실행 시 `reviewed/{asis, gap}.md` 자동 삭제 |
+| 4 | 1.3 | GAP 분석 | `/analyze-gap` | `docs/01.analyze/{requirements, asis}.md` (원본) | `docs/01.analyze/gap.md` (원본) | ⚪ 조건부 | best | **신규 개발 시 사실상 N/A** (AS-IS 없음 → GAP = requirements 전체). 재실행 시 `reviewed/gap.md` 자동 삭제 |
 | 5 | 1.4 | 분석 종합 리뷰 | `/review-analyze` | `docs/01.analyze/{req, asis, gap}.md` (원본) + `docs/00.input/` | `docs/01.analyze/analyze-review-report.md` + PASS 시 `reviewed/` 일괄 복사 | 🟢 안전망 | best | **다음 단계 진입 조건**: `reviewed/` 3개 파일 존재 |
 | 6 | 1.7 | Claude Design 프롬프트 | `/design-prompt-gen` | `docs/01.analyze/reviewed/requirements.md` | `docs/02.design/design-prompts.md` | ⚪ 선택 (Screen 있을 때 권장) | balanced | — |
 | 7 | 2.1 | 프로세스 설계 | `/design-process` | `docs/01.analyze/reviewed/requirements.md` | `docs/02.design/process.md` (원본) | 🔵 필수 | balanced | 재실행 시 `reviewed/process.md` 자동 삭제 |
