@@ -2,6 +2,33 @@
 
 ---
 
+## v2.4.8 — 2026-05-20
+
+### 추가 — pipeline-full 한눈 가이드
+
+교육·실습 시 옆에 두고 진행할 수 있도록 `pipeline-full` 전체 흐름을 Step 단위(27행)로 정리한 가이드 신설.
+
+- `docs/harness/pipeline-overview.md` — 마크다운 텍스트 버전
+- `docs/harness/pipeline-overview.html` — 다크 테마 HTML, Phase 그룹별 색상 시각화 (분석=blue / 설계=cyan / 구현=yellow / 리뷰=주황 / 테스트=purple / 배포=red)
+
+**컬럼 8개**:
+1. `#` 실행 순서
+2. Phase (0, 0.5, 1.1, … 7)
+3. 단계 (요구사항 분석, GAP 분석, ...)
+4. 호출 명령 (`/analyze-requirements` 등)
+5. 입력 (전 단계 산출물 또는 사용자 입력)
+6. 출력 (산출 파일 경로)
+7. 필수 여부 (🟢 안전망 / 🔵 필수 / ⚪ 선택)
+8. 권장 모델 (fast / balanced / best)
+9. 안전망 / 무효화 (재실행 시 자동 삭제되는 reviewed/ + 다음 단계 진입 조건)
+
+**부록**:
+- 단계 그룹 요약 (준비/분석/설계/구현/리뷰/테스트/배포)
+- `reviewed/` 의미 통일 표 (4단계)
+- `pipeline-maintenance` 와의 차이 짧은 안내 (별도 가이드는 추후)
+
+---
+
 ## v2.4.7 — 2026-05-20
 
 ### 수정 — 특정 프로젝트명 흔적 정리
