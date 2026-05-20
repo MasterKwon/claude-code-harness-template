@@ -75,6 +75,21 @@
 
   .meta { color: var(--text2); font-size: .78rem; border-top: 1px solid var(--border); padding-top: 16px; margin-top: 32px; }
 
+  /* 안전망 흐름도 — 도형 박스 */
+  .flow-diagram { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 28px 24px; background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; margin: 16px 0 24px; }
+  .flow-step { padding: 14px 28px; border-radius: 8px; font-size: .92rem; font-weight: 600; min-width: 480px; max-width: 720px; width: 100%; text-align: center; background: var(--bg3); border: 1px solid var(--border); color: var(--text); transition: transform .15s; }
+  .flow-step:hover { transform: translateX(0) scale(1.02); }
+  .flow-step .sub { font-size: .76rem; color: var(--text2); font-weight: 400; margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
+  .flow-step.prep    { color: var(--text2); border-color: var(--text2); background: #8b949e10; }
+  .flow-step.analyze { color: var(--blue);  border-color: var(--blue);  background: #1f6feb1a; }
+  .flow-step.design  { color: var(--cyan);  border-color: var(--cyan);  background: #39d3531a; }
+  .flow-step.build   { color: var(--yellow);border-color: var(--yellow);background: #e3b3411a; }
+  .flow-step.test    { color: var(--purple);border-color: var(--purple);background: #bc8cff1a; }
+  .flow-step.deploy  { color: var(--red);   border-color: var(--red);   background: #f851491a; }
+  .flow-step.safety  { color: var(--cyan); background: #39d35330; border: 2px solid var(--cyan); box-shadow: 0 0 0 3px #39d35322; font-weight: 700; }
+  .flow-step.safety .sub { color: #c8e6c9; }
+  .flow-arrow { color: var(--text2); font-size: 1.5rem; line-height: 1.2; padding: 2px 0; }
+
   @media print {
     body { background: white; color: black; padding: 16px; }
     table { background: white; }
@@ -98,36 +113,36 @@
 <h2>단계 전환 안전망 흐름도</h2>
 <p>각 큰 단계(분석/설계/구현/테스트) 사이마다 <strong style="color:var(--cyan);">리뷰 스킬이 안전망</strong>으로 들어갑니다. PASS 한 시점의 사본만 <code>reviewed/</code> 로 들어가고, 다음 단계는 <code>reviewed/</code> 만 읽으면 안전이 자동 보장됩니다.</p>
 
-<div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 20px 24px; margin: 16px 0 24px; font-family: 'JetBrains Mono', monospace; font-size: .82rem; line-height: 2.1; color: var(--text);">
-  <span style="color: var(--text2);">[Phase 0~0.5]</span> &nbsp;준비<br>
-  <span style="color: var(--blue); padding-left: 80px;">↓</span><br>
-  <span style="color: var(--blue);">[Phase 1.1~1.7]</span> &nbsp;분석 (requirements / asis / gap)<br>
-  <span style="color: var(--blue); padding-left: 80px;">↓</span><br>
-  <span style="color: var(--cyan); padding-left: 50px; font-weight: 600;">🟢 review-analyze</span> &nbsp;<span style="color: var(--text2);">← PASS 시 reviewed/ 복사</span><br>
-  <span style="color: var(--cyan); padding-left: 80px;">↓</span><br>
-  <span style="color: var(--cyan);">[Phase 2.1~2.5]</span> &nbsp;설계 (process / screen / db / api / integration)<br>
-  <span style="color: var(--cyan); padding-left: 80px;">↓</span><br>
-  <span style="color: var(--cyan); padding-left: 50px; font-weight: 600;">🟢 review-design</span> &nbsp;<span style="color: var(--text2);">← PASS 시 reviewed/ 복사 + cross-check + deliverable 자동 연쇄</span><br>
-  <span style="color: var(--cyan); padding-left: 80px;">↓</span><br>
-  <span style="color: var(--cyan);">[Phase 2.7]</span> &nbsp;UAT 체크리스트 (design-tc)<br>
-  <span style="color: var(--yellow); padding-left: 80px;">↓</span><br>
-  <span style="color: var(--yellow);">[Phase 3.1~3.3]</span> &nbsp;구현 (build-db / build-api / build-screen)<br>
-  <span style="color: var(--yellow); padding-left: 80px;">↓</span><br>
-  <span style="color: var(--cyan); padding-left: 50px; font-weight: 600;">🟢 impact-check</span> &nbsp;<span style="color: var(--text2);">← 변경 영향도 검사</span><br>
-  <span style="color: #d29922; padding-left: 80px;">↓</span><br>
-  <span style="color: var(--cyan); padding-left: 50px; font-weight: 600;">🟢 review-all</span> &nbsp;<span style="color: var(--text2);">← PASS 시 docs/04.review/reviewed/report.md 복사</span><br>
-  <span style="color: var(--purple); padding-left: 80px;">↓</span><br>
-  <span style="color: var(--purple);">[Phase 5.1~5.4]</span> &nbsp;AI 테스트 (db / api / screen / e2e)<br>
-  <span style="color: var(--purple); padding-left: 80px;">↓</span><br>
-  <span style="color: var(--purple);">[Phase 5.5]</span> &nbsp;Chrome UI 지시문 <span style="color: var(--text2);">(선택)</span><br>
-  <span style="color: var(--purple); padding-left: 80px;">↓</span><br>
-  <span style="color: var(--cyan); padding-left: 50px; font-weight: 600;">🟢 cross-check-test</span> &nbsp;<span style="color: var(--text2);">← 4개 보고서 reviewed/ 일괄 복사</span><br>
-  <span style="color: var(--red); padding-left: 80px;">↓</span><br>
-  <span style="color: var(--red);">[Phase 5.7]</span> &nbsp;<span style="color: var(--cyan); font-weight: 600;">🟢 Dev 배포</span><br>
-  <span style="color: var(--red); padding-left: 80px;">↓</span><br>
-  <span style="color: var(--red);">[Phase 6]</span> &nbsp;<span style="color: var(--cyan); font-weight: 600;">🟢 UAT (사람)</span><br>
-  <span style="color: var(--red); padding-left: 80px;">↓</span><br>
-  <span style="color: var(--red);">[Phase 7]</span> &nbsp;<span style="color: var(--cyan); font-weight: 600;">🟢 운영 배포</span>
+<div class="flow-diagram">
+  <div class="flow-step prep">Phase 0 ~ 0.5 — 준비<div class="sub">project-setup · grill-me</div></div>
+  <div class="flow-arrow">↓</div>
+  <div class="flow-step analyze">Phase 1.1 ~ 1.7 — 분석<div class="sub">requirements · asis · gap · design-prompts</div></div>
+  <div class="flow-arrow">↓</div>
+  <div class="flow-step safety">🟢 review-analyze<div class="sub">PASS 시 reviewed/ 일괄 복사</div></div>
+  <div class="flow-arrow">↓</div>
+  <div class="flow-step design">Phase 2.1 ~ 2.5 — 설계<div class="sub">process · screen · db · api · integration</div></div>
+  <div class="flow-arrow">↓</div>
+  <div class="flow-step safety">🟢 review-design<div class="sub">PASS 시 reviewed/ 복사 + cross-check + deliverable 자동 연쇄</div></div>
+  <div class="flow-arrow">↓</div>
+  <div class="flow-step design">Phase 2.7 — UAT 체크리스트<div class="sub">design-tc</div></div>
+  <div class="flow-arrow">↓</div>
+  <div class="flow-step build">Phase 3.1 ~ 3.3 — 구현<div class="sub">build-db · build-api · build-screen</div></div>
+  <div class="flow-arrow">↓</div>
+  <div class="flow-step safety">🟢 impact-check<div class="sub">변경 영향도 검사 (Phase 3.5)</div></div>
+  <div class="flow-arrow">↓</div>
+  <div class="flow-step safety">🟢 review-all<div class="sub">PASS 시 docs/04.review/reviewed/report.md 복사 (Phase 4)</div></div>
+  <div class="flow-arrow">↓</div>
+  <div class="flow-step test">Phase 5.1 ~ 5.4 — AI 테스트<div class="sub">test-db · test-api · test-screen · test-e2e</div></div>
+  <div class="flow-arrow">↓</div>
+  <div class="flow-step test">Phase 5.5 — Chrome UI 지시문 (선택)<div class="sub">test-ui-chrome</div></div>
+  <div class="flow-arrow">↓</div>
+  <div class="flow-step safety">🟢 cross-check-test<div class="sub">4개 보고서 reviewed/ 일괄 복사 (Phase 5.6)</div></div>
+  <div class="flow-arrow">↓</div>
+  <div class="flow-step safety">🟢 Phase 5.7 — Dev 배포<div class="sub">deploy-dev</div></div>
+  <div class="flow-arrow">↓</div>
+  <div class="flow-step safety">🟢 Phase 6 — UAT (사람)<div class="sub">QA 담당자 수동 수행 → uat-result.md</div></div>
+  <div class="flow-arrow">↓</div>
+  <div class="flow-step safety">🟢 Phase 7 — 운영 배포<div class="sub">deploy-prd</div></div>
 </div>
 
 <blockquote>안전망이 깨지면 다음 단계가 진입을 거부합니다 (<code>reviewed/</code> 가 비어 있어 입력이 없음). 원본 산출물 변경 시 <code>reviewed/</code> 의 의존 파일이 자동 삭제되므로 리뷰를 다시 받아야 합니다.</blockquote>
