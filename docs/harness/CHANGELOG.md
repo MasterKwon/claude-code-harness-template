@@ -2,6 +2,27 @@
 
 ---
 
+## v2.4.10 — 2026-05-20
+
+### 추가 — pipeline-overview 에 운영 파이프라인 추가 + 탭 UI
+
+`pipeline-full` 한눈 가이드에 `pipeline-maintenance` (운영 변경) 가이드를 동격으로 추가. HTML 은 탭 UI 로 분리, 마크다운은 두 큰 섹션.
+
+- **운영 파이프라인 표** (Phase 0 사전 ~ Phase 11 CONTEXT 갱신, 24행)
+  - `maintenance-init` (사전 1회)
+  - `grill-task` 기본 진입점 (CONTEXT 도메인 노트 참조)
+  - 권장 흐름 contract 합의
+  - GAP 범위만 분석/설계/구현
+  - impact-check 자동 강등
+  - 회귀 테스트 (High 필수 차단)
+  - CONTEXT 반자동 갱신 (Phase 11)
+- **운영 도형 흐름도** (18 step) — CONTEXT 갱신은 별도 색상(`#ff7b72`)
+- **신규 vs 운영 차이 표** 추가 — 진입점·범위·자동 강등·학습 자산 등 8개 항목 비교
+- **HTML 탭 UI**: 📘 신규 개발 / 🔧 운영 변경 — 부드러운 페이드인 전환, 인쇄 시 두 탭 모두 표시 (`@media print`)
+- 공통 섹션(`reviewed/` 의미 통일)은 탭 밖에 두어 양쪽 모두에서 참조 가능
+
+---
+
 ## v2.4.9 — 2026-05-20
 
 ### 수정 — pipeline-overview 보강 (사용자 실습 피드백 반영)
