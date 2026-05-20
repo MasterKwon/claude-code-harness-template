@@ -9,6 +9,15 @@
             "command": "echo '[PreToolUse] Bash 실행 전 확인'"
           }
         ]
+      },
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-pipeline-check.sh \"$CLAUDE_TOOL_INPUT_FILE_PATH\""
+          }
+        ]
       }
     ],
     "PostToolUse": [

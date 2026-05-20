@@ -2,6 +2,56 @@
 
 ---
 
+## v2.4.11 — 2026-05-20
+
+### 추가 — 안전망에 **코드 강제력** 추가 (PreToolUse 훅)
+
+이전까지 안전망(`reviewed/` 의미, 진입 조건)은 **자연어 지시**에 의존 — Claude 가 안 지키면 끝. 자체 평가 65~70점의 가장 큰 약점이었음.
+
+이제 **PreToolUse 훅(`matcher: Read`)으로 스킬 파일 읽기 직전에 코드 검사**, 미충족 시 `exit 2` 로 차단.
+
+- 신규 파일: `.claude/hooks/pre-pipeline-check.sh`
+- 등록: `.claude/settings.json` 의 `PreToolUse > matcher: Read`
+
+### 강제되는 안전망 4(5)개
+
+| 호출 패턴 | 진입 조건 (없으면 차단) |
+|---|---|
+| `/design-{process|screen|db|api|integration|prompt-gen}` | `docs/01.analyze/reviewed/{requirements\|gap}.md` |
+| `/design-tc` | `docs/02.design/reviewed/{process\|screen\|db\|api\|integration}.md` (하나 이상) |
+| `/build-{db\|api\|screen}` | 각자 대응 `docs/02.design/reviewed/{db\|api\|screen}.md` |
+| `/test-{db\|api\|screen\|e2e}` | `docs/04.review/reviewed/report.md` |
+| `/deploy-dev` | `docs/05.test/reviewed/report-{db,api,screen,e2e}.md` 4개 |
+| `/deploy-prd` | + `docs/06.deploy/uat-result.md` |
+
+### 통과되는 스킬 (안전망 적용 안 함)
+
+- `analyze-*`, `review-*`, `grill-*` (시작 단계, 자체적으로 PASS 판정)
+- `project-setup`, `maintenance-init` (초기화)
+- `impact-check`, `cross-check-*`, `deliverable-*` (자체 트리거)
+- `design-all`, `build-all`, `test-all` (묶음 command)
+- `refine-*`, `test-ui-chrome`, `skill-formatter`, `grill-task` (보조)
+- `.claude/skills/stacks/` 하위 (스택 파일)
+
+### 동작 방식
+
+- Read 도구 호출 시점에 스킬 파일 경로 매칭 → 즉시 분기
+- 스킬 파일이 아니면 즉시 `exit 0` (성능 영향 없음)
+- 미충족 시 `exit 2` + stderr 명확한 안내 (어떤 파일이 누락됐고 어느 스킬을 먼저 실행해야 하는지)
+- Claude 가 stderr 메시지 받아 사용자에게 보고 + 누락된 단계 실행 제안
+
+### 한계 (정직하게)
+
+- **Read 도구만 매칭**. Claude 가 `Skill` 도구로 직접 호출하면 안 잡힐 가능성 — 실사용에서 발견되면 matcher 에 `Skill` 추가
+- 자연어 트리거는 결국 Claude 가 스킬 파일 Read 를 거치므로 대부분 잡힘
+- **우회 가능**: 사용자가 명시적으로 진입 조건 무시 지시 시 Claude 가 우회할 수 있음 (의도된 동작)
+
+### 자체 평가 갱신
+
+이전 약점 "안전망의 코드 강제력 (45점)" → 본 변경으로 **약 70~75점**으로 상승 예상 (Read 외 호출 경로 미커버 + 실사용 미검증으로 만점은 아님).
+
+---
+
 ## v2.4.10 — 2026-05-20
 
 ### 추가 — pipeline-overview 에 운영 파이프라인 추가 + 탭 UI
