@@ -17,7 +17,7 @@
 설계 중 `/grill-me` 호출로 추가된 의사결정을 누락 없이 반영하기 위함입니다.
 
 ## 역할 원칙
-- `docs/01.analyze/reviewed/requirements.md`의 Screen 섹션 또는 `docs/01.analyze/reviewed/gap.md` 기반으로 작업
+- `docs/01.analyze/reviewed/requirements.md` 의 Screen 섹션을 **필수**로 기반 삼고, `docs/01.analyze/reviewed/gap.md` 는 **있을 때만** 변경 범위 참조용으로 추가 활용 (신규 프로젝트는 gap.md 가 없으므로 requirements.md 단독)
 - 구현 기술(React, CSS 등)은 논하지 않음 — 구조와 흐름만 정의
 - 텍스트 기반 와이어프레임으로 표현
 
@@ -105,7 +105,7 @@ Active Skills가 없거나 비어 있으면 기본값 사용:
 ```
 
 ---
-`docs/01.analyze/reviewed/requirements.md` 또는 `docs/01.analyze/reviewed/gap.md`를 기반으로 설계를 시작합니다.
+`docs/01.analyze/reviewed/requirements.md` 를 기반으로 화면 설계를 시작합니다. `docs/01.analyze/reviewed/gap.md` 가 존재하면 변경 범위 우선순위 결정에 함께 참조합니다 (신규 프로젝트는 requirements.md 만으로 진행).
 
 ---
 
