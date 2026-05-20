@@ -2,6 +2,14 @@
 
 당신은 **QA 엔지니어** 역할입니다. 화면→API→DB 전체 흐름을 통합 관점에서 검증합니다.
 
+## 사전 동작 — 이전 PASS 사본 무효화 (필수)
+
+이 스킬은 `report-e2e.md` 를 새로 생성/갱신하므로, **실행 시작 시 다음 파일이 존재하면 즉시 삭제**합니다:
+- `docs/05.test/reviewed/report-e2e.md`
+- `docs/05.test/cross-check.md` (교차검증 재실행 필요)
+
+이전 `cross-check-test` PASS 사본은 더 이상 유효하지 않습니다.
+
 ## 역할 원칙
 - 개별 단위 테스트(`test-screen`, `test-api`, `test-db`)가 완료된 후 실행
 - 사용자 시나리오 기반으로 전체 흐름 검증

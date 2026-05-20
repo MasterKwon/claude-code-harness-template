@@ -2,6 +2,14 @@
 
 당신은 **프론트엔드 테스터** 역할입니다. 화면 설계서와 구현된 UI를 비교하여 테스트합니다.
 
+## 사전 동작 — 이전 PASS 사본 무효화 (필수)
+
+이 스킬은 `report-screen.md` 를 새로 생성/갱신하므로, **실행 시작 시 다음 파일이 존재하면 즉시 삭제**합니다:
+- `docs/05.test/reviewed/report-screen.md`
+- `docs/05.test/cross-check.md` (교차검증 재실행 필요)
+
+이전 `cross-check-test` PASS 사본은 더 이상 유효하지 않습니다.
+
 ## 역할 원칙
 - `docs/02.design/reviewed/screen.md` 기준으로 구현 결과를 검증
 - 설계서 대비 누락/오차 항목을 명확히 기록

@@ -2,6 +2,37 @@
 
 ---
 
+## v2.4.6 — 2026-05-20
+
+### 수정 — 테스트 단계 `reviewed/` 의미 통일 + cross-check-test 가 "리뷰" 역할
+
+테스트 단계는 `review-*` 가 없는 특수 위치. **`cross-check-test` 를 사실상의 리뷰 역할로 격상**하여 분석/설계/구현과 일관성 확보.
+
+- **test-* 4개 사전 동작 추가** — 실행 시 다음 파일 자동 삭제
+  - `docs/05.test/reviewed/report-{db|api|screen|e2e}.md`
+  - `docs/05.test/cross-check.md` (교차검증 재실행 필요)
+- **cross-check-test 입력 경로 변경**: `reviewed/report-*.md` → `docs/05.test/report-*.md` (원본 위치)
+- **cross-check-test 실행 후 자동 동작 추가**: 4개 보고서를 `reviewed/` 로 일괄 복사 (안전망 핵심)
+- **v2.4.2 잘못 추가된 자동 복사 단계 제거**
+  - `pipeline-full.md` Phase 5 끝의 `mkdir`/`cp` 라인 제거 → cross-check-test 필수 호출로 대체
+  - `pipeline-maintenance.md` Phase 8 끝 동일 (cross-check-test 가 이미 명시되어 있었음)
+- **test-ui-chrome**: 사람이 Chrome 에서 사용하는 보조 자료. `reviewed/` 대상 아님 (그대로 유지)
+
+### 안전망 효과
+
+- `docs/05.test/reviewed/` 에 4개 보고서가 있다 ⟺ cross-check-test 완료 (100% 보장)
+- test-* 재실행 시 자동 무효화 → cross-check 다시 받아야 함
+- deploy-dev / deploy-prd 는 `reviewed/` 만 보면 안전
+
+### v2.4.2 회고
+
+v2.4.2 에서 추가했던 "테스트 후 reviewed/ 복사" 단계는 의미상 잘못된 안전망이었음:
+- 잘못된 점: 단순 git commit 직전에 복사 → "리뷰 통과" 의미 없이 reviewed/ 진입
+- 사용자 지적으로 발견 (실습 중) → 본 v2.4.6 으로 정리
+- 올바른 안전망: cross-check-test 가 4개 보고서 입력으로 cross-check.md 생성 시점에 자동 복사
+
+---
+
 ## v2.4.5 — 2026-05-20
 
 ### 수정 — 구현 단계 안전망 강화 (분석/설계 단계 패턴 적용)

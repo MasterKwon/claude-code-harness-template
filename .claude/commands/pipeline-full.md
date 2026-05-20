@@ -200,14 +200,21 @@ Read `.claude/skills/test-e2e.md` and follow all instructions. (`docs/05.test/re
 > `test-ui-chrome` 은 자동 테스트가 아닙니다. AI 자동 테스트 통과 후, **사람이 Chrome 사이드패널로 이중 검증**할 수 있도록 지시문/체크리스트를 생성하는 Bridge 단계입니다.
 > QA 담당자는 `ui-test-chrome.xlsx` 를 복사하여 `ui-test-chrome_result.xlsx` 로 작업합니다.
 
-**→ 테스트 Phase 완료 후 반드시 사용자 확인을 받고 다음 Phase로 진행하세요.**
+테스트 4개 자동 품질 게이트 통과 후 **필수 Step** — 종합 교차검증:
 
-테스트 통과 후, 후속 단계(cross-check-test, deploy-prd)가 참조할 수 있도록 보고서를 `reviewed/` 로 복사하고 커밋:
+[fast] Read `.claude/skills/cross-check-test.md` and follow all instructions.
+산출물: `docs/05.test/cross-check.md` (타 LLM 교차검증용)
+
+- **자동 동작** (cross-check-test.md 안에 명시): 4개 테스트 보고서가 `docs/05.test/reviewed/` 로 일괄 복사됨 → 다음 Phase 진입 가능
+- `cross-check.md` 는 Dev 배포 전 타 LLM 에 붙여넣어 추가 검증
+
+**→ 테스트 + cross-check-test 완료 후 반드시 사용자 확인을 받고 다음 Phase로 진행하세요.**
+`docs/05.test/reviewed/` 에 4개 보고서가 모두 들어간 것을 확인하세요 — 비어 있으면 deploy-dev 가 진입을 거부합니다 (안전망).
+
+사용자 확인 후 커밋:
 ```bash
-mkdir -p docs/05.test/reviewed
-cp docs/05.test/report-*.md docs/05.test/reviewed/
 git add docs/05.test/
-git commit -m "phase5: test-all 통과"
+git commit -m "phase5: test-all 통과 (cross-check-test 완료)"
 git push
 ```
 

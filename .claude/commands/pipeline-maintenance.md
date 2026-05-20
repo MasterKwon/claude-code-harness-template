@@ -373,14 +373,14 @@ GAP에 Screen 신규/변경 항목 있음 → [balanced] Read `.claude/skills/te
 
 **→ 테스트 완료 후 사용자 확인을 받고 다음 Phase로 진행하세요.**
 
-사용자 확인 후, 후속 단계(cross-check-test, deploy-prd)가 참조할 수 있도록 보고서를 `reviewed/` 로 복사하고 커밋:
+사용자 확인 후 커밋 (cross-check-test 가 자동으로 `reviewed/` 에 보고서 복사함):
 ```bash
-mkdir -p docs/05.test/reviewed
-cp docs/05.test/report-*.md docs/05.test/reviewed/
 git add docs/05.test/
 git commit -m "maint: test-all 통과 (변경 기능 + 회귀)"
 git push
 ```
+
+> `docs/05.test/reviewed/` 에 4개 보고서가 모두 들어간 것을 확인하세요 — 비어 있으면 deploy-dev 가 진입을 거부합니다 (안전망).
 
 ---
 
