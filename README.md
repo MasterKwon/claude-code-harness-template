@@ -123,7 +123,11 @@ WHY 정의 → AS-IS 분석 → GAP 확정 → 영향 범위만 설계·구현·
 │   │       ├── state/           # tanstack-query.md, zustand.md, redux.md
 │   │       ├── framework/       # nextjs.md
 │   │       └── ui/              # shadcn.md, mui.md, antd.md, tailwind-only.md
-│   └── settings.json            # hooks 설정
+│   ├── hooks/                   # 코드 강제 안전망 (PreToolUse/PostToolUse)
+│   │   ├── pre-pipeline-check.sh    # 스킬 진입 조건 검사 (reviewed/ 누락 시 차단)
+│   │   ├── skill-structure-check.sh # 스킬 파일 구조 자동 점검
+│   │   └── post-edit.sh             # TypeScript 타입 체크 (Edit 후)
+│   └── settings.json            # hooks 등록 + 권한 설정
 └── docs/
     ├── 00.input/                # 요구사항 원본 자료 (여기에 파일 넣기)
     ├── 01.analyze/              # 분석 산출물
@@ -133,12 +137,14 @@ WHY 정의 → AS-IS 분석 → GAP 확정 → 영향 범위만 설계·구현·
     ├── 05.test/                 # 테스트 보고서
     ├── 06.deploy/               # 배포 산출물 (deploy-dev, uat-result, deploy-prd)
     └── harness/                 # 하네스 가이드 문서
-        ├── presentation-intro.html   # 발표자료 1부 — 체험형 실습
-        ├── presentation-intro2.html  # 발표자료 2부 — 스킬 만들기
-        ├── presentation-intro3.html  # 발표자료 3부 — 심화
-        ├── presentation-intro4.html  # 발표자료 4부 — 운영 단계 (Knowledge Accretion)
-        ├── onboarding.md             # 온보딩 가이드
-        └── CHANGELOG.md              # 변경 이력
+        ├── pipeline-overview.md     # 파이프라인 한눈 가이드 (md)
+        ├── pipeline-overview.html   # 파이프라인 한눈 가이드 (html, 탭 UI)
+        ├── presentation-intro.html  # 발표자료 1부 — 체험형 실습
+        ├── presentation-intro2.html # 발표자료 2부 — 스킬 만들기
+        ├── presentation-intro3.html # 발표자료 3부 — 심화
+        ├── presentation-intro4.html # 발표자료 4부 — 운영 단계 (Knowledge Accretion)
+        ├── onboarding.md            # 온보딩 가이드
+        └── CHANGELOG.md             # 변경 이력
 ```
 
 ---

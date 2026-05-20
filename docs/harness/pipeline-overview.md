@@ -10,6 +10,7 @@
 - **필수 여부**: 🟢 안전망 (절대 생략 불가) · 🔵 필수 · ⚪ 선택 / 조건부
 - **모델**: `fast` = haiku · `balanced` = sonnet · `best` = opus
 - **안전망 / 무효화** 컬럼: 재실행 시 `reviewed/` 의 어떤 파일이 자동 삭제되는가 + 다음 단계 진입 조건
+- **⚙️ 표시**: PreToolUse 훅(`.claude/hooks/pre-pipeline-check.sh`)이 **코드로 진입 조건을 검사하고 미충족 시 차단**. 자연어 지시 + 코드 강제 두 층위 안전망
 
 ---
 
@@ -59,28 +60,28 @@
 | 3 | 1.2 | AS-IS 분석 | `/analyze-asis` | 기존 코드베이스 | `docs/01.analyze/asis.md` (원본) | ⚪ 조건부 | fast | **신규 개발 시 사실상 N/A** (기존 시스템 없음). 재실행 시 `reviewed/{asis, gap}.md` 자동 삭제 |
 | 4 | 1.3 | GAP 분석 | `/analyze-gap` | `docs/01.analyze/{req, asis}.md` | `docs/01.analyze/gap.md` (원본) | ⚪ 조건부 | best | **신규 개발 시 사실상 N/A** (AS-IS 없음 → GAP = requirements 전체). 재실행 시 `reviewed/gap.md` 자동 삭제 |
 | 5 | 1.4 | 분석 종합 리뷰 | `/review-analyze` | `docs/01.analyze/*.md` (원본) | `analyze-review-report.md` + PASS 시 `reviewed/` 일괄 복사 | 🟢 안전망 | best | **진입 조건**: `reviewed/` 3개 |
-| 6 | 1.7 | Claude Design 프롬프트 | `/design-prompt-gen` | `docs/01.analyze/reviewed/requirements.md` | `docs/02.design/design-prompts.md` | ⚪ 선택 | balanced | — |
-| 7 | 2.1 | 프로세스 설계 | `/design-process` | `analyze/reviewed/requirements.md` | `docs/02.design/process.md` | 🔵 필수 | balanced | 재실행 시 `reviewed/process.md` 자동 삭제 |
-| 8 | 2.2 | 화면 설계 | `/design-screen` | `analyze/reviewed/{req, gap}.md` | `docs/02.design/screen.md` | 🔵 필수 | balanced | 재실행 시 `reviewed/{screen, api, tc}.md` 자동 삭제 (의존 연쇄) |
-| 9 | 2.3 | DB 설계 | `/design-db` | `analyze/reviewed/{req, gap}.md` | `docs/02.design/db.md` | 🔵 필수 | balanced | 재실행 시 `reviewed/{db, api, tc}.md` 자동 삭제 |
-| 10 | 2.4 | API 설계 | `/design-api` | `docs/02.design/{screen, db}.md` | `docs/02.design/api.md` | 🔵 필수 | balanced | 재실행 시 `reviewed/{api, tc}.md` 자동 삭제 |
-| 11 | 2.5 | 외부 연계 설계 | `/design-integration` | `analyze/reviewed/{req, asis}.md` | `docs/02.design/integration.md` | ⚪ 선택 | balanced | 재실행 시 `reviewed/integration.md` 자동 삭제 |
+| 6 | 1.7 | Claude Design 프롬프트 | `/design-prompt-gen` | `docs/01.analyze/reviewed/requirements.md` | `docs/02.design/design-prompts.md` | ⚪ 선택 | balanced | ⚙️ 진입 조건: analyze reviewed/ 필요 |
+| 7 | 2.1 | 프로세스 설계 | `/design-process` | `analyze/reviewed/requirements.md` | `docs/02.design/process.md` | 🔵 필수 | balanced | ⚙️ 재실행 시 `reviewed/process.md` 자동 삭제 |
+| 8 | 2.2 | 화면 설계 | `/design-screen` | `analyze/reviewed/{req, gap}.md` | `docs/02.design/screen.md` | 🔵 필수 | balanced | ⚙️ 재실행 시 `reviewed/{screen, api, tc}.md` 자동 삭제 (의존 연쇄) |
+| 9 | 2.3 | DB 설계 | `/design-db` | `analyze/reviewed/{req, gap}.md` | `docs/02.design/db.md` | 🔵 필수 | balanced | ⚙️ 재실행 시 `reviewed/{db, api, tc}.md` 자동 삭제 |
+| 10 | 2.4 | API 설계 | `/design-api` | `docs/02.design/{screen, db}.md` | `docs/02.design/api.md` | 🔵 필수 | balanced | ⚙️ 재실행 시 `reviewed/{api, tc}.md` 자동 삭제 |
+| 11 | 2.5 | 외부 연계 설계 | `/design-integration` | `analyze/reviewed/{req, asis}.md` | `docs/02.design/integration.md` | ⚪ 선택 | balanced | ⚙️ 재실행 시 `reviewed/integration.md` 자동 삭제 |
 | 12 | 2.6 | 설계 종합 리뷰 | `/review-design` | `docs/02.design/*.md` + analyze reviewed | `design-review-report.md` + PASS 시 `reviewed/` 5개 + cross-check + deliverable 자동 연쇄 | 🟢 안전망 | best | **진입 조건**: `reviewed/` 5개 design 파일 |
-| 13 | 2.7 | UAT 체크리스트 | `/design-tc` | `design/reviewed/{screen, api, db}.md` | `docs/02.design/tc/uat-checklist.md` | 🔵 필수 | balanced | 재실행 시 `reviewed/tc/uat-checklist.md` 자동 삭제 |
-| 14 | 3.1 | DB 구현 | `/build-db` | `design/reviewed/db.md` | 소스코드 (마이그레이션, 스키마) | 🔵 필수 | balanced | 재실행 시 `impact-check.md` + `review/reviewed/report.md` 자동 삭제 |
-| 15 | 3.2 | API 구현 | `/build-api` | `design/reviewed/{api, db}.md` | 소스코드 (라우터, 서비스) | 🔵 필수 | balanced | 동일 (위) |
-| 16 | 3.3 | 화면 구현 | `/build-screen` | `design/reviewed/{screen, api}.md` | 소스코드 (페이지, 컴포넌트) | 🔵 필수 | balanced | 동일 (위) |
+| 13 | 2.7 | UAT 체크리스트 | `/design-tc` | `design/reviewed/{screen, api, db}.md` | `docs/02.design/tc/uat-checklist.md` | 🔵 필수 | balanced | ⚙️ 재실행 시 `reviewed/tc/uat-checklist.md` 자동 삭제 |
+| 14 | 3.1 | DB 구현 | `/build-db` | `design/reviewed/db.md` | 소스코드 (마이그레이션, 스키마) | 🔵 필수 | balanced | ⚙️ 재실행 시 `impact-check.md` + `review/reviewed/report.md` 자동 삭제 |
+| 15 | 3.2 | API 구현 | `/build-api` | `design/reviewed/{api, db}.md` | 소스코드 (라우터, 서비스) | 🔵 필수 | balanced | ⚙️ 동일 (위) |
+| 16 | 3.3 | 화면 구현 | `/build-screen` | `design/reviewed/{screen, api}.md` | 소스코드 (페이지, 컴포넌트) | 🔵 필수 | balanced | ⚙️ 동일 (위) |
 | 17 | 3.5 | 변경 영향도 검사 | `/impact-check` | `analyze/reviewed/gap.md` + `git diff` | `docs/03.build/impact-check.md` | 🟢 안전망 | best | 재실행 시 `review/reviewed/report.md` 자동 삭제 |
 | 18 | 4 | 코드 리뷰 | `/review-all` | `design/reviewed/*` + 소스코드 + `impact-check.md` | `docs/04.review/report.md` + PASS 시 `reviewed/report.md` | 🟢 안전망 | best | **진입 조건**: `review/reviewed/report.md` |
-| 19 | 5.1 | DB 테스트 | `/test-db` | `design/reviewed/db.md` + 스키마 | `docs/05.test/report-db.md` | 🔵 필수 | fast | 재실행 시 `reviewed/report-db.md` + `cross-check.md` 자동 삭제 |
-| 20 | 5.2 | API 테스트 | `/test-api` | `design/reviewed/api.md` + 코드 | `docs/05.test/report-api.md` | 🔵 필수 | fast | 동일 (위) |
-| 21 | 5.3 | 화면 테스트 | `/test-screen` | `design/reviewed/screen.md` + 코드 | `docs/05.test/report-screen.md` | 🔵 필수 | fast | 동일 (위) |
-| 22 | 5.4 | E2E 테스트 | `/test-e2e` | `analyze/reviewed/req.md` + 전체 코드 | `docs/05.test/report-e2e.md` + PASS 시 `manual-testcases.md` 자동 생성 | 🔵 필수 | balanced | 동일 (위) |
+| 19 | 5.1 | DB 테스트 | `/test-db` | `design/reviewed/db.md` + 스키마 | `docs/05.test/report-db.md` | 🔵 필수 | fast | ⚙️ 재실행 시 `reviewed/report-db.md` + `cross-check.md` 자동 삭제 |
+| 20 | 5.2 | API 테스트 | `/test-api` | `design/reviewed/api.md` + 코드 | `docs/05.test/report-api.md` | 🔵 필수 | fast | ⚙️ 동일 (위) |
+| 21 | 5.3 | 화면 테스트 | `/test-screen` | `design/reviewed/screen.md` + 코드 | `docs/05.test/report-screen.md` | 🔵 필수 | fast | ⚙️ 동일 (위) |
+| 22 | 5.4 | E2E 테스트 | `/test-e2e` | `analyze/reviewed/req.md` + 전체 코드 | `docs/05.test/report-e2e.md` + PASS 시 `manual-testcases.md` 자동 생성 | 🔵 필수 | balanced | ⚙️ 동일 (위) |
 | 23 | 5.5 | Chrome UI 지시문 | `/test-ui-chrome` | `docs/02.design/tc/uat-checklist.md` | `ui-test-chrome.md` + `.xlsx` | ⚪ 선택 | balanced | — |
 | 24 | 5.6 | 테스트 교차검증 | `/cross-check-test` | `docs/05.test/report-*.md` (원본) + `analyze/reviewed/req.md` | `cross-check.md` + 4개 보고서 `reviewed/` 일괄 복사 | 🟢 안전망 | fast | **진입 조건**: `test/reviewed/report-*` 4개 |
-| 25 | 5.7 | Dev 배포 | `/deploy-dev` | `test/reviewed/` + `uat-checklist.md` | `docs/06.deploy/deploy-dev.md` + Dev 배포 | 🟢 안전망 | fast | UAT 진입 조건 |
+| 25 | 5.7 | Dev 배포 | `/deploy-dev` | `test/reviewed/` + `uat-checklist.md` | `docs/06.deploy/deploy-dev.md` + Dev 배포 | 🟢 안전망 | fast | ⚙️ 진입 조건: test/reviewed/ 4개 보고서 + UAT 진입 |
 | 26 | 6 | UAT (사람) | (수동) | `uat-checklist.md` (QA 수행) | `docs/06.deploy/uat-result.md` | 🟢 안전망 | — | 운영 배포 진입 조건: 전체 PASS |
-| 27 | 7 | 운영 배포 | `/deploy-prd` | `uat-result.md` (PASS) + `test/reviewed/` | `docs/06.deploy/deploy-prd.md` + 운영 배포 | 🟢 안전망 | balanced | 최종 |
+| 27 | 7 | 운영 배포 | `/deploy-prd` | `uat-result.md` (PASS) + `test/reviewed/` | `docs/06.deploy/deploy-prd.md` + 운영 배포 | 🟢 안전망 | balanced | ⚙️ 진입 조건: test/reviewed/ 4개 + uat-result.md |
 
 ---
 
@@ -140,21 +141,21 @@
 | 5 | 3 | 변경 요구사항 정의 | `/analyze-requirements` | grill-task 결과 + Phase 1 변경 정의 | `docs/01.analyze/requirements.md` | 🔵 필수 (contract ⏭ 가능) | balanced | 재실행 시 `reviewed/{req, gap}.md` 삭제 |
 | 6 | 4 | GAP 분석 (작업 범위 확정) | `/analyze-gap` | `docs/01.analyze/{req, asis}.md` | `docs/01.analyze/gap.md` ← **이후 모든 단계의 작업 목록** | 🔵 필수 | best | 재실행 시 `reviewed/gap.md` 삭제 |
 | 7 | 4.5 | 분석 종합 리뷰 | `/review-analyze` | `docs/01.analyze/*.md` (원본) | + PASS 시 `reviewed/` 일괄 복사 | 🟢 안전망 | best | **진입 조건**: `reviewed/` 3개 |
-| 8 | 5.0 | Claude Design 프롬프트 | `/design-prompt-gen` | `analyze/reviewed/{req, gap}.md` | `docs/02.design/design-prompts.md` | ⚪ 선택 (Screen 변경 시) | balanced | — |
-| 9 | 5 | 영향 범위 설계 | `/design-screen` `/design-db` `/design-api` (해당 레이어만) | `analyze/reviewed/gap.md` 기반 | `docs/02.design/{screen, db, api, ...}.md` (변경 부분만 병합) | 🔵 필수 (해당 레이어) | balanced | 재실행 시 `reviewed/` 의존 파일 자동 삭제. **GAP 외 레이어는 건드리지 않음** |
+| 8 | 5.0 | Claude Design 프롬프트 | `/design-prompt-gen` | `analyze/reviewed/{req, gap}.md` | `docs/02.design/design-prompts.md` | ⚪ 선택 (Screen 변경 시) | balanced | ⚙️ 진입 조건: analyze reviewed/ 필요 |
+| 9 | 5 | 영향 범위 설계 | `/design-screen` `/design-db` `/design-api` (해당 레이어만) | `analyze/reviewed/gap.md` 기반 | `docs/02.design/{screen, db, api, ...}.md` (변경 부분만 병합) | 🔵 필수 (해당 레이어) | balanced | ⚙️ 재실행 시 `reviewed/` 의존 파일 자동 삭제. **GAP 외 레이어는 건드리지 않음** |
 | 10 | 5.5 | 설계 종합 리뷰 | `/review-design` | `docs/02.design/*.md` (원본) | + PASS 시 `reviewed/` 복사 + cross-check + deliverable | 🟢 안전망 | best | **진입 조건**: `reviewed/` |
-| 11 | 5.7 | UAT 체크리스트 | `/design-tc` | `design/reviewed/{screen, api, db}.md` | `docs/02.design/tc/uat-checklist.md` (신규/병합) | ⚪ 선택 (Screen 변경 시) | balanced | — |
-| 12 | 6 | 영향 범위 구현 | `/build-db` `/build-api` `/build-screen` (해당 레이어만) | `design/reviewed/{db, api, screen}.md` | 소스코드 (변경 범위만) | 🔵 필수 (해당 레이어) | balanced | 재실행 시 `impact-check.md` + `review/reviewed/report.md` 자동 삭제. **GAP 외 코드 건드리지 않음** |
+| 11 | 5.7 | UAT 체크리스트 | `/design-tc` | `design/reviewed/{screen, api, db}.md` | `docs/02.design/tc/uat-checklist.md` (신규/병합) | ⚪ 선택 (Screen 변경 시) | balanced | ⚙️ 진입 조건: design reviewed/ 필요 |
+| 12 | 6 | 영향 범위 구현 | `/build-db` `/build-api` `/build-screen` (해당 레이어만) | `design/reviewed/{db, api, screen}.md` | 소스코드 (변경 범위만) | 🔵 필수 (해당 레이어) | balanced | ⚙️ 재실행 시 `impact-check.md` + `review/reviewed/report.md` 자동 삭제. **GAP 외 코드 건드리지 않음** |
 | 13 | 6.5 | 변경 영향도 검사 (자동 강등) | `/impact-check` | `analyze/reviewed/gap.md` + `git diff` | `docs/03.build/impact-check.md` | 🟢 안전망 | best | **자동 강등**: High 발견 시 contract ⏭ 표시됐던 Phase 자동 복원. 계획 외 레이어 변경 시 해당 design 재실행 |
 | 14 | 7 | 코드 리뷰 | `/review-all` | impact-check.md High/Medium 중점 | `docs/04.review/report.md` + PASS 시 `reviewed/report.md` | 🟢 안전망 | best | **진입 조건**: `review/reviewed/report.md` |
-| 15 | 8 | 변경 기능 테스트 (GAP만) | `/test-db` `/test-api` `/test-screen` | `design/reviewed/*` + 코드 | `docs/05.test/report-{type}.md` | 🔵 필수 (해당 레이어) | fast | 재실행 시 `reviewed/report-*` + `cross-check.md` 자동 삭제 |
+| 15 | 8 | 변경 기능 테스트 (GAP만) | `/test-db` `/test-api` `/test-screen` | `design/reviewed/*` + 코드 | `docs/05.test/report-{type}.md` | 🔵 필수 (해당 레이어) | fast | ⚙️ 재실행 시 `reviewed/report-*` + `cross-check.md` 자동 삭제 |
 | 16 | 8 | 회귀 테스트 | (test-* 안에서) | `impact-check.md` 회귀 대상 | report 안 회귀 결과 포함 | 🟢 안전망 (High 필수) | fast | High 실패 시 흐름 중단 + 사용자 보고 |
-| 17 | 8 | E2E 테스트 | `/test-e2e` | 변경 전 흐름 + 신규 흐름 모두 | `docs/05.test/report-e2e.md` | 🔵 필수 | balanced | 재실행 시 `reviewed/report-e2e.md` 삭제 |
+| 17 | 8 | E2E 테스트 | `/test-e2e` | 변경 전 흐름 + 신규 흐름 모두 | `docs/05.test/report-e2e.md` | 🔵 필수 | balanced | ⚙️ 재실행 시 `reviewed/report-e2e.md` 삭제 |
 | 18 | 8 | Chrome UI 지시문 | `/test-ui-chrome` | `docs/02.design/tc/uat-checklist.md` | `ui-test-chrome.md` + `.xlsx` | ⚪ 선택 (Screen 변경 시) | balanced | — |
 | 19 | 8 | 테스트 교차검증 | `/cross-check-test` | `docs/05.test/report-*` (원본) | `cross-check.md` + 4개 `reviewed/` 일괄 복사 | 🟢 안전망 | fast | **진입 조건**: `test/reviewed/report-*` 4개 |
-| 20 | 8.5 | Dev 배포 | `/deploy-dev` | `test/reviewed/` + `uat-checklist.md` | `docs/06.deploy/deploy-dev.md` | 🟢 안전망 | fast | UAT 진입 조건 |
+| 20 | 8.5 | Dev 배포 | `/deploy-dev` | `test/reviewed/` + `uat-checklist.md` | `docs/06.deploy/deploy-dev.md` | 🟢 안전망 | fast | ⚙️ 진입 조건: test/reviewed/ 4개 + UAT 진입 |
 | 21 | 9 | UAT (사람) | (수동) | `uat-checklist.md` (QA 수행) | `docs/06.deploy/uat-result.md` | 🟢 안전망 | — | 운영 배포 진입 |
-| 22 | 10 | 운영 배포 | `/deploy-prd` | `uat-result.md` (PASS) | `docs/06.deploy/deploy-prd.md` | 🟢 안전망 | balanced | — |
+| 22 | 10 | 운영 배포 | `/deploy-prd` | `uat-result.md` (PASS) | `docs/06.deploy/deploy-prd.md` | 🟢 안전망 | balanced | ⚙️ 진입 조건: test/reviewed/ + uat-result.md |
 | 23 | 11.1 | 변경 이력 기록 | (작성) | 작업 산출물 전체 | `docs/change-requests.md` (이력 누적) | 🟢 안전망 | — | 유형 / 요청자 / 영향 범위 / 관련 도메인 |
 | 24 | 11.2 | **CONTEXT 반자동 갱신** | (Claude 후보 추출 → 사용자 체크박스) | grill-task 결과 + gap + impact-check + 새 사실 | `docs/context/{domain}.md` append + INDEX 최근 갱신일 업데이트 | 🟢 안전망 | balanced | **다음 작업의 grill-task에서 활용** → 시스템이 점점 똑똑해진다 |
 
