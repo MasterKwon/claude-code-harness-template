@@ -482,6 +482,43 @@ cd my-workshop</pre>
   </div>
 
   <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- SLIDE 8.5 · 안전망 자동 체험 (v2.4.11+ 코드 강제) -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="slide">
+    <h2>🛡️ 잠깐 — 안전망 자동 체험</h2>
+    <p style="color: var(--text2); margin-bottom: 18px;">분석이 끝났다고 바로 설계로 갈 수 있을까? 일부러 다음 단계를 호출해봅시다.</p>
+
+    <div class="grid2" style="gap: 16px; margin-bottom: 18px;">
+      <div class="card" style="border-left: 4px solid var(--yellow);">
+        <h3 style="margin-top: 0; color: var(--yellow);">시도</h3>
+        <pre style="margin-top: 8px;">/design-db</pre>
+        <p style="font-size: .82rem; color: var(--text2); margin-top: 10px;"><code>review-analyze</code> 안 거치고 바로 다음 단계로 점프</p>
+      </div>
+      <div class="card" style="border-left: 4px solid #f85149; background: #f8514912;">
+        <h3 style="margin-top: 0; color: #f85149;">🚫 자동 차단</h3>
+        <pre style="margin-top: 8px; font-size: .72rem; color: #f85149; line-height: 1.6;">🚫 [파이프라인 안전망]
+   design-db 실행 차단
+
+진입 조건:
+  docs/01.analyze/reviewed/
+    requirements.md 또는 gap.md
+  → /review-analyze 를 먼저 실행</pre>
+      </div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid #39d353; background: #39d35312; margin-bottom: 16px;">
+      <h3 style="margin-top: 0; color: #39d353;">✅ 한 줄로 해결</h3>
+      <pre style="margin-top: 8px;">/review-analyze</pre>
+      <p style="font-size: .88rem; margin-top: 10px;">→ PASS 시 <code>docs/01.analyze/reviewed/</code> 가 채워짐 → <code>/design-db</code> 진입 가능</p>
+    </div>
+
+    <blockquote>
+      <strong style="color: #ff9d44;">⚙️ v2.4.11+ 코드 안전망</strong> — <code>.claude/hooks/pre-pipeline-check.sh</code> 가 다음 단계 진입 직전에 <code>reviewed/</code> 를 코드로 검증합니다.<br>
+      <strong>"깜빡해도 시스템이 막아준다 — 자연어 지시 + 코드 강제 두 층위"</strong>
+    </blockquote>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
   <!-- SLIDE 9 · 실습 3 · design-db -->
   <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
   <div class="slide">
@@ -681,7 +718,7 @@ cd my-workshop</pre>
 <!-- ── 내비게이션 UI ── -->
 <div id="nav">
   <button class="nav-btn" id="btn-prev" title="이전 (←)">‹</button>
-  <span id="counter">1 / 13</span>
+  <span id="counter">1 / 14</span>
   <button class="nav-btn" id="btn-next" title="다음 (→)">›</button>
 </div>
 <div id="progress-bar"></div>

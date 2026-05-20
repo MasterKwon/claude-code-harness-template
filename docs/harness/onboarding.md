@@ -231,3 +231,18 @@ A. `.claude/commands/새커맨드.md` 생성 후 `.claude/skills/새커맨드.md
 
 **Q. `/project-setup` 없이 바로 시작해도 되나요?**
 A. 됩니다. `CLAUDE.md`를 수동으로 작성하고 `/pipeline-full`부터 시작하면 됩니다.
+
+---
+
+## 강사 노트 — 교육 운영 시 주의사항
+
+### 1부 (`presentation-intro.html`) 에서 `-all` 묶음 스킬을 안 쓰는 이유
+
+1부 실습 흐름은 `/analyze-requirements` → `/design-db` 처럼 **개별 스킬**을 호출합니다. `/analyze-all` 같은 묶음 스킬을 쓰지 않습니다. 이유:
+
+1. **교육 효과** — 학습자가 각 단계가 무엇을 하는지 손으로 체험해야 이해. 묶음 스킬은 한 번에 끝나 사이사이 설명 기회 사라짐
+2. **안전망 자동 체험을 위해** (v2.4.11+) — `-all` 묶음 스킬은 마지막에 `review-*` 안전망을 자동 포함 (예: `analyze-all` Step 4 = `review-analyze`). `-all` 을 쓰면 reviewed/ 가 자동 채워져 다음 단계 호출 시 안전망이 통과되어 **차단 메시지를 볼 수 없음**
+
+**1부 SLIDE 8.5 (안전망 체험)** 는 이 흐름의 부산물. 학습자가 `/analyze-requirements` 다음에 `/review-analyze` 를 건너뛰고 `/design-db` 를 호출하면 PreToolUse 훅(`.claude/hooks/pre-pipeline-check.sh`)이 자동 차단 → 학습자가 안전망 가치를 직접 체감.
+
+> **유의**: 1부 흐름을 `/analyze-all` 로 단순화하려는 시도는 안전망 체험을 사라지게 합니다.
